@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Shell(cd papers/harness-engineering && dl() { curl -sL -A \"Mozilla/5.0\" --connect-timeout 15 --max-time 60 -o \"$2\" \"$1\" && echo \"OK $2 $(stat -f%z \"$2\") bytes\"; } ; \\ dl \"https://arxiv.org/pdf/2609.00006\" \"arxiv-2609.00006-anatomy-architecture-evolution.pdf\" ; \\ dl \"https://arxiv.org/pdf/2607.08124\" \"arxiv-2607.08124-tthe-test-time-harness-evolution.pdf\" ; \\ dl \"https://arxiv.org/pdf/2609.01437\" \"arxiv-2609.01437-harnessdev.pdf\" ; \\ dl \"https://research.chaitanya.science/papers/harness-native-software-engineering.pdf\" \"harness-native-software-engineering.pdf\" ; \\ dl \"https://picrew.github.io/LLM-Harness/main.pdf\" \"agent-harness-engineering-survey.pdf\" ; \\ echo \"--- done ---\" ; ls -la)"
+    ],
+    "deny": [],
+    "defaultMode": "default"
+  }
+}
