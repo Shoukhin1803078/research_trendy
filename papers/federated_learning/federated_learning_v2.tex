@@ -10,7 +10,6 @@
 \usepackage{url}
 \usetikzlibrary{arrows.meta,positioning,shapes.geometric,fit,backgrounds,calc}
 
-\newcommand{\TBD}{\textcolor{red}{\textbf{TBD}}}
 \newcommand{\silo}{\mathcal{S}}
 \newcommand{\onto}{\mathcal{O}}
 \newcommand{\rel}{\rho}
@@ -400,36 +399,39 @@ The original study measured agreement against a single expert, which it correctl
 
 \subsection{Reporting Format and Published Baselines}
 
-Table~\ref{tab:results} fixes the reporting format in advance and pre-fills the two baseline rows with the original study's published values, so that the anchor for comparison is stated outright rather than left implicit~\cite{b1}. Anything a reviewer would otherwise have to take on faith is confined strictly to the baseline block and clearly marked as such; nothing in the rows we are responsible for is an estimate. Every FedHarm row in this table is still left empty, because none of them have been run on the MPRINT reference setting or its exact metric definitions. A full-pipeline measurement does now exist -- on a different substrate, the two public Bio-ML tasks, with a bounded sample size and idealized expert review -- and is reported in full in Section~\ref{sec:fullpilot}; we do not fold those numbers into this table because doing so would mix two different candidate distributions and evaluation protocols under one set of column headers, which is exactly the kind of comparison Section~\ref{sec:prior} warns against.
+Table~\ref{tab:results} fixes the reporting format in advance and separates published evidence from our own measurements so that a reviewer never has to guess which is which: Block 1 reproduces values published by the source study on its own MPRINT setting~\cite{b1} (not our measurements, and not comparable metric-for-metric to Block 2); Block 2 is our own measurement, on a different substrate (the two public Bio-ML tasks), reported here in full rather than only in Section~\ref{sec:fullpilot}, since a single evaluation table a reviewer can check every claim against is more useful than a formally cleaner one left empty. Block 2 covers exactly what we actually ran: M1 and M1+M2 on the complete equivalence reference for both tasks (3{,}245 and 2{,}595 queries), and M1+M2+M3 and Full FedHarm on the 70-query-per-task pilot (140 queries total) described in Section~\ref{sec:fullpilot}. Nothing in that block is derived, projected, or estimated from another paper's numbers; every cell is either a direct measurement or ``---'' where the quantity is not defined at that operating point (for instance, F1 when zero decisions are committed). This paper's protocol also defines four MPRINT-specific ablations (B3--B6) and two operating-mode rows (supervised, autonomous); we have not run any of them, for the same reason given throughout this paper -- no MPRINT access (Section~\ref{sec:limitations}) -- and we no longer list them as empty or placeholder rows in this table, since Block 2 already reports the full extent of what this pipeline was actually run on.
 
 \begin{table*}[t]
-\caption{Evaluation table for FedHarm. The B1--B2 rows reproduce values published by the source study~\cite{b1} and are \emph{not} our measurements; the remaining rows are to be produced by the protocol of this section and are reported as empty rather than estimated. ``---'' denotes a quantity the source does not report. Precision for B2 is the expert-agreement rate, which that study also reports as mapping precision.}
+\caption{Evaluation table for FedHarm. Block 1 reproduces values published by the source study~\cite{b1} on its own MPRINT setting and is \emph{not} our measurement; ``---'' there means the source does not report that quantity. Block 2 is our own measurement, on Bio-ML rather than MPRINT (Section~\ref{sec:fullpilot}): M1 and M1+M2 rows use the full equivalence reference (3{,}245 NCIT--DOID / 2{,}595 OMIM--ORDO queries); M1+M2+M3 and Full FedHarm rows use a 70-query-per-task pilot (140 queries total). F1/FDR are decision accuracy / (1$-$accuracy) for the single-decision systems (M1, M1+M2, M1+M2+M3), and Coverage is 1.00 for those since none of them abstain. ``---'' in Block 2 means the quantity is undefined because zero decisions were committed at that operating point, not that it was left unmeasured. The MPRINT-specific ablations B3--B6 and the supervised/autonomous rows this table originally reserved space for are not reported here because we have no MPRINT access (Section~\ref{sec:limitations}); we do not list them as empty placeholder rows, since Block 2 already reports everything this pipeline was actually run on.}
 \label{tab:results}
 \centering
-\footnotesize
-\begin{tabular}{@{}llrrrrr@{}}
+\scriptsize
+\setlength{\tabcolsep}{3.6pt}
+\begin{tabular}{@{}llrrrrrr@{}}
 \toprule
-\textbf{Method} & \textbf{Candidate generation} & \textbf{Precision} & \textbf{Recall} & \textbf{Coverage at $\epsilon$} & \textbf{Emp.\ FDR} & \textbf{Reuse} \\
+\textbf{Method} & \textbf{Task / cand. gen.} & \textbf{P} & \textbf{R} & \textbf{F1} & \textbf{Cov.} & \textbf{FDR} & \textbf{Reuse} \\
 \midrule
-\multicolumn{7}{@{}l}{\textit{Prior systems --- values as published by~\cite{b1}, not measured by us}} \\
-B1 Retrieval only~\cite{b1}     & RAG, $k{=}3$      & --- & 0.98\textsuperscript{a} & --- & --- & --- \\
-B1 Retrieval only~\cite{b1}     & SNOMED pivot      & --- & 0.688\textsuperscript{b} & --- & --- & --- \\
-B2 Two-step pipeline~\cite{b1}  & RAG, $k{=}3$      & 0.78 & --- & --- & --- & 0.00 \\
-B2 Two-step pipeline~\cite{b1}  & SNOMED pivot      & 0.91 & --- & --- & --- & 0.00 \\
-B2 Two-step pipeline~\cite{b1}  & Unannotated, $k{=}3$ & 0.92 & --- & --- & --- & 0.00 \\
+\multicolumn{8}{@{}l}{\textit{Block 1 --- published, MPRINT setting~\cite{b1}, not our measurement, not comparable metric-for-metric to Block 2}} \\
+B1 Retrieval only~\cite{b1}     & RAG, $k{=}3$      & --- & 0.98\textsuperscript{a} & --- & --- & --- & --- \\
+B1 Retrieval only~\cite{b1}     & SNOMED pivot      & --- & 0.688\textsuperscript{b} & --- & --- & --- & --- \\
+B2 Two-step pipeline~\cite{b1}  & RAG, $k{=}3$      & 0.78 & --- & --- & 1.00 & 0.22\textsuperscript{c} & 0.00 \\
+B2 Two-step pipeline~\cite{b1}  & SNOMED pivot      & 0.91 & --- & --- & 1.00 & 0.09\textsuperscript{c} & 0.00 \\
+B2 Two-step pipeline~\cite{b1}  & Unannotated, $k{=}3$ & 0.92 & --- & --- & 1.00 & 0.08\textsuperscript{c} & 0.00 \\
 \midrule
-\multicolumn{7}{@{}l}{\textit{Our systems --- to be produced by the protocol of Section~\ref{sec:protocol}}} \\
-B3 Union + binary LLM           & union of four generators & \TBD & \TBD & \TBD & \TBD & 0.00 \\
-B4 FedHarm without M2           & union, no structural verifier & \TBD & \TBD & \TBD & \TBD & \TBD \\
-B5 FedHarm without calibration  & union, M2, uncalibrated LLM & \TBD & \TBD & \TBD & \TBD & \TBD \\
-B6 FedHarm without registry     & full, loop open & \TBD & \TBD & \TBD & \TBD & 0.00 \\
-FedHarm (supervised)            & full pipeline & \TBD & \TBD & \TBD & \TBD & \TBD \\
-FedHarm (autonomous)            & full, saturated registry & \TBD & \TBD & \TBD & \TBD & \TBD \\
+\multicolumn{8}{@{}l}{\textit{Block 2 --- our measurements (Bio-ML, this work)}} \\
+FedHarm-M1               & NCIT--DOID      & 0.769 & 0.765 & 0.766 & 1.00 & 0.234 & 0.00 \\
+FedHarm-M1               & OMIM--ORDO      & 0.626 & 0.625 & 0.625 & 1.00 & 0.375 & 0.00 \\
+FedHarm-M1+M2            & NCIT--DOID      & 0.769 & 0.765 & 0.766 & 1.00 & 0.234 & 0.00 \\
+FedHarm-M1+M2            & OMIM--ORDO      & 0.626 & 0.625 & 0.625 & 1.00 & 0.375 & 0.00 \\
+FedHarm-M1+M2+M3         & NCIT--DOID      & 0.314 & 0.314 & 0.314 & 1.00 & 0.686 & 0.00 \\
+FedHarm-M1+M2+M3         & OMIM--ORDO      & 0.400 & 0.400 & 0.400 & 1.00 & 0.600 & 0.00 \\
+Full FedHarm             & NCIT--DOID      & --- & --- & --- & 0.00\textsuperscript{d} & --- & 0.01\textsuperscript{e} \\
+Full FedHarm             & OMIM--ORDO      & --- & --- & --- & 0.00\textsuperscript{d} & --- & 0.00\textsuperscript{e} \\
 \bottomrule
 \end{tabular}
 
 \smallskip
-{\footnotesize \textsuperscript{a}Ceiling the source reports would be attainable by expanding retrieval to $k{=}10$ (98\% of entries); it is not a measured end-to-end recall. \textsuperscript{b}Derived by us from a published count: 800 of 1{,}162 ICD-10 codes yielded at least one candidate.}
+{\footnotesize \textsuperscript{a}Ceiling the source reports would be attainable by expanding retrieval to $k{=}10$ (98\% of entries); it is not a measured end-to-end recall. \textsuperscript{b}Derived by us from a published count: 800 of 1{,}162 ICD-10 codes yielded at least one candidate. \textsuperscript{c}Empirical FDR is not reported by the source; this column instead shows $1-$precision as its precision is already an expert-agreement rate over 100\% coverage, so the two quantities coincide. \textsuperscript{d}Coverage at every tested $\epsilon \in \{0.05, 0.10, 0.20\}$; the Benjamini--Hochberg accepted set was empty at all three (Table~\ref{tab:m4}). \textsuperscript{e}Cumulative registry cache-hit rate by round three of the simulation (T6, Table~\ref{tab:targets}); registry \emph{size} itself still grows monotonically every round on both tasks (Section~\ref{sec:fullpilot}), this column reports reuse, not registry existence.}
 \end{table*}
 
 \subsection{Pre-registered Targets and Their Anchors}
@@ -533,7 +535,7 @@ Three failure modes are foreseeable and deserve to be measured rather than argue
 \label{fig:recallk}
 \end{figure*}
 
-The only part of FedHarm that can be run without a language model is M1, and we report the outcome even though it works against one of our own pre-registered predictions. The pilot covers the two Bio-ML tasks built on openly licensed ontologies -- NCIT--DOID and OMIM--ORDO -- and leaves out the three SNOMED-based tasks, which require a license we do not have. It implements one of M1's four generators: BM25 lexical retrieval over target labels and synonyms, tested against the reference equivalence alignments. A second generator that expands the asserted class hierarchy around the leading lexical anchors is implemented in two variants, one limited to parents and children of the top anchor and one expanding siblings from the top three anchors. Dense retrieval needs an encoder we did not have access to, and cross-reference pivoting needs SNOMED CT. This retrieval-only measurement therefore tests only M1's candidate-generation claim (T3 below); Section~\ref{sec:fullpilot} reports a separate, full-pipeline pilot that does exercise M2, M3, and M4 together, on a smaller query sample, and neither pilot fills in Table~\ref{tab:results}, which is scoped to the MPRINT reference setting.
+The only part of FedHarm that can be run without a language model is M1, and we report the outcome even though it works against one of our own pre-registered predictions. The pilot covers the two Bio-ML tasks built on openly licensed ontologies -- NCIT--DOID and OMIM--ORDO -- and leaves out the three SNOMED-based tasks, which require a license we do not have. It implements one of M1's four generators: BM25 lexical retrieval over target labels and synonyms, tested against the reference equivalence alignments. A second generator that expands the asserted class hierarchy around the leading lexical anchors is implemented in two variants, one limited to parents and children of the top anchor and one expanding siblings from the top three anchors. Dense retrieval needs an encoder we did not have access to, and cross-reference pivoting needs SNOMED CT. This retrieval-only measurement therefore tests only M1's candidate-generation claim (T3 below); Section~\ref{sec:fullpilot} reports a separate, full-pipeline pilot that does exercise M2, M3, and M4 together, on a smaller query sample. Both pilots' numbers are consolidated into Block 2 of Table~\ref{tab:results}; neither fills in Block 1, which is scoped to the MPRINT reference setting we have not run.
 
 \begin{table*}[t]
 \caption{Measured retrieval pilot on the OAEI Bio-ML benchmark. Values are our own measurements against the reference equivalence alignments; candidate counts are means over queries. The union row is the bounded expansion variant, which is the more favourable of the two we tried.}
@@ -725,7 +727,7 @@ The two-step pipeline and FedHarm agree on the basic division of labor, and disa
 \section{Limitations and Threats to Validity}
 \label{sec:limitations}
 
-\textit{Limited empirical coverage.} This paper specifies an architecture, proves properties about it, and defines a protocol for evaluating it. We ourselves ran the full M1--M4 pipeline, a simulated multi-site registry, and a differential-privacy noise sweep (Sections~\ref{sec:pilot} and~\ref{sec:fullpilot}), but on a bounded, stratified sample of only 70 source queries per task, on two of the five Bio-ML tasks, and with three idealizations we flag explicitly rather than let a reader infer: (i) the LLM adjudicator was a single, unoptimized, off-the-shelf open-weight model called through a commercial inference API standing in for a genuinely in-boundary deployment, not the tiered small-model/large-model escalation the architecture specifies; (ii) the registry's ``expert-confirmed'' attestations are gold labels standing in for a real reviewer's judgment, not a measurement of reviewer accuracy or reviewer time; and (iii) the federated rounds are a synthetic stratified split with an assumed recurrence probability on a single machine, not a real multi-site deployment. Every cell in the FedHarm rows of Table~\ref{tab:results} is still left empty and clearly marked, because that table is scoped to the MPRINT reference setting and its exact metrics, which we have not run. Tables~\ref{tab:oaei} and~\ref{tab:reported} reproduce numbers published by other systems and credit each one to its source. Each proposition holds only under its stated assumptions -- reasoner soundness, exchangeability, accept-only retention, constant-size attestations -- and those assumptions are exactly what a real evaluation should try hardest to break; our pilot's most important finding, that raw self-reported LLM confidence is only weakly separated between correct and incorrect candidates (Section~\ref{sec:fullpilot}), is itself an illustration of why the exchangeability and calibration-quality assumptions behind Proposition~\ref{prop:conformal} need to be checked on real deployment data rather than assumed.
+\textit{Limited empirical coverage.} This paper specifies an architecture, proves properties about it, and defines a protocol for evaluating it. We ourselves ran the full M1--M4 pipeline, a simulated multi-site registry, and a differential-privacy noise sweep (Sections~\ref{sec:pilot} and~\ref{sec:fullpilot}), but on a bounded, stratified sample of only 70 source queries per task, on two of the five Bio-ML tasks, and with three idealizations we flag explicitly rather than let a reader infer: (i) the LLM adjudicator was a single, unoptimized, off-the-shelf open-weight model called through a commercial inference API standing in for a genuinely in-boundary deployment, not the tiered small-model/large-model escalation the architecture specifies; (ii) the registry's ``expert-confirmed'' attestations are gold labels standing in for a real reviewer's judgment, not a measurement of reviewer accuracy or reviewer time; and (iii) the federated rounds are a synthetic stratified split with an assumed recurrence probability on a single machine, not a real multi-site deployment. Table~\ref{tab:results}'s Block 1 (the MPRINT reference setting and its exact metrics) is still entirely unmeasured by us; Block 2 now reports our Bio-ML numbers directly rather than leaving them empty, and the MPRINT-specific ablations (B3--B6) and operating-mode rows this paper's protocol defines remain unrun for the same reason. Tables~\ref{tab:oaei} and~\ref{tab:reported} reproduce numbers published by other systems and credit each one to its source. Each proposition holds only under its stated assumptions -- reasoner soundness, exchangeability, accept-only retention, constant-size attestations -- and those assumptions are exactly what a real evaluation should try hardest to break; our pilot's most important finding, that raw self-reported LLM confidence is only weakly separated between correct and incorrect candidates (Section~\ref{sec:fullpilot}), is itself an illustration of why the exchangeability and calibration-quality assumptions behind Proposition~\ref{prop:conformal} need to be checked on real deployment data rather than assumed.
 
 \textit{Anchor dependence.} As noted earlier, M2's losslessness only holds relative to the anchor. On unannotated records the anchor itself is estimated, and Proposition~\ref{prop:prefilter}'s strength weakens as anchor error grows. Reporting anchor accuracy as its own first-class metric, rather than folding it into preprocessing, is a requirement of the protocol, not an optional extra.
 
