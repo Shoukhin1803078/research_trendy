@@ -126,7 +126,12 @@ def short(u):
 # ---------------------------------------------------------------- M2 structural verifier
 def m2_relation(anchor, cand, anc, cls):
     if anchor == cand:
-        return 'equiv', []
+        # Defensive only: callers must exclude the anchor from the candidate set before
+        # calling this, since "is X equivalent to X" is a tautology, not a structural
+        # verification of a distinct candidate. 'self' is never treated as informative M2
+        # signal by callers (unlike a real 'equiv', which would come from an asserted
+        # owl:equivalentClass axiom between two distinct terms -- see run_task).
+        return 'self', []
     a_anc = anc.get(anchor, set()); c_anc = anc.get(cand, set())
     if cand in a_anc:
         return 'superclass', [f"{short(anchor)} subClassOf {short(cand)}"]
@@ -288,7 +293,9 @@ def run_task(name, src_owl, tgt_owl, equiv_tsv, subs_tsv, n_sample):
         anchor = base or (lex[0] if lex else None)
         if anchor is None:
             continue
-        for c in seen[:TOPK]:
+        anchor_is_gold = anchor in g_e or anchor in g_s
+        others = [c for c in seen if c != anchor][:TOPK]
+        for c in others:
             rel, ev = m2_relation(anchor, c, T_anc, T)
             m2_stats[rel] += 1
             is_gold_equiv = c in g_e
@@ -296,11 +303,12 @@ def run_task(name, src_owl, tgt_owl, equiv_tsv, subs_tsv, n_sample):
             candidates.append({
                 'src': s, 'cand': c, 'src_label': label_of(s),
                 'tgt_label': (T[c]['labels'][0] if T[c]['labels'] else short(c)),
+                'anchor': anchor, 'anchor_is_gold': anchor_is_gold,
                 'm2_rel': rel, 'm2_ev': ev,
                 'gold_equiv': is_gold_equiv, 'gold_sub': is_gold_sub,
                 'gold_any': is_gold_equiv or is_gold_sub,
             })
-    print(f"  M2 relation counts: {dict(m2_stats)}", flush=True)
+    print(f"  M2 relation counts (anchor excluded from candidates): {dict(m2_stats)}", flush=True)
 
     survive = [c for c in candidates if c['m2_rel'] != 'disjoint']
     dropped = len(candidates) - len(survive)

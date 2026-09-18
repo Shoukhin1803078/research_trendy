@@ -1,0 +1,32 @@
+{
+ "ncit-doid": {
+  "task": "ncit-doid",
+  "n_queries": 70,
+  "m1_correct_of_n": 46,
+  "m1_precision": 0.6571428571428571,
+  "m1_recall": 0.6571428571428571,
+  "m1_f1": 0.6571428571428571,
+  "m1m2m3_correct_of_n": 22,
+  "m1m2m3_precision": 0.3142857142857143,
+  "m1m2m3_recall": 0.3142857142857143,
+  "m1m2m3_f1": 0.3142857142857143,
+  "n_overrides": 41,
+  "n_override_correct": 3,
+  "override_precision": 0.07317073170731707
+ },
+ "omim-ordo": {
+  "task": "omim-ordo",
+  "n_queries": 70,
+  "m1_correct_of_n": 44,
+  "m1_precision": 0.6285714285714286,
+  "m1_recall": 0.6285714285714286,
+  "m1_f1": 0.6285714285714286,
+  "m1m2m3_correct_of_n": 28,
+  "m1m2m3_precision": 0.4,
+  "m1m2m3_recall": 0.4,
+  "m1m2m3_f1": 0.4,
+  "n_overrides": 29,
+  "n_override_correct": 0,
+  "override_precision": 0.0
+ }
+}

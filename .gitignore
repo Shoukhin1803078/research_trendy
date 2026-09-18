@@ -3,3 +3,4 @@
 papers/federated_learning/scripts/bioml/
 papers/federated_learning/scripts/*.log
 papers/federated_learning/scripts/*.zip
+papers/federated_learning/scripts/__pycache__/
