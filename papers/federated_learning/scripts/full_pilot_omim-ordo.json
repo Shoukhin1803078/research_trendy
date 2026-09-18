@@ -1,0 +1,127 @@
+{
+ "task": "omim-ordo",
+ "n_queries": 70,
+ "n_candidates": 676,
+ "m2_relation_counts": {
+  "equiv": 70,
+  "unresolved": 581,
+  "subclass": 16,
+  "superclass": 9
+ },
+ "m2_prefilter_dropped": 0,
+ "m2_prefilter_gold_positive_dropped": 0,
+ "m2_prefilter_recall": 1.0,
+ "n_surviving_m3": 676,
+ "m3_estimated_cost_usd": 0.002974437,
+ "m3_relation_dist": {
+  "related": 364,
+  "equivalent": 112,
+  "unrelated": 56,
+  "narrower": 138,
+  "broader": 6
+ },
+ "m4_n_calibration": 270,
+ "m4_n_test": 406,
+ "m4_confidence_diagnostic": {
+  "n_positive": 54,
+  "n_negative": 622,
+  "mean_confidence_positive": 0.8907407407407407,
+  "mean_confidence_negative": 0.8681672025723473
+ },
+ "m4_risk_coverage": {
+  "0.05": {
+   "coverage": 0.0,
+   "empirical_fdr": 0.0,
+   "n_selected": 0,
+   "n_test": 406
+  },
+  "0.1": {
+   "coverage": 0.0,
+   "empirical_fdr": 0.0,
+   "n_selected": 0,
+   "n_test": 406
+  },
+  "0.2": {
+   "coverage": 0.0,
+   "empirical_fdr": 0.0,
+   "n_selected": 0,
+   "n_test": 406
+  }
+ },
+ "m3_accept_precision_at_full_coverage": 0.08984375,
+ "m3_accept_recall_at_full_coverage": 0.42592592592592593,
+ "registry_rounds": [
+  {
+   "round": 0,
+   "chunk_size": 112,
+   "cache_hits": 0,
+   "registry_size": 7
+  },
+  {
+   "round": 1,
+   "chunk_size": 112,
+   "cache_hits": 2,
+   "registry_size": 15
+  },
+  {
+   "round": 2,
+   "chunk_size": 112,
+   "cache_hits": 2,
+   "registry_size": 21
+  },
+  {
+   "round": 3,
+   "chunk_size": 112,
+   "cache_hits": 2,
+   "registry_size": 26
+  },
+  {
+   "round": 4,
+   "chunk_size": 112,
+   "cache_hits": 2,
+   "registry_size": 27
+  },
+  {
+   "round": 5,
+   "chunk_size": 112,
+   "cache_hits": 5,
+   "registry_size": 31
+  }
+ ],
+ "registry_final_size": 31,
+ "privacy_utility": [
+  {
+   "epsilon": 0.5,
+   "true_last_round_hits": 5,
+   "mean_noised_estimate": 5.187777096869032,
+   "abs_error": 0.18777709686903243
+  },
+  {
+   "epsilon": 1.0,
+   "true_last_round_hits": 5,
+   "mean_noised_estimate": 5.043849303289202,
+   "abs_error": 0.04384930328920156
+  },
+  {
+   "epsilon": 2.0,
+   "true_last_round_hits": 5,
+   "mean_noised_estimate": 4.955060076600023,
+   "abs_error": 0.04493992339997721
+  },
+  {
+   "epsilon": 4.0,
+   "true_last_round_hits": 5,
+   "mean_noised_estimate": 5.022888969934573,
+   "abs_error": 0.022888969934572678
+  }
+ ],
+ "communication": {
+  "attestation_size_bytes": 88,
+  "n_attestations_this_task": 31,
+  "total_registry_bytes": 2728,
+  "disclosed_no_dp": 31,
+  "disclosed_k_min_suppressed": 22,
+  "k_min": 2
+ },
+ "wall_clock_sec": 250.36462664604187
+}

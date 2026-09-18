@@ -1,1 +1,5 @@
 .DS_Store
+.env
+papers/federated_learning/scripts/bioml/
+papers/federated_learning/scripts/*.log
+papers/federated_learning/scripts/*.zip
