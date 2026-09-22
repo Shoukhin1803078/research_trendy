@@ -1,0 +1,37 @@
+=== ncit-doid: parsing ontologies ===
+  src=15762 tgt=8465 classes (11s)
+  ancestor closure built (11s)
+  sampled 70 queries (of 3541 candidates with gold)
+    m1/m2 50/70 (12s)
+  M2 relation counts (anchor excluded from candidates): {'subclass': 98, 'superclass': 79, 'unresolved': 420}
+  M2 pre-filter: 0/597 dropped as disjoint; gold-positive dropped = 0
+  M3: adjudicating 597 surviving candidates via mistralai/Mistral-Nemo-Instruct-2407 ...
+    m3 progress 100/597
+    m3 progress 200/597
+    m3 progress 300/597
+    m3 progress 400/597
+    m3 progress 500/597
+  M3 done (210s), estimated LLM cost so far: $0.0026
+  M4 diagnostic: mean_conf(pos)=0.9, mean_conf(neg)=0.8973867595818815, n_pos=23, n_neg=574
+  dumped raw per-candidate records to /home/tasnia/research_trendy/papers/federated_learning/scripts/full_pilot_raw_ncit-doid.jsonl
+  dumped /home/tasnia/research_trendy/papers/federated_learning/scripts/full_pilot_ncit-doid.json
+
+=== omim-ordo: parsing ontologies ===
+  src=9648 tgt=9275 classes (10s)
+  ancestor closure built (10s)
+  sampled 70 queries (of 2602 candidates with gold)
+    m1/m2 50/70 (10s)
+  M2 relation counts (anchor excluded from candidates): {'unresolved': 585, 'superclass': 70, 'subclass': 7}
+  M2 pre-filter: 0/662 dropped as disjoint; gold-positive dropped = 0
+  M3: adjudicating 662 surviving candidates via mistralai/Mistral-Nemo-Instruct-2407 ...
+    m3 progress 100/662
+    m3 progress 200/662
+    m3 progress 300/662
+    m3 progress 400/662
+    m3 progress 500/662
+    m3 progress 600/662
+  M3 done (221s), estimated LLM cost so far: $0.0030
+  M4 diagnostic: mean_conf(pos)=0.8181818181818182, mean_conf(neg)=0.8557603686635945, n_pos=11, n_neg=651
+  dumped raw per-candidate records to /home/tasnia/research_trendy/papers/federated_learning/scripts/full_pilot_raw_omim-ordo.jsonl
+  dumped /home/tasnia/research_trendy/papers/federated_learning/scripts/full_pilot_omim-ordo.json
+

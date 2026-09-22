@@ -1,0 +1,49 @@
+=== ncit-doid ===
+  src=15762 tgt=8465 (10s)
+  3541 queries with gold in this ontology pair
+    500/3541 (12s)
+    1000/3541 (13s)
+    1500/3541 (14s)
+    2000/3541 (15s)
+    2500/3541 (16s)
+    3000/3541 (18s)
+    3500/3541 (19s)
+{
+ "task": "ncit-doid",
+ "n_queries": 3541,
+ "m1_precision": 0.7164642756283536,
+ "m1_recall": 0.7164642756283536,
+ "m1_f1": 0.7164642756283536,
+ "m1_m2_precision": 0.7164642756283536,
+ "m1_m2_recall": 0.7164642756283536,
+ "m1_m2_f1": 0.7164642756283536,
+ "m2_candidates_typed": 31095,
+ "m2_disjoint_drops": 5,
+ "m2_disjoint_drop_rate": 0.00016079755587715066,
+ "m2_had_opportunity_to_help": 665,
+ "wall_clock_sec": 19.388217210769653
+}
+=== omim-ordo ===
+  src=9648 tgt=9275 (11s)
+  2602 queries with gold in this ontology pair
+    500/2602 (14s)
+    1000/2602 (17s)
+    1500/2602 (19s)
+    2000/2602 (21s)
+    2500/2602 (24s)
+{
+ "task": "omim-ordo",
+ "n_queries": 2602,
+ "m1_precision": 0.6245196003074558,
+ "m1_recall": 0.6245196003074558,
+ "m1_f1": 0.6245196003074558,
+ "m1_m2_precision": 0.6245196003074558,
+ "m1_m2_recall": 0.6245196003074558,
+ "m1_m2_f1": 0.6245196003074558,
+ "m2_candidates_typed": 24970,
+ "m2_disjoint_drops": 0,
+ "m2_disjoint_drop_rate": 0.0,
+ "m2_had_opportunity_to_help": 336,
+ "wall_clock_sec": 24.149540424346924
+}
+dumped /home/tasnia/research_trendy/papers/federated_learning/scripts/ablation_m1_m2_results.json
