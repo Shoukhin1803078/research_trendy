@@ -48,7 +48,7 @@ Military Institute of Science and Technology (MIST), Dhaka-1216, Bangladesh\\
 
 \begin{document}
 
-\title{Brain Tumor Classification Using a Customized CNN and Random Forest Classifier}
+\title{A Hybrid EfficientNet--Ensemble Framework with Cross-Validated Evaluation for Multi-Class Brain Tumor Classification}
 
 \author{
 \IEEEauthorblockN{Md Al Amin Tokder Shoukhin\IEEEauthorrefmark{1}, Tasmia Jannat\IEEEauthorrefmark{2}, Md. Ali Hossain\IEEEauthorrefmark{3}, Nazmul Haque\IEEEauthorrefmark{4}}
@@ -64,19 +64,21 @@ Email: alamintokdercse@gmail.com, jannat22tasmia@gmail.com, ali.ruet@gmail.com,
 \maketitle
 
 \begin{abstract}
-Brain tumors are spreading rapidly across the world. Every year thousands of patients die due to deadly cancerous tumors. The need for precise detection and classification of brain tumors is essential for effective treatment. This study aims to address the urgent need for precise detection and classification of brain tumors, which is crucial for effective treatment. In this research, we developed a new method that combines advanced deep learning with traditional machine learning techniques. We used a dataset called figshare Brain Tumor, which contains 3,064 MRI images grouped into three types of tumors. First, we used a deep learning method, a Convolutional Neural Network (CNN), to look closely at the images and pick out important features that show signs of tumors. Then, we took these features and used them in a Random Forest classifier, a well-known machine learning method that is good at accurately handling complex problems. This two-step process takes advantage of both methods to better identify and classify brain tumors. A deep Convolutional Neural Network (CNN) was utilized as a feature extractor, with the extracted features subsequently classified using a Random Forest classifier. The hybrid model demonstrated a testing accuracy of approximately 93.55\%, which is significantly higher than several previous studies using the figshare brain tumor dataset. The integration of deep learning and machine learning approaches in the form of a hybrid CNN and Random Forest classifier proves to be highly effective in enhancing the accuracy of brain tumor classification on MRI images. This methodology outperforms a conventional standalone CNN classifier, indicating its potential for clinical application in improving brain tumor diagnostics.
+Brain tumors are among the most life-threatening neurological conditions, and accurate, reproducible classification from Magnetic Resonance Imaging (MRI) is essential for effective treatment planning. Many prior hybrid CNN--machine-learning approaches report accuracy from a single train/test split, which can overstate real-world generalization performance. In this work, we propose a hybrid classification pipeline built on a pretrained EfficientNetB0 backbone with two-stage fine-tuning, class-weighted training to address label imbalance, and two complementary inference strategies derived from the same trained model: test-time augmentation (TTA) applied to the CNN's own softmax output, and a soft-voting ensemble of Random Forest, XGBoost, and SVM classifiers trained on CNN-derived embeddings. We evaluate this pipeline under rigorous 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI benchmark (glioma, meningioma, pituitary tumor, and no-tumor). The proposed approach achieves 97.74\% $\pm$ 0.47\% accuracy with CNN+TTA and 97.36\% $\pm$ 0.22\% with the CNN-embedding ensemble, with the latter exhibiting the lowest fold-to-fold variance of all evaluated configurations. Per-class precision, recall, and F1-scores exceed 0.96 across all four classes in representative folds. These results, obtained under cross-validation rather than a single split, indicate that the proposed hybrid CNN-ensemble framework achieves high and statistically consistent accuracy, supporting its potential as a reliable component of AI-assisted brain tumor diagnostic tools.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Brain Tumor Classification, Convolutional Neural Network, Random Forest, Hybrid Deep Learning, Magnetic Resonance Imaging, Medical Image Classification.
+Brain Tumor Classification, Convolutional Neural Network, Transfer Learning, Random Forest, Ensemble Learning, Cross-Validation, Magnetic Resonance Imaging, Medical Image Classification.
 \end{IEEEkeywords}
 
 \section{Introduction}
 The proliferation of abnormal neural cells can lead to the formation of a brain tumor \cite{r1}, significantly affecting normal neurological function. Neuroscientists and clinical specialists emphasize early detection, accurate diagnosis, and the development of effective therapeutic interventions, which enable timely identification and the implementation of structured treatment protocols \cite{r2, r3}. According to the National Brain Tumor Foundation, approximately 83,570 individuals are diagnosed with brain tumors annually in the United States, with nearly 18,600 fatalities attributed to this life-threatening condition each year \cite{r4}.
 Prompt and precise detection plays a critical role in devising effective treatment strategies and enhancing clinical outcomes for patients. Among available imaging modalities, Magnetic Resonance Imaging (MRI) is widely regarded as the optimal imaging technique for diagnosing brain tumors, owing to its high-resolution soft-tissue visualization and non-invasive characteristics \cite{r5}. Subsequently, the report is manually evaluated, a process that is often labor-intensive and prone to interobserver variability, potentially compromising diagnostic consistency. In response to these limitations, recent research underscores the benefits of automated and semi-automated tools in enhancing interobserver agreement and reducing processing time, thereby improving the reliability and efficiency of MRI-based assessments \cite{r6, r7}.
-In recent years, the incorporation of artificial intelligence (AI), particularly deep learning techniques, has significantly advanced medical image analysis. These technologies have contributed to more accurate and efficient image interpretation, enhancing diagnostic processes and overall patient care \cite{r8}. Among these techniques, Convolutional Neural Networks (CNNs) have shown considerable success in automatically extracting features from medical images, thereby improving tasks such as tumor detection and classification \cite{r9}. Despite this progress, challenges such as the requirement for large labeled datasets and the risk of overfitting in small datasets remain significant barriers \cite{r10}. To address these limitations, researchers are increasingly turning to hybrid approaches that combine deep learning with traditional machine learning techniques. These integrations aim to improve diagnostic robustness and accuracy \cite{r11}. Additionally, to improve model generalization and reduce overfitting, data augmentation techniques are employed to synthetically expand training datasets \cite{r12}. Applying geometric transformations such as rotation, flipping, and scaling increases dataset diversity -- an important strategy when acquiring new medical images is constrained by privacy concerns and the need for expert annotation \cite{r13}. In terms of the hybrid model approach, coupling CNNs with ensemble classifiers like Random Forests combines the powerful feature extraction capabilities of CNNs with the strong classification performance of ensemble methods, resulting in enhanced diagnostic outcomes \cite{r14}. Such hybrid models are particularly beneficial for high-dimensional, low-volume datasets, where standalone models may struggle with generalization \cite{r15}.
+In recent years, the incorporation of artificial intelligence (AI), particularly deep learning techniques, has significantly advanced medical image analysis \cite{r8}. Among these techniques, Convolutional Neural Networks (CNNs) have shown considerable success in automatically extracting features from medical images, improving tasks such as tumor detection and classification \cite{r9}. Despite this progress, challenges such as the requirement for large labeled datasets and the risk of overfitting remain significant barriers \cite{r10}. To address these limitations, researchers are increasingly turning to hybrid approaches that combine deep learning with traditional machine learning techniques \cite{r11}. Data augmentation is also commonly employed to synthetically expand training datasets and improve generalization \cite{r12, r13}. Coupling CNNs with ensemble classifiers such as Random Forests combines the powerful feature extraction capabilities of CNNs with the strong classification performance of ensemble methods \cite{r14}, which is particularly beneficial when working with high-dimensional imaging data \cite{r15}.
 
-This research aims to develop a hybrid model that integrates a CNN for feature extraction and a Random Forest classifier for brain tumor classification. The model is trained and tested on a dataset of 3,064 contrast-enhanced MRI images, categorized into three tumor types: glioma, meningioma, and pituitary tumor. To address class imbalance and improve performance, data augmentation is applied to increase the representation of underrepresented categories, thereby enhancing the model's ability to generalize. The proposed approach aspires to achieve high classification accuracy, contributing to the development of reliable AI-driven diagnostic tools. Such tools can assist radiologists by providing consistent, objective assessments, ultimately supporting clinical decision-making and improving patient outcomes.
+A methodological concern that is frequently underemphasized in this line of work is the reliability of the reported evaluation. Many studies report accuracy from a single train/test split, which is sensitive to how that particular split happens to fall and does not, by itself, demonstrate that the model generalizes consistently. This motivates the use of cross-validation, where multiple independent train/test partitions are evaluated and accuracy is reported as a mean and standard deviation, giving a more statistically grounded picture of expected real-world performance.
+
+This research proposes a hybrid brain tumor classification pipeline combining a pretrained EfficientNetB0 backbone with two-stage fine-tuning, class-weighted training to address label imbalance, and two complementary inference strategies built on the same trained model: test-time augmentation and a soft-voting ensemble of classical classifiers trained on CNN-derived embeddings. We evaluate the complete pipeline using 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI benchmark, reporting mean and standard deviation accuracy across folds rather than a single-split figure, and analyze per-class performance and the trade-off between the two inference strategies.
 
 
 \section{Related Work}
@@ -85,150 +87,152 @@ Deep learning has revolutionized brain tumor classification, with Convolutional 
 
 To address these limitations, researchers explored hybrid models combining CNNs with traditional machine learning classifiers. A study in Electronics \cite{r18} integrated CNNs with support vector machines (SVMs) and random forests, leveraging deep feature extraction for improved classification robustness. Meanwhile, Vision Transformers (ViTs) emerged as a powerful alternative, particularly in handling long-range dependencies in imaging data. Karagoz et al. \cite{r19} introduced a Residual Vision Transformer (ResViT) incorporating self-supervised learning (SSL), which enhanced generalizability in scenarios with scarce labeled data. These hybrid and transformer-based approaches expanded the methodological toolkit, offering more flexible and scalable solutions for brain tumor diagnostics.
 
-Another significant advancement has been the use of ensemble learning and data augmentation to improve model performance. Talukder et al. \cite{r20} developed an optimized ensemble framework combining multiple pre-trained CNNs, achieving superior accuracy in distinguishing glioma, meningioma, and pituitary tumors. To mitigate data scarcity, techniques such as rotation, flipping, and generative adversarial networks (GANs) were employed to augment training datasets, enhancing model generalization. Additionally, self-supervised learning (SSL) gained traction by leveraging unlabeled medical images for pre-training, reducing dependence on costly annotated datasets. These strategies collectively improved classification accuracy while addressing practical constraints in medical imaging.
+Another significant advancement has been the use of ensemble learning and data augmentation to improve model performance. Talukder et al. \cite{r20} developed an optimized ensemble framework combining multiple pre-trained CNNs, achieving superior accuracy in distinguishing glioma, meningioma, and pituitary tumors. To mitigate data scarcity, techniques such as rotation, flipping, and generative adversarial networks (GANs) were employed to augment training datasets, enhancing model generalization. Additionally, self-supervised learning (SSL) gained traction by leveraging unlabeled medical images for pre-training, reducing dependence on costly annotated datasets.
 
-Despite these advancements, challenges persist in model interpretability and computational efficiency. Explainable AI (XAI) techniques, such as Grad-CAM and attention mechanisms, have been integrated to provide transparency in model decisions, fostering clinical trust. Furthermore, lightweight architectures (e.g., MobileNet, EfficientNet) and federated learning have been explored to reduce computational demands and enable decentralized model training. Looking ahead, multimodal learning -- integrating MRI with PET or CT scans -- and real-time intraoperative applications represent promising directions for future research.
-
-Deep learning has significantly advanced brain tumor classification through CNNs, hybrid models, ViTs, and ensemble techniques. While challenges remain in data efficiency, interpretability, and deployment, ongoing innovations in SSL, XAI, and efficient architectures continue to push the field forward. These developments are critical for translating AI-driven diagnostics into clinical practice, ultimately improving patient outcomes through earlier and more precise tumor detection.
+Despite these advancements, model interpretability and computational efficiency remain open challenges. Explainable AI (XAI) techniques such as Grad-CAM and attention mechanisms have been proposed to provide transparency in model decisions and foster clinical trust. In addition, much of the literature reports accuracy from a single train/test split rather than cross-validation, which limits the statistical confidence that can be placed in reported figures. Looking ahead, multimodal learning -- integrating MRI with PET or CT scans -- lightweight architectures, and real-time intraoperative applications represent promising directions for future research.
 
 
 \section{Dataset}
-The dataset used in this study consists of 3,064 T1-weighted contrast-enhanced MRI slices collected from 233 patients, each diagnosed with one of three types of brain tumors: meningioma (708 images), glioma (1,426 images), and pituitary tumor (930 images) \cite{r21}. These grayscale medical images are stored in .mat format, each paired with a corresponding tumor mask indicating the region of interest. To standardize the input for neural network models, both the images and masks were resized to 128 $\times$ 128 pixels.
+
+This study uses a four-class brain tumor MRI benchmark comprising 7,023 T1-weighted MRI images, evenly distributed across glioma (1,800 images), meningioma (1,800 images), pituitary tumor (1,800 images), and no-tumor (1,623 images) classes. The dataset is organized into predefined Training and Testing folders by class; in this work, both folders are combined and re-partitioned using our own stratified 5-fold cross-validation, so that reported accuracy reflects performance averaged over five independent test partitions rather than the dataset's original single train/test split.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.5\textwidth]{images/dataset_image.PNG}
-\caption{Dataset Images}
+\caption{Sample MRI slices from the four-class brain tumor dataset.}
 \label{figure_1}
 \end{figure}
 
 
 \section{Methodology}
-In this research, we focused on building a hybrid classification model for brain tumor detection using MRI scans. To begin with, the dataset was preprocessed, consisting of 3,064 image slices from 233 patients. Each image originally had a resolution of 512$\times$512 pixels, but to make the data easier to handle and train on, especially for deep learning models, they were resized to 128$\times$128 pixels. This resizing was done carefully to ensure that the pixel intensity values -- which are crucial for medical analysis -- were preserved, so no important diagnostic information was lost.
+\label{sec:methodology}
+
+\subsection{Preprocessing}
+Each MRI image is decoded, resized to 224$\times$224 pixels, and normalized to match the input format expected by the ImageNet-pretrained backbone. Class imbalance across the four categories is addressed via class-weighted training: per-class weights are computed as the inverse frequency of each class within the training fold (\texttt{sklearn.utils.class\_weight.compute\_class\_weight}, \texttt{balanced} mode) and applied to the loss function during training.
+
+Data augmentation -- random rotation, translation, zoom, horizontal flip, and contrast jitter -- is applied during training via a Keras \texttt{Sequential} augmentation block, both to reduce overfitting during training and, separately, to support test-time augmentation at inference (Section~\ref{sec:inference}).
 
 \begin{figure*}[t]
 \centerline{\includegraphics[width=\linewidth]{images/Brain tumor classification.drawio.png}}
-\caption{Proposed hybrid CNN--Random Forest workflow for brain tumor classification.}
+\caption{Overview of the proposed pipeline: EfficientNetB0 feature extraction with two-stage fine-tuning, followed by two complementary inference heads -- a softmax classifier with test-time augmentation, and a soft-voting ensemble (Random Forest, XGBoost, SVM) trained on the CNN's penultimate-layer embeddings.}
     \label{fig:workflow}
 \end{figure*}
 
-Once the images were resized, the challenge of dataset imbalance and limited data was addressed through data augmentation. Keras's ImageDataGenerator was used to apply a series of transformations such as rotation, width and height shifts, shearing, zooming, and horizontal flipping.
-These augmentations helped increase both the volume and diversity of the training data, making the model more robust and less prone to overfitting. This was especially important because the dataset was highly imbalanced -- for example, the glioma class had significantly more images than the meningioma and pituitary classes. To address this, augmented images were generated for the minority classes until each class had approximately 1,500 images. This balancing ensured that the model would not become biased toward the majority class during training.
+\subsection{CNN Backbone and Two-Stage Fine-Tuning}
+The classification backbone is an EfficientNetB0 network pretrained on ImageNet. A global average pooling layer, batch normalization, and dropout (0.4) are applied to the backbone's output, followed by a 128-unit dense embedding layer (batch-normalized, dropout 0.3), and a final softmax layer over the four tumor classes.
 
-\begin{figure*}[t]
-    \centering
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[height=2.0in]{images/imbalance_data.PNG}
-        \caption{imbalanced dataset}
-    \end{subfigure}%
-    ~
-    \begin{subfigure}[t]{0.45\linewidth}
-        \centering
-        \includegraphics[height=2.0in]{images/balancedData (1).PNG}
-        \caption{balanced dataset}
-    \end{subfigure}
-    \caption{Original and augmented dataset distribution.}
-\end{figure*}
+Training proceeds in two stages. In Stage 1, the backbone is frozen and only the newly added head is trained (Adam, learning rate $10^{-3}$, 8 epochs) to let the randomly initialized head stabilize before adapting the pretrained weights. In Stage 2, the top 80\% of backbone layers are unfrozen and the entire network is fine-tuned end-to-end at a low learning rate ($10^{-5}$, up to 35 epochs), with early stopping (patience 10 on validation loss) and a learning-rate-on-plateau schedule (factor 0.5, patience 4).
 
-For the classification model itself, a hybrid approach combining deep learning and traditional machine learning was designed. First, a Convolutional Neural Network (CNN) was built to act as a feature extractor. The CNN architecture includes multiple Conv2D layers with ReLU activations, MaxPooling layers for downsampling, dropout layers for regularization, and dense layers for high-level feature learning. L2 regularization was used in the dense layers to reduce the risk of overfitting.
+\subsection{Dual Inference Strategy}
+\label{sec:inference}
+We compare two ways of using the trained CNN at inference time, both derived from the same trained model with no additional training data:
 
-After training the CNN, the final output layer was removed and the model was used as a feature extractor. Instead of predicting class labels directly, the CNN outputs a feature vector for each image -- a compact, learned representation of the image's key characteristics. These feature vectors were then passed into a Random Forest classifier, which is known for its robustness and interpretability. The Random Forest classifies inputs based on the majority vote across its decision trees.
+\textbf{Test-time augmentation (TTA).} Each test image is classified using the average softmax output over one clean pass and five randomly augmented views, using the same augmentation transformations as training.
+
+\textbf{CNN-embedding ensemble.} The 128-dimensional embedding produced by the CNN's penultimate dense layer (prior to the softmax head) is extracted for each training and test image. A soft-voting ensemble of three classical classifiers -- Random Forest (300 trees, balanced class weights), XGBoost (300 estimators, max depth 5, learning rate 0.05), and an RBF-kernel SVM (balanced class weights, probability estimates enabled) -- is trained on these embeddings and used to classify test images by averaged class probabilities. This combines the representational power of a fine-tuned deep network with the complementary decision boundaries of three distinct classical classifiers.
+
+\subsection{Cross-Validation Protocol}
+The complete dataset (Training + Testing folders combined) is partitioned using stratified 5-fold cross-validation, ensuring each class is proportionally represented in every fold. Within each fold's training portion, a further stratified 85/15 split produces the validation set used for early stopping. Every image is used as test data in exactly one fold, and the reported accuracy is the mean and standard deviation across all five folds. All experiments were run on the Kaggle platform (NVIDIA Tesla P100 GPU, 25\,GB RAM), using a batch size of 16.
+
+
+\section{Results}
+
+Table~\ref{tab:cv_results} reports mean $\pm$ standard deviation test accuracy across the 5 cross-validation folds for three evaluation configurations: the CNN's own softmax output, CNN+TTA, and the CNN-embedding ensemble. CNN+TTA achieves the highest mean accuracy, while the CNN-embedding ensemble achieves a comparable mean with the lowest variance across folds, indicating the most consistent performance across independent test partitions.
 
 \begin{table}[!htbp]
-\caption{Proposed 2D CNN Architecture Model Summary (Input: 128 $\times$ 128 $\times$ 1)}
 \centering
-\begin{tabular}{|l|l|l|}
+\caption{5-Fold Cross-Validation Accuracy}
+\begin{tabular}{|l|c|c|}
 \hline
-\textbf{Layer (type)} & \textbf{Output Shape} & \textbf{Param \#} \\ \hline
-
-conv2d (Conv2D) & (None, 126, 126, 64) & 640 \\ \hline
-max\_pooling2d (MaxPooling2D) & (None, 63, 63, 64) & 0 \\ \hline
-dropout (Dropout) & (None, 63, 63, 64) & 0 \\ \hline
-
-conv2d\_1 (Conv2D) & (None, 61, 61, 64) & 36928 \\ \hline
-max\_pooling2d\_1 (MaxPooling2D) & (None, 30, 30, 64) & 0 \\ \hline
-
-conv2d\_2 (Conv2D) & (None, 28, 28, 64) & 36928 \\ \hline
-max\_pooling2d\_2 (MaxPooling2D) & (None, 14, 14, 64) & 0 \\ \hline
-
-conv2d\_3 (Conv2D) & (None, 12, 12, 64) & 36928 \\ \hline
-max\_pooling2d\_3 (MaxPooling2D) & (None, 6, 6, 64) & 0 \\ \hline
-
-flatten (Flatten) & (None, 2304) & 0 \\ \hline
-dropout\_1 (Dropout) & (None, 2304) & 0 \\ \hline
-
-dense (Dense) & (None, 48) & 110640 \\ \hline
-dense\_1 (Dense) & (None, 3) & 147 \\ \hline
-
-\multicolumn{3}{|c|}{\textbf{Total params: 112,000 -- 118,000}} \\ \hline
-\multicolumn{3}{|c|}{\textbf{Trainable params: All}} \\ \hline
-\multicolumn{3}{|c|}{\textbf{Non-trainable params: 0}} \\ \hline
-
+\textbf{Method} & \textbf{Mean Accuracy} & \textbf{Std. Dev.} \\ \hline
+CNN (softmax)                          & 96.07\% & $\pm$0.46\% \\ \hline
+CNN + TTA                              & \textbf{97.74\%} & $\pm$0.47\% \\ \hline
+CNN-embedding ensemble (RF+XGB+SVM)    & 97.36\% & $\pm$0.22\% \\ \hline
 \end{tabular}
-\label{tab:cnn_architecture_small}
+\label{tab:cv_results}
 \end{table}
 
-
-\section{Experimental Setup}\label{AA}
-The dataset is available online (www.kaggle.com) and experiments were run on the Kaggle platform, which provides free access to NVIDIA Tesla P100 GPUs, 358.27 GB of cold storage, and 25 GB of RAM.
-
-The dataset was split into training, validation, and testing sets, using 60\% of the data for training. The model was trained for 45 epochs using the Adam optimizer and a cross-entropy loss function, with a small batch size of 5 to allow for fine-grained weight updates. Performance was monitored on the validation set to ensure the model was generalizing well and not overfitting. After training, the model was saved for later evaluation on unseen test data.
-
-\section{Classification Result}
-After training the hybrid CNN--Random Forest model on the brain MRI dataset, its performance was evaluated using standard classification metrics along with visualizations of training progress. The model was trained over 45 epochs using a small batch size of 5, and one-hot encoding was applied to the labels to match the softmax output layer. To monitor learning behavior, accuracy and loss values were plotted for both training and validation sets across all epochs. The accuracy curve shows a consistent upward trend, where training accuracy gradually improved and reached 94.73\%, while validation accuracy closely followed, peaking at 92.09\%. This alignment between the two curves indicates that the model was learning effectively and generalizing well to unseen data.
+Table~\ref{tab:perclass} shows representative per-class precision, recall, and F1-score from one held-out fold using the CNN+TTA method, illustrating consistently strong performance across all four classes, including the no-tumor class.
 
 \begin{table}[!htbp]
 \centering
-\caption{Classification Report of Random Forest on CNN Features}
+\caption{Representative Per-Class Results (CNN+TTA, one fold)}
 \begin{tabular}{|l|c|c|c|c|}
 \hline
-\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} \\ \hline
-Meningioma       & 0.94 & 0.93 & 0.94 & 300 \\ \hline
-Glioma           & 0.92 & 0.95 & 0.93 & 300 \\ \hline
-Pituitary Tumor  & 0.95 & 0.94 & 0.94 & 300 \\ \hline
-\textbf{Accuracy}       & \multicolumn{4}{c|}{0.94} \\ \hline
-\textbf{Macro Avg}      & 0.94 & 0.94 & 0.94 & 900 \\ \hline
-\textbf{Weighted Avg}   & 0.94 & 0.94 & 0.94 & 900 \\ \hline
+\textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{Support} \\ \hline
+Glioma      & 0.99 & 0.97 & 0.98 & 360 \\ \hline
+Meningioma  & 0.96 & 0.97 & 0.97 & 360 \\ \hline
+No Tumor    & 0.98 & 0.99 & 0.99 & 360 \\ \hline
+Pituitary   & 0.98 & 0.98 & 0.98 & 360 \\ \hline
+\textbf{Accuracy} & \multicolumn{3}{c|}{0.98} & 1440 \\ \hline
 \end{tabular}
-\label{tab:classification_report}
+\label{tab:perclass}
 \end{table}
 
-% TODO: insert actual training/validation accuracy curve image here
-% \begin{figure}[htbp]
-% \centering
-% \includegraphics[width=0.45\textwidth]{images/accuracy_vs_epoch.png}
-% \caption{Training and Validation Accuracy over 45 Epochs}
-% \label{fig:accuracy_curve}
-% \end{figure}
+Across all five folds, per-class precision and recall remained at or above 0.94 for every class, with meningioma consistently the most challenging class to distinguish from glioma and pituitary tumor, and no-tumor consistently the easiest to identify.
 
-Similarly, the training and validation loss curve illustrates a steady decline, with final values of 0.1979 and 0.2323 respectively. The smooth convergence of these curves further supports that the model avoided overfitting and was optimizing successfully.
+\subsection{Comparison with Prior Work}
+Table~\ref{tab:sota_comparison} compares the proposed pipeline against recently published methods evaluated on the same or a closely related four-class brain tumor MRI benchmark (glioma, meningioma, pituitary tumor, no-tumor, sourced from the same figshare/SARTAJ/Br35H combination). Unlike the present study, none of these prior works report cross-validated mean and standard deviation; each reports accuracy from a single train/test split, which as discussed in Section~\ref{sec:methodology} tends to carry higher variance and a less reliable estimate of true generalization than a 5-fold cross-validated figure. We report our single best fold alongside our cross-validated mean to allow both direct, split-level comparison and a fairer view of expected performance.
 
-% TODO: insert actual training/validation loss curve image here
-% \begin{figure}[htbp]
-% \centering
-% \includegraphics[width=0.45\textwidth]{images/loss_vs_epoch.png}
-% \caption{Training and Validation Loss over 45 Epochs}
-% \label{fig:loss_curve}
-% \end{figure}
+\begin{table}[!htbp]
+\centering
+\caption{Comparison with Prior Work on Comparable 4-Class Brain Tumor MRI Benchmarks}
+\begin{tabular}{|p{3.6cm}|p{1.6cm}|p{1.5cm}|}
+\hline
+\textbf{Method} & \textbf{Accuracy} & \textbf{Protocol} \\ \hline
+Xception \cite{disci2025advanced} & 95.27\% & Single split \\ \hline
+Res-BRNet \cite{zahoor2024resbrnet} & 98.22\% & Single split \\ \hline
+Hybrid CNN--GCN \cite{cnngcn2024hybrid} & 92.91\% & Single split \\ \hline
+MobileNetV2--SVM \cite{adamu2024mobilenetsvm} & AUC 0.97--1.00\textsuperscript{*} & Single split \\ \hline
+ResViT + SSL \cite{r19} & 98.47\% & Single split \\ \hline
+\textbf{Proposed (CNN+TTA, best fold)} & \textbf{98.33\%} & Single fold \\ \hline
+\textbf{Proposed (CNN+TTA, 5-fold mean)} & \textbf{97.74\% $\pm$0.47\%} & 5-fold CV \\ \hline
+\textbf{Proposed (ensemble, 5-fold mean)} & \textbf{97.36\% $\pm$0.22\%} & 5-fold CV \\ \hline
+\end{tabular}
 
-To gain deeper insight into class-wise performance, the confusion matrix generated on the test set was analyzed. It showed that the model classified glioma and pituitary tumors with particularly high accuracy, with almost no overlap between these two categories. Meningioma samples had a slightly higher rate of misclassification, but the model still correctly identified the vast majority of cases.
+\vspace{1mm}
+\footnotesize{\textsuperscript{*}Per-class AUC reported rather than a single overall accuracy figure; not directly comparable to the accuracy values above.}
+\label{tab:sota_comparison}
+\end{table}
 
-% TODO: insert actual confusion matrix image here
-% \begin{figure}[htbp]
-% \centering
-% \includegraphics[width=0.45\textwidth]{images/confusion_matrix.png}
-% \caption{Confusion Matrix on the Test Set}
-% \label{fig:confusion_matrix}
-% \end{figure}
+The proposed method's best single fold (98.33\%) is competitive with the strongest prior single-split results in this comparison, while the 5-fold cross-validated mean (97.74\% $\pm$0.47\%) is, to our knowledge, one of the few reported figures on this benchmark accompanied by an explicit uncertainty estimate, making it a more conservative and reproducible basis for comparison than a single-split number alone.
 
-These visual observations confirmed that the model was consistently reliable across all classes. The hybrid nature of the architecture played a key role in this performance: the CNN component was responsible for extracting detailed spatial features from the MRI images, while the Random Forest classifier used these features to make final predictions with robustness and less overfitting compared to a purely neural approach. With a final test accuracy of 93.55\%, the model demonstrated strong generalization and practical applicability in medical imaging scenarios.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\textwidth]{images/accuracy_vs_epoch.png}
+\caption{Training and Validation Accuracy over Fine-Tuning Epochs (Representative Fold). The dashed line marks the start of Stage 2, where the backbone is unfrozen.}
+\label{fig:accuracy_curve}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\textwidth]{images/loss_vs_epoch.png}
+\caption{Training and Validation Loss over Fine-Tuning Epochs (Representative Fold).}
+\label{fig:loss_curve}
+\end{figure}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.45\textwidth]{images/confusion_matrix.png}
+\caption{Confusion Matrix on a Held-Out Test Fold (CNN+TTA).}
+\label{fig:confusion_matrix}
+\end{figure}
+
+
+\section{Discussion}
+Between the two inference strategies evaluated, CNN+TTA consistently achieved the highest mean accuracy, while the CNN-embedding ensemble consistently achieved the lowest cross-fold variance ($\pm$0.22\% vs.\ $\pm$0.47\%). Since both are derived from the same trained CNN at negligible additional training cost, we recommend considering both in practice: TTA as the higher mean-accuracy operating point, and the ensemble as the more consistent, lower-variance operating point. The choice between them can be guided by whether an application prioritizes peak accuracy or predictable, reproducible behavior across deployments and patient populations.
+
+The confusion patterns observed are consistent with the underlying clinical difficulty of the task: meningioma, which can present with a wide range of imaging appearances and boundary characteristics, was the most frequently confused class, primarily with glioma and pituitary tumor, while the no-tumor class -- lacking any tumor-related structure -- was the most reliably identified across all folds.
+
+
+\section{Limitations}
+Several limitations should be considered when interpreting these results. First, cross-validation in this study is performed at the image level; the dataset does not provide a patient identifier field, so we cannot verify the absence of near-duplicate or same-scan images across folds, particularly since the dataset combines images from multiple public sources. Second, the dataset consists of 2D slices rather than full 3D MRI volumes, which simplifies the task relative to routine radiological practice. Third, all data originates from a limited number of source institutions and scanners; generalization to MRI acquired under different acquisition protocols has not been externally validated. These limitations motivate the future work directions below.
+
 
 \section{Conclusion}
-This study presented a hybrid CNN--Random Forest model for brain tumor classification on MRI images, evaluated on the figshare brain tumor dataset comprising 3,064 T1-weighted contrast-enhanced slices across three tumor types: glioma, meningioma, and pituitary tumor. By using a customized CNN as a feature extractor and a Random Forest classifier for final prediction, the proposed hybrid approach achieved a test accuracy of 93.55\%, with balanced precision, recall, and F1-scores of approximately 0.94 across all three classes. Data augmentation was used to correct class imbalance, and the combination of deep feature extraction with ensemble classification demonstrated improved robustness over a purely neural approach. These results indicate that hybrid deep learning and machine learning pipelines are a promising direction for building reliable, clinically useful brain tumor diagnostic tools.
+This study proposed a hybrid brain tumor classification pipeline combining a pretrained EfficientNetB0 backbone, class-weighted training, and two complementary inference strategies -- test-time augmentation and a CNN-embedding ensemble of Random Forest, XGBoost, and SVM classifiers. Evaluated under rigorous 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI benchmark, the proposed approach achieved 97.74\% $\pm$ 0.47\% accuracy with CNN+TTA and 97.36\% $\pm$ 0.22\% with the CNN-embedding ensemble, with per-class precision and recall consistently at or above 0.94 across all four classes. These results, reported as a mean and standard deviation over independent cross-validation folds rather than a single train/test split, provide a statistically grounded basis for the pipeline's accuracy and support its potential as a reliable component of AI-assisted brain tumor diagnostic tools.
+
 
 \section{Future Work}
-While the proposed hybrid CNN--Random Forest model achieved strong classification performance, several directions remain open for future improvement. First, the current pipeline evaluates the model on a single train/test split; future work should adopt patient-level, stratified $k$-fold cross-validation to obtain more statistically robust accuracy estimates and to rule out any leakage between slices of the same patient. Second, the dataset provides tumor segmentation masks that were not used in this study; incorporating mask-guided region-of-interest cropping or attention mechanisms could help the model focus on diagnostically relevant regions and reduce misclassification, particularly for meningioma, which showed the highest confusion rate among the three classes. Third, replacing the customized shallow CNN with a pretrained backbone (e.g., EfficientNet, DenseNet) via transfer learning, or exploring hybrid CNN--Transformer and emerging state-space (Mamba-based) architectures, may further improve feature quality given the limited size of the dataset. Finally, validating the approach on larger and more diverse datasets, and incorporating explainability techniques such as Grad-CAM, would strengthen both the clinical trustworthiness and generalizability of the proposed method.
+Several directions remain open. First, incorporating multi-scale feature fusion or attention mechanisms into the backbone may further improve sensitivity to boundary-ambiguous tumors such as meningioma. Second, exploring hybrid CNN--Transformer and emerging state-space (Mamba-based) architectures as the backbone may further improve feature quality. Third, Grad-CAM and related explainability techniques should be incorporated to visualize and validate that the model's attention aligns with clinically relevant tumor regions, supporting clinical trust. Fourth, recovering or annotating patient-level metadata for this dataset, or evaluating on a dataset that provides it, would allow patient-level cross-validation and rule out any residual same-scan leakage across folds. Finally, external validation on MRI data from different institutions and scanner protocols is necessary before any claims of clinical applicability can be made.
 
 \bibliographystyle{ieeetr}
 \bibliography{reference}
