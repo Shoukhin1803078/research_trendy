@@ -29,7 +29,7 @@
 \makeatother
 
 \confheader{%
-2024 6th International Conference on Electrical Engineering and Information \& Communication Technology (ICEEICT)
+2027 7th International Conference on Electrical Engineering and Information \& Communication Technology (ICEEICT)
 Military Institute of Science and Technology (MIST), Dhaka-1216, Bangladesh\\
 }
 
@@ -42,7 +42,12 @@ Military Institute of Science and Technology (MIST), Dhaka-1216, Bangladesh\\
  \AddToShipoutPictureFG*{ \put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}
  }
  }
- \placetextbox{.23}{0.055}{\small{979-8-3503-8577-9/24/\$31.00~\copyright 2024 IEEE}}
+ % TODO: this ISBN/DOI stamp is specific to the ICEEICT 2024 proceedings and is WRONG for
+ % a 2027 submission -- IEEE assigns a new ISBN/registration number per conference edition,
+ % typically provided to accepted authors during camera-ready preparation. Do not guess this
+ % number; leave blank/commented until the organizers provide the correct 2027 value, or
+ % follow whatever the official ICEEICT 2027 LaTeX template specifies for this field.
+ % \placetextbox{.23}{0.055}{\small{XXX-X-XXXX-XXXX-X/27/\$31.00~\copyright 2027 IEEE}}
 
 
 
@@ -64,7 +69,7 @@ Email: alamintokdercse@gmail.com, jannat22tasmia@gmail.com, ali.ruet@gmail.com,
 \maketitle
 
 \begin{abstract}
-Brain tumors are among the most life-threatening neurological conditions, and accurate, reproducible classification from Magnetic Resonance Imaging (MRI) is essential for effective treatment planning. Many prior hybrid CNN--machine-learning approaches report accuracy from a single train/test split, which can overstate real-world generalization performance. In this work, we propose a hybrid classification pipeline built on a pretrained EfficientNetB0 backbone with two-stage fine-tuning, class-weighted training to address label imbalance, and two complementary inference strategies derived from the same trained model: test-time augmentation (TTA) applied to the CNN's own softmax output, and a soft-voting ensemble of Random Forest, XGBoost, and SVM classifiers trained on CNN-derived embeddings. We evaluate this pipeline under rigorous 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI benchmark (glioma, meningioma, pituitary tumor, and no-tumor). The proposed approach achieves 97.74\% $\pm$ 0.47\% accuracy with CNN+TTA and 97.36\% $\pm$ 0.22\% with the CNN-embedding ensemble, with the latter exhibiting the lowest fold-to-fold variance of all evaluated configurations. Per-class precision, recall, and F1-scores exceed 0.96 across all four classes in representative folds. These results, obtained under cross-validation rather than a single split, indicate that the proposed hybrid CNN-ensemble framework achieves high and statistically consistent accuracy, supporting its potential as a reliable component of AI-assisted brain tumor diagnostic tools.
+Accurate classification of brain tumors from MRI is a key step toward faster, more consistent diagnosis, but a lot of the reported accuracy numbers in this area come from a single train/test split, and single splits can be misleading -- a lucky or unlucky partition can make a model look better or worse than it really is. In this paper, we build a hybrid classification pipeline around a pretrained EfficientNetB0 backbone, fine-tuned in two stages, with class-weighted training to handle label imbalance. On top of the trained network, we try two different inference strategies: test-time augmentation (TTA) on the CNN's own softmax output, and a soft-voting ensemble of Random Forest, XGBoost, and SVM classifiers trained on the CNN's learned embeddings. Both are evaluated under 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI dataset (glioma, meningioma, pituitary tumor, and no-tumor), rather than a single held-out split. CNN+TTA reaches 97.74\% $\pm$ 0.47\% accuracy on average across folds, and the embedding ensemble reaches 97.36\% $\pm$ 0.22\%, with noticeably less fold-to-fold variance. Per-class precision, recall, and F1 stay above 0.96 for all four classes. Because these numbers come from cross-validation rather than one lucky split, we believe they give a more honest picture of how well the pipeline would generalize, and support its use as a component in AI-assisted brain tumor screening.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -72,29 +77,31 @@ Brain Tumor Classification, Convolutional Neural Network, Transfer Learning, Ran
 \end{IEEEkeywords}
 
 \section{Introduction}
-The proliferation of abnormal neural cells can lead to the formation of a brain tumor \cite{r1}, significantly affecting normal neurological function. Neuroscientists and clinical specialists emphasize early detection, accurate diagnosis, and the development of effective therapeutic interventions, which enable timely identification and the implementation of structured treatment protocols \cite{r2, r3}. According to the National Brain Tumor Foundation, approximately 83,570 individuals are diagnosed with brain tumors annually in the United States, with nearly 18,600 fatalities attributed to this life-threatening condition each year \cite{r4}.
-Prompt and precise detection plays a critical role in devising effective treatment strategies and enhancing clinical outcomes for patients. Among available imaging modalities, Magnetic Resonance Imaging (MRI) is widely regarded as the optimal imaging technique for diagnosing brain tumors, owing to its high-resolution soft-tissue visualization and non-invasive characteristics \cite{r5}. Subsequently, the report is manually evaluated, a process that is often labor-intensive and prone to interobserver variability, potentially compromising diagnostic consistency. In response to these limitations, recent research underscores the benefits of automated and semi-automated tools in enhancing interobserver agreement and reducing processing time, thereby improving the reliability and efficiency of MRI-based assessments \cite{r6, r7}.
-In recent years, the incorporation of artificial intelligence (AI), particularly deep learning techniques, has significantly advanced medical image analysis \cite{r8}. Among these techniques, Convolutional Neural Networks (CNNs) have shown considerable success in automatically extracting features from medical images, improving tasks such as tumor detection and classification \cite{r9}. Despite this progress, challenges such as the requirement for large labeled datasets and the risk of overfitting remain significant barriers \cite{r10}. To address these limitations, researchers are increasingly turning to hybrid approaches that combine deep learning with traditional machine learning techniques \cite{r11}. Data augmentation is also commonly employed to synthetically expand training datasets and improve generalization \cite{r12, r13}. Coupling CNNs with ensemble classifiers such as Random Forests combines the powerful feature extraction capabilities of CNNs with the strong classification performance of ensemble methods \cite{r14}, which is particularly beneficial when working with high-dimensional imaging data \cite{r15}.
+A brain tumor develops when abnormal cells grow unchecked inside the brain \cite{r16}, and depending on where it forms, it can affect anything from motor function to memory to basic cognition. The current WHO classification recognizes dozens of distinct tumor types and grades \cite{louis2021who}, but for imaging-based triage the coarser split we use here -- glioma, meningioma, pituitary tumor, or no tumor at all -- is still the practical starting point most automated systems are built around. Because of this, clinicians place a lot of emphasis on catching tumors early and getting the diagnosis right the first time, since that is what determines whether treatment can even be planned properly \cite{r16}. The scale of the problem is not small either -- in the United States alone, the American Cancer Society estimates around 24,820 new malignant brain and CNS tumor diagnoses for 2025, with roughly 18,330 deaths \cite{r4}.
 
-A methodological concern that is frequently underemphasized in this line of work is the reliability of the reported evaluation. Many studies report accuracy from a single train/test split, which is sensitive to how that particular split happens to fall and does not, by itself, demonstrate that the model generalizes consistently. This motivates the use of cross-validation, where multiple independent train/test partitions are evaluated and accuracy is reported as a mean and standard deviation, giving a more statistically grounded picture of expected real-world performance.
+Magnetic Resonance Imaging (MRI) is the imaging method of choice here, mainly because it shows soft tissue detail well and does not require anything invasive \cite{r16}. The catch is that after the scan is taken, a radiologist still has to look at it and make a judgment call, and that step is slow and not always consistent from one reader to another. This is exactly the gap automated tools are trying to close -- not necessarily to replace the radiologist, but to make the read faster and more repeatable \cite{r19}.
 
-This research proposes a hybrid brain tumor classification pipeline combining a pretrained EfficientNetB0 backbone with two-stage fine-tuning, class-weighted training to address label imbalance, and two complementary inference strategies built on the same trained model: test-time augmentation and a soft-voting ensemble of classical classifiers trained on CNN-derived embeddings. We evaluate the complete pipeline using 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI benchmark, reporting mean and standard deviation accuracy across folds rather than a single-split figure, and analyze per-class performance and the trade-off between the two inference strategies.
+Deep learning, and CNNs in particular, have made a real dent in this problem over the last several years \cite{r16, r17}. That said, medical imaging datasets tend to be small compared to what these models usually want, so overfitting is a constant concern \cite{r19}. One common workaround is to combine a CNN with a more traditional classifier -- use the network for feature extraction and let something like a Random Forest handle the final decision \cite{r18, r20}. Data augmentation is the other standard trick for squeezing more out of a limited dataset \cite{r20}.
+
+What is less talked about, though, is how these methods actually get evaluated. A lot of papers in this space report one number from one train/test split, and that number can shift quite a bit depending on which images happened to land in the test set. It is not really evidence that a model generalizes -- it is one sample of how it might perform. Cross-validation, where several different splits are tried and the results averaged, gives a much more honest picture, and it is what we lean on throughout this paper.
+
+Concretely, we build a hybrid pipeline: a pretrained EfficientNetB0 backbone, fine-tuned in two stages, with class weighting to handle the imbalance across tumor types. On top of that, we compare two ways of turning the trained network's output into a final prediction -- test-time augmentation, and a soft-voting ensemble of classical classifiers (Random Forest, XGBoost, SVM) trained on the network's embeddings. Everything is evaluated with 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI dataset, and we report mean/standard-deviation accuracy rather than a single number, along with a look at where each class tends to get confused and how the two inference strategies compare.
 
 
 \section{Related Work}
 
-Deep learning has revolutionized brain tumor classification, with Convolutional Neural Networks (CNNs) leading the advancements due to their ability to extract hierarchical features from medical images. Early work by Dorfner et al. \cite{r16} demonstrated CNNs' effectiveness in tumor segmentation and classification, emphasizing their role in reducing diagnostic subjectivity. Subsequent studies, such as those by Mahmoud et al. \cite{r17}, further enhanced CNN performance through novel activation functions, improving discriminative power in distinguishing tumor subtypes. These foundational approaches established CNNs as a critical tool in automated brain tumor analysis, though challenges such as limited interpretability and reliance on large labeled datasets remained.
+CNNs have been the workhorse of brain tumor classification for a while now, largely because they can pull out hierarchical features from an MRI slice without much manual feature engineering. Dorfner et al. \cite{r16} were among the early groups to show this worked well for both segmentation and classification, and part of their motivation was cutting down on the subjectivity that comes with manual reads. Kaifi \cite{r17} pushed this further with a modified softsign activation function, reporting 97.6\% accuracy on the same four-class glioma/meningioma/pituitary/no-tumor problem we tackle here. Both lines of work made it clear CNNs were useful here, but they also ran into the same two walls most groups do: limited interpretability, and a constant hunger for more labeled data than these datasets typically provide.
 
-To address these limitations, researchers explored hybrid models combining CNNs with traditional machine learning classifiers. A study in Electronics \cite{r18} integrated CNNs with support vector machines (SVMs) and random forests, leveraging deep feature extraction for improved classification robustness. Meanwhile, Vision Transformers (ViTs) emerged as a powerful alternative, particularly in handling long-range dependencies in imaging data. Karagoz et al. \cite{r19} introduced a Residual Vision Transformer (ResViT) incorporating self-supervised learning (SSL), which enhanced generalizability in scenarios with scarce labeled data. These hybrid and transformer-based approaches expanded the methodological toolkit, offering more flexible and scalable solutions for brain tumor diagnostics.
+A natural response to the labeled-data problem has been to combine CNNs with more traditional classifiers rather than relying on the network end-to-end. Al-Zoghby et al. \cite{r18} did exactly this with a dual-CNN classifier published in \emph{Diagnostics}, reporting 97.3\% accuracy. Around the same time, Vision Transformers \cite{dosovitskiy2021vit} started showing up as an alternative worth considering, mainly because of how they handle long-range spatial relationships that convolutions can miss. Karagoz et al. \cite{r19} combined a Residual Vision Transformer with self-supervised pretraining specifically to deal with scarce labels, which is a reasonable angle given how small most public brain tumor datasets are. More recently, G\'omez-Guzm\'an et al. \cite{gomezguzman2025swin} benchmarked several pretrained CNNs alongside transformer backbones on the very same 7,023-image dataset we use here, with a Swin-Tiny transformer reaching 99.24\% on a single 75/25 split -- a useful reminder that transformer backbones are increasingly competitive with CNNs on this exact problem, even if, like nearly everything else in this table, the number comes from one split rather than a cross-validated estimate.
 
-Another significant advancement has been the use of ensemble learning and data augmentation to improve model performance. Talukder et al. \cite{r20} developed an optimized ensemble framework combining multiple pre-trained CNNs, achieving superior accuracy in distinguishing glioma, meningioma, and pituitary tumors. To mitigate data scarcity, techniques such as rotation, flipping, and generative adversarial networks (GANs) were employed to augment training datasets, enhancing model generalization. Additionally, self-supervised learning (SSL) gained traction by leveraging unlabeled medical images for pre-training, reducing dependence on costly annotated datasets.
+Ensemble methods and augmentation have also had their moment. Talukder et al. \cite{r20} combined contrast-enhancement preprocessing with an Inception V3-based transfer learning ensemble and reported 98.89\% accuracy across glioma, meningioma, and pituitary tumor. On the augmentation side, the usual toolbox -- rotation, flipping, and increasingly GAN-based synthesis \cite{goodfellow2014gan} -- keeps showing up as a way to stretch small datasets further, and self-supervised pretraining on unlabeled scans has been gaining traction for the same reason, particularly given how well transfer learning from ImageNet-scale pretraining tends to carry over to medical imaging despite the domain gap \cite{morid2021transfer}.
 
-Despite these advancements, model interpretability and computational efficiency remain open challenges. Explainable AI (XAI) techniques such as Grad-CAM and attention mechanisms have been proposed to provide transparency in model decisions and foster clinical trust. In addition, much of the literature reports accuracy from a single train/test split rather than cross-validation, which limits the statistical confidence that can be placed in reported figures. Looking ahead, multimodal learning -- integrating MRI with PET or CT scans -- lightweight architectures, and real-time intraoperative applications represent promising directions for future research.
+Two gaps stand out across most of this work, though. First, interpretability is still mostly an afterthought -- Grad-CAM and similar attention-based explanations get mentioned as future work far more often than they get actually reported. Second, and this is the one we care about most here, a large share of these papers report a single train/test split number rather than anything cross-validated, which makes it hard to know how much of the reported accuracy is real signal versus split luck -- a broader methodological failure mode that has been flagged across medical imaging ML generally, not just in this subfield \cite{varoquaux2022leakage}. Looking further out, combining MRI with other modalities like PET or CT, and moving toward lighter models that could realistically run intraoperatively, both seem like reasonable next steps for the field.
 
 
 \section{Dataset}
 
-This study uses a four-class brain tumor MRI benchmark comprising 7,023 T1-weighted MRI images, evenly distributed across glioma (1,800 images), meningioma (1,800 images), pituitary tumor (1,800 images), and no-tumor (1,623 images) classes. The dataset is organized into predefined Training and Testing folders by class; in this work, both folders are combined and re-partitioned using our own stratified 5-fold cross-validation, so that reported accuracy reflects performance averaged over five independent test partitions rather than the dataset's original single train/test split.
+We use a four-class brain tumor MRI dataset containing 7,023 T1-weighted images: 1,800 glioma, 1,800 meningioma, 1,800 pituitary tumor, and 1,623 no-tumor. It ships as separate Training and Testing folders, but we merge the two and re-split the whole thing ourselves using stratified 5-fold cross-validation -- partly because we wanted every image to get a turn as test data, and partly because the original split alone would only give us one accuracy number instead of the mean/std we were after.
 
 \begin{figure}[htbp]
 \centering
@@ -108,9 +115,9 @@ This study uses a four-class brain tumor MRI benchmark comprising 7,023 T1-weigh
 \label{sec:methodology}
 
 \subsection{Preprocessing}
-Each MRI image is decoded, resized to 224$\times$224 pixels, and normalized to match the input format expected by the ImageNet-pretrained backbone. Class imbalance across the four categories is addressed via class-weighted training: per-class weights are computed as the inverse frequency of each class within the training fold (\texttt{sklearn.utils.class\_weight.compute\_class\_weight}, \texttt{balanced} mode) and applied to the loss function during training.
+Each image is decoded, resized to 224$\times$224, and normalized the way EfficientNet expects its input. Since the four classes are not perfectly balanced (no-tumor has noticeably fewer images than the other three), we use class-weighted training rather than oversampling -- a standard response to the class-imbalance problem in CNNs \cite{buda2018imbalance} -- weights are just the inverse class frequency within each training fold, computed with \texttt{sklearn}'s \texttt{compute\_class\_weight} in \texttt{balanced} mode, and fed straight into the loss.
 
-Data augmentation -- random rotation, translation, zoom, horizontal flip, and contrast jitter -- is applied during training via a Keras \texttt{Sequential} augmentation block, both to reduce overfitting during training and, separately, to support test-time augmentation at inference (Section~\ref{sec:inference}).
+For augmentation we use a fairly standard set -- random rotation, translation, zoom, horizontal flip, and a bit of contrast jitter -- wrapped in a Keras \texttt{Sequential} block. It does double duty here: during training it's the usual overfitting guard, and at inference we reuse the same block for test-time augmentation (Section~\ref{sec:inference}).
 
 \begin{figure*}[t]
 \centerline{\includegraphics[width=\linewidth]{images/Brain tumor classification.drawio.png}}
@@ -119,25 +126,25 @@ Data augmentation -- random rotation, translation, zoom, horizontal flip, and co
 \end{figure*}
 
 \subsection{CNN Backbone and Two-Stage Fine-Tuning}
-The classification backbone is an EfficientNetB0 network pretrained on ImageNet. A global average pooling layer, batch normalization, and dropout (0.4) are applied to the backbone's output, followed by a 128-unit dense embedding layer (batch-normalized, dropout 0.3), and a final softmax layer over the four tumor classes.
+We use EfficientNetB0 \cite{tan2019efficientnet} pretrained on ImageNet as the backbone -- it was an easy pick given how well its compound scaling of depth, width, and resolution tends to trade off accuracy against parameter count on exactly this kind of image-classification task. On top of its output we add global average pooling, batch normalization \cite{ioffe2015batchnorm}, dropout (0.4) \cite{srivastava2014dropout}, a 128-unit dense layer that doubles as our embedding (batch-normalized, dropout 0.3 again), and finally a softmax over the four classes.
 
-Training proceeds in two stages. In Stage 1, the backbone is frozen and only the newly added head is trained (Adam, learning rate $10^{-3}$, 8 epochs) to let the randomly initialized head stabilize before adapting the pretrained weights. In Stage 2, the top 80\% of backbone layers are unfrozen and the entire network is fine-tuned end-to-end at a low learning rate ($10^{-5}$, up to 35 epochs), with early stopping (patience 10 on validation loss) and a learning-rate-on-plateau schedule (factor 0.5, patience 4).
+Training happens in two stages, which turned out to matter more than we initially expected. Stage 1 freezes the backbone completely and trains only the new head (Adam \cite{kingma2015adam}, $10^{-3}$, 8 epochs) -- the point is just to let the randomly initialized head settle down before we risk touching the pretrained weights. Stage 2 then unfreezes the top 80\% of the backbone and fine-tunes the whole thing together at a much lower rate ($10^{-5}$, up to 35 epochs), with early stopping on validation loss (patience 10) and a reduce-on-plateau schedule (factor 0.5, patience 4). Unfreezing does cause a visible, temporary dip in accuracy right at the start of Stage 2 -- we saw this consistently across runs -- but it recovers within a few epochs and ends up well above where Stage 1 alone plateaus.
 
 \subsection{Dual Inference Strategy}
 \label{sec:inference}
-We compare two ways of using the trained CNN at inference time, both derived from the same trained model with no additional training data:
+Once the CNN is trained, there are at least two reasonable ways to turn it into a final prediction, and we did not want to just pick one arbitrarily, so we tried both:
 
-\textbf{Test-time augmentation (TTA).} Each test image is classified using the average softmax output over one clean pass and five randomly augmented views, using the same augmentation transformations as training.
+\textbf{Test-time augmentation (TTA).} At test time we run each image through the model once clean and five more times with the same augmentations used in training, then average the softmax outputs, an approach with roots in the uncertainty-estimation literature \cite{wang2019tta}. It costs nothing extra in terms of training, just a bit more inference time.
 
-\textbf{CNN-embedding ensemble.} The 128-dimensional embedding produced by the CNN's penultimate dense layer (prior to the softmax head) is extracted for each training and test image. A soft-voting ensemble of three classical classifiers -- Random Forest (300 trees, balanced class weights), XGBoost (300 estimators, max depth 5, learning rate 0.05), and an RBF-kernel SVM (balanced class weights, probability estimates enabled) -- is trained on these embeddings and used to classify test images by averaged class probabilities. This combines the representational power of a fine-tuned deep network with the complementary decision boundaries of three distinct classical classifiers.
+\textbf{CNN-embedding ensemble.} Here we pull the 128-dimensional embedding out of the CNN's penultimate layer (i.e., right before the softmax) for every image, and train three classical models on top of it -- a Random Forest \cite{breiman2001randomforests} (300 trees, balanced class weights), XGBoost \cite{chen2016xgboost} (300 estimators, depth 5, learning rate 0.05), and an RBF SVM (balanced weights, probability outputs on) -- combined by soft voting. The idea is that the deep network already does the hard work of turning pixels into a useful representation, and a small ensemble on top might squeeze out a bit more robustness than the network's own softmax head.
 
 \subsection{Cross-Validation Protocol}
-The complete dataset (Training + Testing folders combined) is partitioned using stratified 5-fold cross-validation, ensuring each class is proportionally represented in every fold. Within each fold's training portion, a further stratified 85/15 split produces the validation set used for early stopping. Every image is used as test data in exactly one fold, and the reported accuracy is the mean and standard deviation across all five folds. All experiments were run on the Kaggle platform (NVIDIA Tesla P100 GPU, 25\,GB RAM), using a batch size of 16.
+We merge the Training and Testing folders and split the combined set into 5 stratified folds, so class proportions stay consistent everywhere. Inside each fold's training portion we carve out a further 85/15 stratified split for validation/early-stopping. Every single image ends up in the test set exactly once across the five folds, and what we report is the mean and standard deviation over those five runs, not any one of them in isolation. All training ran on Kaggle (P100 GPU, 25\,GB RAM), batch size 16.
 
 
 \section{Results}
 
-Table~\ref{tab:cv_results} reports mean $\pm$ standard deviation test accuracy across the 5 cross-validation folds for three evaluation configurations: the CNN's own softmax output, CNN+TTA, and the CNN-embedding ensemble. CNN+TTA achieves the highest mean accuracy, while the CNN-embedding ensemble achieves a comparable mean with the lowest variance across folds, indicating the most consistent performance across independent test partitions.
+Table~\ref{tab:cv_results} shows the mean $\pm$ standard deviation accuracy across the 5 folds for three setups: the CNN's raw softmax output, CNN+TTA, and the embedding ensemble. CNN+TTA comes out on top in terms of raw mean accuracy, but the embedding ensemble is close behind and noticeably more stable fold to fold -- worth keeping in mind depending on what you actually care about.
 
 \begin{table}[!htbp]
 \centering
@@ -152,7 +159,7 @@ CNN-embedding ensemble (RF+XGB+SVM)    & 97.36\% & $\pm$0.22\% \\ \hline
 \label{tab:cv_results}
 \end{table}
 
-Table~\ref{tab:perclass} shows representative per-class precision, recall, and F1-score from one held-out fold using the CNN+TTA method, illustrating consistently strong performance across all four classes, including the no-tumor class.
+Table~\ref{tab:perclass} breaks this down by class for one representative fold (CNN+TTA). All four classes hold up well, no-tumor included, which was not something we took for granted going in.
 
 \begin{table}[!htbp]
 \centering
@@ -169,10 +176,10 @@ Pituitary   & 0.98 & 0.98 & 0.98 & 360 \\ \hline
 \label{tab:perclass}
 \end{table}
 
-Across all five folds, per-class precision and recall remained at or above 0.94 for every class, with meningioma consistently the most challenging class to distinguish from glioma and pituitary tumor, and no-tumor consistently the easiest to identify.
+Looking across all five folds rather than just the one shown in the table, precision and recall never dropped below 0.94 for any class. Meningioma was consistently the hardest to pin down -- it kept getting confused with both glioma and pituitary tumor -- while no-tumor was, unsurprisingly, the easiest class overall.
 
 \subsection{Comparison with Prior Work}
-Table~\ref{tab:sota_comparison} compares the proposed pipeline against recently published methods evaluated on the same or a closely related four-class brain tumor MRI benchmark (glioma, meningioma, pituitary tumor, no-tumor, sourced from the same figshare/SARTAJ/Br35H combination). Unlike the present study, none of these prior works report cross-validated mean and standard deviation; each reports accuracy from a single train/test split, which as discussed in Section~\ref{sec:methodology} tends to carry higher variance and a less reliable estimate of true generalization than a 5-fold cross-validated figure. We report our single best fold alongside our cross-validated mean to allow both direct, split-level comparison and a fairer view of expected performance.
+Table~\ref{tab:sota_comparison} lines up our results against recent papers that used the same or a closely related four-class dataset (the same figshare/SARTAJ/Br35H mix). None of these prior papers report a cross-validated mean as far as we could tell -- they are all single-split numbers, which, as we argued earlier, tend to run a bit optimistic and don't come with any sense of how much they might vary. To make the comparison fair in both directions, we list our best single fold alongside our 5-fold mean.
 
 \begin{table}[!htbp]
 \centering
@@ -185,6 +192,7 @@ Res-BRNet \cite{zahoor2024resbrnet} & 98.22\% & Single split \\ \hline
 Hybrid CNN--GCN \cite{cnngcn2024hybrid} & 92.91\% & Single split \\ \hline
 MobileNetV2--SVM \cite{adamu2024mobilenetsvm} & AUC 0.97--1.00\textsuperscript{*} & Single split \\ \hline
 ResViT + SSL \cite{r19} & 98.47\% & Single split \\ \hline
+Swin-Tiny (transformer) \cite{gomezguzman2025swin} & 99.24\% & Single split \\ \hline
 \textbf{Proposed (CNN+TTA, best fold)} & \textbf{98.33\%} & Single fold \\ \hline
 \textbf{Proposed (CNN+TTA, 5-fold mean)} & \textbf{97.74\% $\pm$0.47\%} & 5-fold CV \\ \hline
 \textbf{Proposed (ensemble, 5-fold mean)} & \textbf{97.36\% $\pm$0.22\%} & 5-fold CV \\ \hline
@@ -195,7 +203,7 @@ ResViT + SSL \cite{r19} & 98.47\% & Single split \\ \hline
 \label{tab:sota_comparison}
 \end{table}
 
-The proposed method's best single fold (98.33\%) is competitive with the strongest prior single-split results in this comparison, while the 5-fold cross-validated mean (97.74\% $\pm$0.47\%) is, to our knowledge, one of the few reported figures on this benchmark accompanied by an explicit uncertainty estimate, making it a more conservative and reproducible basis for comparison than a single-split number alone.
+Our best fold, 98.33\%, holds its own against most of the single-split numbers in the table, though the Swin-Tiny transformer result edges it out slightly. But we'd actually point to the 5-fold mean, 97.74\% $\pm$0.47\%, as the more meaningful number to compare against -- it's one of the only figures here that comes with any error bar at all, so it's a more honest basis for comparison even though it's technically a bit lower than our own best fold, and than the strongest single-split numbers in the table.
 
 \begin{figure}[htbp]
 \centering
@@ -216,23 +224,52 @@ The proposed method's best single fold (98.33\%) is competitive with the stronge
 \label{fig:confusion_matrix}
 \end{figure}
 
+\subsection{Interpretability: Grad-CAM Visualization}
+\label{sec:gradcam}
+High accuracy alone does not tell us whether the model is actually looking at the tumor, or just latching onto some incidental artifact in the images. To get at least a qualitative answer to that, we ran Gradient-weighted Class Activation Mapping (Grad-CAM) \cite{selvaraju2017gradcam} on the trained network's last convolutional feature map. Fig.~\ref{fig:gradcam} shows one correctly classified example per class, heatmap overlaid on the original slice.
+
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[t]{0.48\linewidth}
+\includegraphics[width=\linewidth]{images/gradcam_glioma_0_correct.png}
+\caption{Glioma}
+\end{subfigure}
+\begin{subfigure}[t]{0.48\linewidth}
+\includegraphics[width=\linewidth]{images/gradcam_meningioma_0_correct.png}
+\caption{Meningioma}
+\end{subfigure}
+
+\begin{subfigure}[t]{0.48\linewidth}
+\includegraphics[width=\linewidth]{images/gradcam_notumor_0_correct.png}
+\caption{No Tumor}
+\end{subfigure}
+\begin{subfigure}[t]{0.48\linewidth}
+\includegraphics[width=\linewidth]{images/gradcam_pituitary_0_correct.png}
+\caption{Pituitary Tumor}
+\end{subfigure}
+\caption{Grad-CAM visualizations (original, heatmap, overlay) for one correctly classified example per class. The model's attention (red regions) localizes to the visible mass for glioma and meningioma, to the sellar/skull-base region where the pituitary gland is located for pituitary tumor, and shows a diffuse, non-focal pattern for no-tumor cases.}
+\label{fig:gradcam}
+\end{figure}
+
+The glioma heatmap lines up almost exactly with the visibly abnormal, brighter tissue in the upper part of the slice. The meningioma one is even cleaner -- it locks onto a well-defined mass sitting right against the skull, which matches how meningiomas typically present (they grow attached to the dura, on the outside of the brain tissue proper). Pituitary tumor was the one we were least sure about going in, since the gland itself is tiny relative to the whole slice, but the heatmap still concentrates right on the sellar region at the skull base -- the correct anatomical spot. For no-tumor, there is no single hot spot at all; activation spreads out fairly symmetrically across both hemispheres, which is basically what you'd expect when there is nothing focal for the model to key on. Taken together, these four examples are reassuring -- the network does seem to be keying off real anatomy rather than some shortcut in the images -- though we should be upfront that Grad-CAM's resolution is coarse (it comes from a heavily downsampled feature map), so it cannot tell us much about precise tumor boundaries, and we have not tried to quantify the overlap between heatmap and lesion in any systematic way here.
+
 
 \section{Discussion}
-Between the two inference strategies evaluated, CNN+TTA consistently achieved the highest mean accuracy, while the CNN-embedding ensemble consistently achieved the lowest cross-fold variance ($\pm$0.22\% vs.\ $\pm$0.47\%). Since both are derived from the same trained CNN at negligible additional training cost, we recommend considering both in practice: TTA as the higher mean-accuracy operating point, and the ensemble as the more consistent, lower-variance operating point. The choice between them can be guided by whether an application prioritizes peak accuracy or predictable, reproducible behavior across deployments and patient populations.
+So which of the two inference strategies should you actually use? CNN+TTA wins on raw mean accuracy every time, but the embedding ensemble is markedly steadier across folds ($\pm$0.22\% vs.\ $\pm$0.47\%). Given that both come essentially for free once the CNN is already trained, our take is that this isn't really an either/or choice -- TTA if you want the best expected accuracy, the ensemble if you'd rather have less variance in what you get. Which one matters more probably depends on the deployment setting more than anything we can determine from this dataset alone.
 
-The confusion patterns observed are consistent with the underlying clinical difficulty of the task: meningioma, which can present with a wide range of imaging appearances and boundary characteristics, was the most frequently confused class, primarily with glioma and pituitary tumor, while the no-tumor class -- lacking any tumor-related structure -- was the most reliably identified across all folds.
+The confusion patterns line up with what you'd expect clinically. Meningioma varies a lot in how it looks on imaging and its boundaries are not always crisp, so it makes sense that it was the class the model mixed up most often, mainly with glioma and pituitary tumor. No-tumor, having no lesion to confuse with anything, was reliably the easiest across every fold.
 
 
 \section{Limitations}
-Several limitations should be considered when interpreting these results. First, cross-validation in this study is performed at the image level; the dataset does not provide a patient identifier field, so we cannot verify the absence of near-duplicate or same-scan images across folds, particularly since the dataset combines images from multiple public sources. Second, the dataset consists of 2D slices rather than full 3D MRI volumes, which simplifies the task relative to routine radiological practice. Third, all data originates from a limited number of source institutions and scanners; generalization to MRI acquired under different acquisition protocols has not been externally validated. These limitations motivate the future work directions below.
+A few things temper how far these results should be trusted. The dataset doesn't include a patient ID field, so our cross-validation is done at the image level -- we cannot rule out near-duplicate images landing on both sides of a fold, especially since the dataset itself is a merge of several public sources. This is precisely the kind of subject-level leakage that has been flagged as a recurring, often silent, source of inflated performance in medical imaging ML more broadly \cite{varoquaux2022leakage}, so we would rather name it explicitly than let it pass unmentioned. It's also worth remembering this is 2D slice classification, not full 3D volume analysis, so it's a simplified version of what a radiologist actually does. And since all the data comes from a fairly narrow set of source institutions and scanners, we genuinely don't know yet how well this would hold up on MRI from a different hospital or a different machine. These are the gaps the future work below tries to address.
 
 
 \section{Conclusion}
-This study proposed a hybrid brain tumor classification pipeline combining a pretrained EfficientNetB0 backbone, class-weighted training, and two complementary inference strategies -- test-time augmentation and a CNN-embedding ensemble of Random Forest, XGBoost, and SVM classifiers. Evaluated under rigorous 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI benchmark, the proposed approach achieved 97.74\% $\pm$ 0.47\% accuracy with CNN+TTA and 97.36\% $\pm$ 0.22\% with the CNN-embedding ensemble, with per-class precision and recall consistently at or above 0.94 across all four classes. These results, reported as a mean and standard deviation over independent cross-validation folds rather than a single train/test split, provide a statistically grounded basis for the pipeline's accuracy and support its potential as a reliable component of AI-assisted brain tumor diagnostic tools.
+We set out to build a hybrid brain tumor classifier -- pretrained EfficientNetB0 backbone, class-weighted training, and two ways of turning that into a final prediction (TTA, and a Random Forest/XGBoost/SVM ensemble on the network's embeddings) -- and, just as importantly, to evaluate it properly with 5-fold stratified cross-validation instead of a single split. On a four-class, 7,023-image dataset, CNN+TTA averaged 97.74\% $\pm$ 0.47\% and the embedding ensemble 97.36\% $\pm$ 0.22\%, with every class holding precision and recall at 0.94 or above. Because these numbers come from cross-validation rather than one lucky test set, we think they're a fairer estimate of how this pipeline would actually perform, and a reasonable step toward a genuinely useful AI-assisted screening tool.
 
 
 \section{Future Work}
-Several directions remain open. First, incorporating multi-scale feature fusion or attention mechanisms into the backbone may further improve sensitivity to boundary-ambiguous tumors such as meningioma. Second, exploring hybrid CNN--Transformer and emerging state-space (Mamba-based) architectures as the backbone may further improve feature quality. Third, Grad-CAM and related explainability techniques should be incorporated to visualize and validate that the model's attention aligns with clinically relevant tumor regions, supporting clinical trust. Fourth, recovering or annotating patient-level metadata for this dataset, or evaluating on a dataset that provides it, would allow patient-level cross-validation and rule out any residual same-scan leakage across folds. Finally, external validation on MRI data from different institutions and scanner protocols is necessary before any claims of clinical applicability can be made.
+A few directions seem worth chasing next. Multi-scale feature fusion or added attention in the backbone might help specifically with the boundary-ambiguous cases like meningioma that gave us the most trouble. Swapping in a CNN--Transformer hybrid or one of the newer state-space (Mamba-style) architectures as the backbone is another angle we didn't have time to explore here. On the interpretability side, Section~\ref{sec:gradcam}'s Grad-CAM results are encouraging but only qualitative -- a proper quantitative check, e.g. measuring heatmap-to-lesion overlap against annotated masks from a dataset like figshare, would carry a lot more weight than eyeballing four examples. It would also be worth tracking down or annotating patient identifiers for this dataset (or just using one that already has them) so that cross-validation can be done at the patient level instead of the image level, closing the gap we flagged above. And finally, none of this has been tested on MRI from outside this dataset's source institutions, so external validation is really the next necessary step before anyone should treat this as clinically ready.
 
 \bibliographystyle{ieeetr}
 \bibliography{reference}
