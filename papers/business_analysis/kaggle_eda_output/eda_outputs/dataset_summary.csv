@@ -1,0 +1,16 @@
+Metric,Value
+n_transactions,284807.0
+n_features_total,32.0
+n_pca_features,28.0
+n_fraud,492.0
+n_legitimate,284315.0
+fraud_rate_pct,0.1727485630620034
+legitimate_rate_pct,99.827251436938
+imbalance_ratio_legitimate_to_fraud,577.8760162601626
+missing_values,0.0
+duplicate_rows,1081.0
+amount_mean,88.34961925093133
+amount_median,22.0
+amount_std,250.1201092402221
+amount_min,0.0
+amount_max,25691.16

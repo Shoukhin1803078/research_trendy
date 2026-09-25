@@ -1,0 +1,12 @@
+flowchart LR
+    A["Data Collection\n(ERP, transaction logs,\nspreadsheets, communications)"] --> B["Data Preparation\n(cleansing, de-duplication,\ntransformation, normalisation)"]
+    B --> C["Exploratory Modelling\n(clustering, trend detection,\noutlier identification)"]
+    C --> D["Risk Scoring\n(severity- and frequency-weighted\nanomaly ranking)"]
+    D --> E["Red-Flag Issuance\n(alerts and dashboard summaries\nfor auditor review)"]
+    E -.->|feedback / recalibration| B
+
+    style A fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style B fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style C fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style D fill:#fdf1e3,stroke:#dd8452,stroke-width:1px
+    style E fill:#eafaf0,stroke:#55a868,stroke-width:1px

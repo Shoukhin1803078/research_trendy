@@ -1,0 +1,38 @@
+flowchart LR
+    T["Input:\nV1-V28, Amount, Time"] --> P["Preprocessing\n(train-fold-only scaling)"]
+
+    subgraph SIG["Eq. (1) Signal Engineering"]
+        direction TB
+        SA["a(x): Isolation Forest\nanomaly score"]
+        SB["b(x): k-Means peer-group\nbehavioural deviation"]
+        SC["c(x): control-rule\nviolation indicator"]
+        SF["f(x): amount + density\nfrequency/severity"]
+    end
+
+    P --> SA
+    P --> SB
+    P --> SC
+    P --> SF
+    P --> SUP["Supervised branch:\nXGBoost (5-fold OOF)"]
+
+    SIG --> META["Logistic-Regression\nMeta-Learner"]
+    SUP -.->|EC-ARP+ only| META
+
+    META --> SCORE["Composite Risk s(r)\nEC-ARP / EC-ARP+"]
+    SCORE --> THRESH{"s(r) > tau ?"}
+    THRESH -->|yes| ESC["Escalate:\nforensic review"]
+    THRESH -->|no| MON["Routine\nmonitoring"]
+    MON -.->|feedback| P
+
+    style T fill:#eafaf0,stroke:#55a868,stroke-width:1px
+    style P fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style SA fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style SB fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style SC fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style SF fill:#eaf2fb,stroke:#4c72b0,stroke-width:1px
+    style SUP fill:#f3e9f7,stroke:#8172b3,stroke-width:1px
+    style META fill:#fdf1e3,stroke:#dd8452,stroke-width:1px
+    style SCORE fill:#fdf1e3,stroke:#dd8452,stroke-width:1px
+    style THRESH fill:#fdf1e3,stroke:#dd8452,stroke-width:1px
+    style ESC fill:#fbe9e9,stroke:#c44e52,stroke-width:1px
+    style MON fill:#eafaf0,stroke:#55a868,stroke-width:1px

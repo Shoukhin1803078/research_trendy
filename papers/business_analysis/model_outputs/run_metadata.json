@@ -1,0 +1,10 @@
+{
+  "n_transactions": 284807,
+  "n_fraud": 492,
+  "fraud_rate_pct": 0.1727485630620034,
+  "train_size": 199364,
+  "test_size": 85443,
+  "random_state": 42,
+  "runtime_seconds": 661.8730816841125,
+  "dataset": "ULB Credit Card Fraud Detection (Dal Pozzolo et al., 2015, doi:10.1109/SSCI.2015.33)"
+}
