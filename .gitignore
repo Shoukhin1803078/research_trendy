@@ -1,2 +1,4 @@
 .DS_Store
 .env
+.venv
+papers/business_analysis/creditcard.csv

@@ -69,11 +69,11 @@ Email: alamintokdercse@gmail.com, jannat22tasmia@gmail.com, ali.ruet@gmail.com,
 \maketitle
 
 \begin{abstract}
-Brain tumor classification from MRI is important for fast and accurate diagnosis. Most existing methods report accuracy from a single train/test split, which can be misleading because different splits can give different results. In this paper, we propose a hybrid classification pipeline using a pretrained EfficientNetB0 backbone, fine-tuned in two stages with class-weighted training to handle class imbalance. On top of the trained network, we use two inference strategies: test-time augmentation (TTA) applied to the CNN's softmax output, and a soft-voting ensemble of Random Forest, XGBoost, and SVM classifiers trained on the CNN's learned embeddings. Both strategies are evaluated using 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI dataset (glioma, meningioma, pituitary tumor, and no-tumor), instead of a single held-out split. CNN+TTA achieves 97.74\% $\pm$ 0.47\% average accuracy across folds, and the embedding ensemble achieves 97.36\% $\pm$ 0.22\%, with lower variance across folds. Per-class precision, recall, and F1-score remain above 0.96 for all four classes. Because these results come from cross-validation instead of a single split, they give a more reliable estimate of how the pipeline would generalize, supporting its use in AI-assisted brain tumor screening.
+Reported accuracy in brain tumor MRI classification is usually based on a single train/test split. On a dataset without patient identifiers, that protocol cannot rule out near-duplicate slices from the same scan appearing on both sides of the split, which can inflate the reported number. This paper asks whether a hybrid EfficientNetB0 classification pipeline -- two-stage fine-tuning, class-weighted training, test-time augmentation (TTA), and a soft-voting Random Forest/XGBoost/SVM ensemble on the network's embeddings -- still performs reliably once this concern is addressed directly, instead of reporting one favorable accuracy figure. We evaluate the pipeline on two datasets: a four-class, 7,023-image benchmark (glioma, meningioma, pituitary tumor, no-tumor) using image-level 5-fold stratified cross-validation, and a three-class, 3,064-slice dataset with 233 identified patients, using patient-level 5-fold GroupKFold cross-validation so that no patient appears in both the training and test portions of any fold. On the four-class dataset, CNN+TTA reaches 97.74\% $\pm$ 0.47\% mean accuracy and the embedding ensemble reaches 97.36\% $\pm$ 0.22\%. On the patient-level-validated dataset, accuracy is noticeably lower -- 91.65\% $\pm$ 0.58\% for CNN+TTA and 91.58\% $\pm$ 1.80\% for the embedding ensemble -- which we read as evidence that image-level splits on datasets without patient identifiers can overstate real-world generalization. An exact Wilcoxon signed-rank test over the five paired folds confirms that TTA improves accuracy over the plain CNN softmax output on both datasets ($p=0.031$ in each case), while the embedding ensemble's improvement over the CNN is significant on the image-level dataset ($p=0.031$) but not on the patient-level dataset ($p=0.219$), reflecting its higher fold-to-fold variance there. A component-wise ablation on the patient-level dataset shows that mask-guided tumor-region cropping and TTA each contribute measurable, additive accuracy gains. Grad-CAM visualizations further indicate the network attends to anatomically relevant regions rather than incidental artifacts. We present these results, together with their limitations, as evidence for a reliability-oriented evaluation protocol for MRI-based tumor classification, rather than as a claim of a new state-of-the-art accuracy figure.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Brain Tumor Classification, Convolutional Neural Network, Transfer Learning, Random Forest, Ensemble Learning, Cross-Validation, Magnetic Resonance Imaging, Medical Image Classification.
+Brain Tumor Classification, Convolutional Neural Network, Transfer Learning, Random Forest, Ensemble Learning, Patient-Level Cross-Validation, Statistical Significance Testing, Magnetic Resonance Imaging, Medical Image Classification.
 \end{IEEEkeywords}
 
 \section{Introduction}
@@ -85,7 +85,17 @@ Deep learning, especially CNNs, has significantly improved this problem in recen
 
 One issue that is less discussed is how these methods are evaluated. Many papers report accuracy from only one train/test split, and this number can change a lot depending on which images end up in the test set. This is not strong evidence that a model generalizes well; it is just one sample of possible performance. Cross-validation, where multiple splits are used and the results are averaged, gives a more reliable estimate, and this is the approach we use throughout this paper.
 
-In this paper, we build a hybrid pipeline using a pretrained EfficientNetB0 backbone, fine-tuned in two stages, with class weighting to handle imbalance across tumor types. We then compare two ways to produce the final prediction: test-time augmentation, and a soft-voting ensemble of classical classifiers (Random Forest, XGBoost, SVM) trained on the network's embeddings. All experiments use 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI dataset. We report mean and standard-deviation accuracy instead of a single number, along with a class-wise confusion analysis and a comparison of the two inference strategies.
+A second, more specific evaluation issue applies to any dataset that does not record which patient each image came from. If a dataset is only split image-by-image, and the same patient contributed more than one similar slice, near-duplicate images can end up on both sides of a train/test split. A model can then score well on the test set partly by having already seen something close to it during training, rather than by generalizing to a genuinely unseen case. This is a known problem in medical imaging machine learning more broadly, and it cannot be resolved after the fact on a dataset that never recorded patient identity in the first place; it can only be checked by re-running the same pipeline on a comparable dataset that does record patient identity, and seeing whether accuracy holds up under a patient-level split. This paper treats that check as a first-class experiment rather than a footnote.
+
+In this paper, we build a hybrid pipeline using a pretrained EfficientNetB0 backbone, fine-tuned in two stages, with class weighting to handle imbalance across tumor types. We then compare two ways to produce the final prediction: test-time augmentation, and a soft-voting ensemble of classical classifiers (Random Forest, XGBoost, SVM) trained on the network's embeddings. The contributions of this paper are as follows:
+
+\begin{enumerate}
+    \item We evaluate the pipeline under 5-fold stratified cross-validation on a four-class, 7,023-image brain tumor MRI dataset, reporting mean and standard-deviation accuracy instead of a single train/test split number.
+    \item We directly test the effect of image-level versus patient-level cross-validation by re-running the same pipeline on a second, smaller three-class dataset that does record patient identity, using patient-level 5-fold GroupKFold cross-validation, and report the resulting accuracy gap as evidence relevant to interpreting the first dataset's results.
+    \item We run a component-wise ablation on the patient-level dataset, isolating the individual contribution of mask-guided tumor-region cropping and test-time augmentation.
+    \item We verify that the observed improvements from TTA and the embedding ensemble are statistically significant using an exact Wilcoxon signed-rank test on the fold-wise accuracy scores, rather than relying on the mean accuracy alone.
+    \item We use Grad-CAM to check, qualitatively, whether the network's predictions are anchored to anatomically relevant regions of the MRI slice rather than incidental artifacts.
+\end{enumerate}
 
 
 \section{Related Work}
@@ -98,24 +108,66 @@ Ensemble methods and augmentation techniques are also common in this area. Taluk
 
 Two limitations are common across this literature. First, interpretability is often not addressed directly -- Grad-CAM and similar attention-based explanations are usually mentioned as future work rather than actually reported. Second, and most relevant to this paper, a large number of these studies report accuracy from a single train/test split rather than cross-validation, making it difficult to know how much of the reported accuracy reflects real performance versus split-specific variance. This is a broader methodological issue that has been flagged across medical imaging machine learning in general, not just this subfield \cite{varoquaux2022leakage}. Combining MRI with other modalities such as PET or CT, and developing lighter models suitable for intraoperative use, are reasonable directions for future research.
 
+Table~\ref{tab:related_work} summarizes the studies discussed above alongside the evaluation protocol each one used. With the exception of G\'omez-Guzm\'an et al. \cite{gomezguzman2025swin}, none of these studies report a cross-validated accuracy, and none report whether the underlying dataset could contain the same patient's images on both sides of the train/test split. This second gap is the one Section~\ref{sec:methodology} addresses directly, by re-running our pipeline on a dataset that records patient identity.
 
-\section{Dataset}
-
-We use a four-class brain tumor MRI dataset containing 7,023 T1-weighted images: 1,800 glioma, 1,800 meningioma, 1,800 pituitary tumor, and 1,623 no-tumor images. The dataset is provided as separate Training and Testing folders. We merge both folders and re-split the combined dataset using stratified 5-fold cross-validation, so that every image is used as test data exactly once, and so that we obtain a mean and standard deviation instead of a single accuracy value.
-
-\begin{figure}[htbp]
+\begin{table}[!htbp]
 \centering
-\includegraphics[width=0.5\textwidth]{images/dataset_image.PNG}
-\caption{Sample MRI slices from the four-class brain tumor dataset.}
-\label{figure_1}
-\end{figure}
+\caption{Summary of related work on this and closely related four-class/three-class brain tumor MRI benchmarks, and the evaluation protocol each study used.}
+\begin{tabular}{|p{1.7cm}|p{1.9cm}|p{1.4cm}|p{2.1cm}|}
+\hline
+\textbf{Study} & \textbf{Model} & \textbf{Accuracy} & \textbf{Protocol} \\ \hline
+Dorfner et al. \cite{r16} & CNN (review) & -- & Not applicable \\ \hline
+Kaifi \cite{r17} & CNN, modified softsign & 97.6\% & Single split \\ \hline
+Al-Zoghby et al. \cite{r18} & Dual-CNN & 97.3\% & Single split \\ \hline
+Karagoz et al. \cite{r19} & ResViT + SSL & 98.47\% & Single split \\ \hline
+Talukder et al. \cite{r20} & Inception V3 ensemble & 98.89\% & Single split \\ \hline
+G\'omez-Guzm\'an et al. \cite{gomezguzman2025swin} & Swin-Tiny transformer & 99.24\% & Single 75/25 split \\ \hline
+\textbf{This study} & EfficientNetB0 + TTA / embedding ensemble & \textbf{97.74\%} (image-level); \textbf{91.65\%} (patient-level) & 5-fold CV, both image- and patient-level \\ \hline
+\end{tabular}
+\label{tab:related_work}
+\end{table}
 
 
 \section{Methodology}
 \label{sec:methodology}
 
+\subsection{Dataset Description}
+\label{sec:datasets}
+
+This study uses two datasets that play different roles. The first is a four-class benchmark used for the main cross-validated accuracy results and the comparison against prior work. The second is a smaller, three-class dataset that additionally records which patient each image came from; we use it specifically to test whether the first dataset's image-level split could be overstating accuracy, by re-running the same pipeline under a split that is guaranteed not to place the same patient's slices on both sides of a fold. Table~\ref{tab:datasets} summarizes both datasets.
+
+\begin{table}[!htbp]
+\centering
+\caption{Operational characteristics of the two datasets used in this study.}
+\begin{tabular}{|p{2.1cm}|p{2.7cm}|p{2.7cm}|}
+\hline
+\textbf{Property} & \textbf{Dataset A (main)} & \textbf{Dataset B (patient-level)} \\ \hline
+Classes & Glioma, meningioma, pituitary, no-tumor (4) & Glioma, meningioma, pituitary (3) \\ \hline
+Samples & 7,023 images & 3,064 slices \\ \hline
+Patients recorded & No & Yes (233 patients) \\ \hline
+Tumor masks & No & Yes (used for ROI cropping) \\ \hline
+Split used & Image-level, stratified 5-fold & Patient-level, GroupKFold 5-fold \\ \hline
+Role in this paper & Main results, benchmarking & Leakage check, ablation \\ \hline
+\end{tabular}
+\label{tab:datasets}
+\end{table}
+
+\textbf{Dataset A.} The main results use a four-class brain tumor MRI dataset containing 7,023 T1-weighted images: 1,800 glioma, 1,800 meningioma, 1,800 pituitary tumor, and 1,623 no-tumor images. The dataset is provided as separate Training and Testing folders and does not record a patient or subject identifier for any image. We merge both folders and re-split the combined dataset using stratified 5-fold cross-validation, so that every image is used as test data exactly once. Because no patient identifier is available, this split is performed at the image level; Section~\ref{sec:leakage} discusses what this means for interpreting the resulting accuracy.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.5\textwidth]{images/dataset_image.PNG}
+\caption{Sample MRI slices from the four-class brain tumor dataset (Dataset A).}
+\label{figure_1}
+\end{figure}
+
+\textbf{Dataset B.} To check the effect of the image-level split used for Dataset A, we separately evaluate the same pipeline on the figshare brain tumor dataset \cite{r21}, which contains 3,064 T1-weighted contrast-enhanced MRI slices from 233 patients across three classes (glioma, meningioma, pituitary tumor; it does not include a no-tumor class). Each slice has an associated tumor segmentation mask and a patient identifier (\texttt{cjdata.PID}). This is the only one of the two datasets on which a genuinely patient-level split is possible, which is exactly why we use it for this purpose rather than as the paper's primary benchmark. We use the tumor mask to crop each slice to the tumor region with a margin before resizing, as described in Section~\ref{sec:preprocessing}.
+
 \subsection{Preprocessing}
-Each image is decoded, resized to 224$\times$224, and normalized according to EfficientNet's expected input format. Since the four classes are not perfectly balanced (no-tumor has fewer images than the other three), we use class-weighted training instead of oversampling, which is a standard approach for handling class imbalance in CNNs \cite{buda2018imbalance}. The weights are the inverse class frequency within each training fold, computed using \texttt{sklearn}'s \texttt{compute\_class\_weight} function in \texttt{balanced} mode, and applied directly to the loss function.
+\label{sec:preprocessing}
+Each image is decoded, resized to 224$\times$224, and normalized according to EfficientNet's expected input format. Since the classes are not perfectly balanced in either dataset (Dataset A's no-tumor class and Dataset B's meningioma class are both underrepresented relative to the other classes), we use class-weighted training instead of oversampling, which is a standard approach for handling class imbalance in CNNs \cite{buda2018imbalance}. The weights are the inverse class frequency within each training fold, computed using \texttt{sklearn}'s \texttt{compute\_class\_weight} function in \texttt{balanced} mode, and applied directly to the loss function.
+
+For Dataset B, we additionally use the provided tumor segmentation mask to crop each slice to the tumor's bounding box with a 25\% margin on each side before resizing, rather than feeding the whole slice (including skull and background) to the network. Section~\ref{sec:ablation} evaluates this cropping step directly as part of the ablation study, since it is not something Dataset A's preprocessing can use (Dataset A does not provide tumor masks).
 
 For augmentation, we use a standard set of transformations -- random rotation, translation, zoom, horizontal flip, and contrast jitter -- implemented in a Keras \texttt{Sequential} block. This block is used for two purposes: during training it works as a standard overfitting guard, and during inference the same block is reused for test-time augmentation (Section~\ref{sec:inference}).
 
@@ -139,7 +191,20 @@ After the CNN is trained, there are multiple ways to produce a final prediction.
 \textbf{CNN-embedding ensemble.} In this approach, the 128-dimensional embedding is extracted from the CNN's penultimate layer (before the softmax) for every image. Three classical models are then trained on this embedding: Random Forest \cite{breiman2001randomforests} (300 trees, balanced class weights), XGBoost \cite{chen2016xgboost} (300 estimators, depth 5, learning rate 0.05), and an RBF SVM (balanced weights, probability outputs enabled). The three models are combined using soft voting. The idea is that the deep network already produces a useful representation of the input, and a small ensemble trained on this representation may add robustness compared to the network's own softmax head.
 
 \subsection{Cross-Validation Protocol}
-The Training and Testing folders are merged and split into 5 stratified folds, keeping class proportions consistent across folds. Within each fold's training portion, a further 85/15 stratified split is used for validation and early stopping. Every image appears in the test set exactly once across the five folds. We report the mean and standard deviation across these five runs rather than the result of a single run. All training was done on Kaggle (P100 GPU, 25\,GB RAM) with batch size 16.
+\label{sec:cv_protocol}
+For Dataset A, the Training and Testing folders are merged and split into 5 stratified folds, keeping class proportions consistent across folds. Within each fold's training portion, a further 85/15 stratified split is used for validation and early stopping. Every image appears in the test set exactly once across the five folds. Because Dataset A does not record a patient identifier, this stratification operates at the image level: it guarantees balanced class proportions per fold, but it cannot guarantee that two slices from the same underlying scan are kept on the same side of a fold, since there is no field in the dataset that would let us group them that way.
+
+For Dataset B, which does record a patient identifier, we instead use \texttt{scikit-learn}'s \texttt{GroupKFold} \cite{pedregosa2011scikitlearn} with the patient ID as the grouping key, again with 5 folds. This guarantees that every image belonging to a given patient is placed entirely within either the training portion or the test portion of a fold, never split across both. Every patient appears in the test set exactly once across the five folds. This is the split we use to check whether the image-level results on Dataset A are affected by leakage, as discussed in Section~\ref{sec:leakage}.
+
+For both datasets, we report the mean and standard deviation across the five folds rather than the result of a single run. All training was done on Kaggle using a Tesla T4 GPU, with batch size 16.
+
+\subsection{Ablation Design}
+\label{sec:ablation}
+To isolate the contribution of individual pipeline components rather than reporting only the fully assembled pipeline's accuracy, we ran a component-wise ablation on Dataset B, using a single patient-level held-out split (train/validation/test, using the same \texttt{GroupShuffleSplit} random seed for every configuration so the test set is identical across rows). We compare three configurations, each building on the previous one: (1) the CNN trained on the whole MRI slice, with no ROI cropping and no TTA at inference; (2) the same CNN trained on the mask-guided ROI crop described in Section~\ref{sec:preprocessing}, still without TTA; and (3) the ROI-cropped CNN evaluated with TTA (8 augmented views averaged at inference, as described in Section~\ref{sec:inference}). This isolates the accuracy contribution of ROI cropping and of TTA independently, rather than only reporting their combined effect. We did not additionally ablate class weighting or the augmentation policy used during training, since both were part of the pipeline from the first configuration onward; Section~\ref{sec:limitations} notes this as a limitation of the ablation's scope.
+
+\subsection{Statistical Significance Testing}
+\label{sec:stats_protocol}
+Reporting a higher mean accuracy across folds is not, by itself, evidence that the difference is unlikely to be due to chance, particularly with only five folds. To check this, we apply the Wilcoxon signed-rank test \cite{wilcoxon1945} to the fold-wise accuracy scores, treating each fold as a paired observation (e.g., CNN accuracy on fold $k$ versus CNN+TTA accuracy on the same fold $k$). We use the Wilcoxon test rather than a paired $t$-test because it does not assume the differences are normally distributed, which is a more defensible assumption with only five paired observations per comparison \cite{demsar2006statistical}. Because $n=5$ is small, we compute the exact one-sided p-value by enumerating all $2^5=32$ possible sign assignments of the ranked differences, rather than using the normal approximation; with this sample size, the smallest attainable one-sided $p$-value is $1/32 \approx 0.031$, which is itself worth keeping in mind when interpreting the results in Section~\ref{sec:stats_results}. We run this test separately on Dataset A and Dataset B, comparing CNN vs.\ CNN+TTA and CNN vs.\ the embedding ensemble in each case.
 
 
 \section{Results}
