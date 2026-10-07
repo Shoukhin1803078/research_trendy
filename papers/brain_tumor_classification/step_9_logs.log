@@ -1,0 +1,34 @@
+Listing image paths...
+Found 7200 images.
+
+Stage 0: exact duplicates (SHA-256)...
+  153 duplicate groups, 187 files removable as exact duplicates.
+
+Stage 1: perceptual-hash candidates over 7013 remaining images (16x16 phash, Hamming <= 8)...
+  hashed 1000/7013
+  hashed 2000/7013
+  hashed 3000/7013
+  hashed 4000/7013
+  hashed 5000/7013
+  hashed 6000/7013
+  hashed 7000/7013
+  2054 candidate pairs.
+
+Stage 2: pixel-level verification (NCC >= 0.92)...
+  2049 confirmed near-duplicate pairs (of 2054 candidates).
+
+  Sanity check: 99.6% of confirmed pairs share a class label (should be close to 100%; the original 8x8-average-hash attempt scored only 49%, i.e. near the 25% base rate, which is why it was discarded).
+
+Non-MRI / CT heuristic screen over 6055 remaining images...
+  534 images flagged for MANUAL review (heuristic only -- do not auto-remove).
+
+======================================================================
+SUMMARY
+======================================================================
+  Original images:          7200
+  Exact duplicates removed: 187
+  Near-duplicates removed:  958
+  Non-MRI flagged (manual): 534
+  Cleaned dataset size:     6055
+
+All outputs written to /kaggle/working/dedup_audit. Download the directory, manually review non_mri_candidates.csv, then re-run cross-validation (step6_backbone_sweep.py / step10_msai_module.py) by pointing list_image_paths at cleaned_file_list.txt instead of walking DATA_DIR directly, for both the proposed model and its baseline.

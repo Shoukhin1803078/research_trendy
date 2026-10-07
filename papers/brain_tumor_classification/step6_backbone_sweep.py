@@ -51,6 +51,7 @@ Wilcoxon test.
 import os
 import gc
 import glob
+import csv
 import json
 import time
 import numpy as np
@@ -70,6 +71,20 @@ BACKBONE = "resnet50"  # one of: efficientnetb0, resnet50, densenet121, mobilene
 
 DATA_DIR = "/kaggle/input/datasets/masoudnickparvar/brain-tumor-mri-dataset"
 RESULTS_PATH = "/kaggle/working/backbone_sweep.jsonl"
+
+# Per-image predictions, one CSV row per test image per fold. Required by
+# step16_leakage_stratified.py, which splits accuracy by whether a test image
+# had a duplicate/near-duplicate partner in its own training fold. The
+# aggregate rows in RESULTS_PATH cannot answer that -- the stratification
+# needs to know which image got which prediction in which fold.
+PREDICTIONS_PATH = "/kaggle/working/per_image_predictions.csv"
+
+# Set to a cleaned_file_list.txt (from step9/step15) to run on the
+# deduplicated set instead of walking DATA_DIR. Leave None for the full,
+# contaminated set -- BOTH runs are needed: the contaminated one is what the
+# leakage stratification is computed on, the cleaned one is the corrected
+# headline number.
+CLEANED_FILE_LIST = None
 IMG_SIZE = 224
 BATCH_SIZE = 16
 HEAD_EPOCHS = 8
@@ -115,6 +130,27 @@ BACKBONE_REGISTRY = {
 # 1. Load + preprocess (identical to step4)
 # ---------------------------------------------------------------------------
 def list_image_paths(data_dir):
+    if CLEANED_FILE_LIST:
+        with open(CLEANED_FILE_LIST) as f:
+            kept = [ln.strip() for ln in f if ln.strip()]
+        index = {c: i for i, c in enumerate(CLASS_NAMES)}
+        paths, labels = [], []
+        for pth in kept:
+            parts = pth.replace("\\", "/").split("/")
+            cls = next((q for q in reversed(parts) if q in index), None)
+            if cls is None:
+                raise ValueError(
+                    f"Could not infer class for {pth!r} from {CLASS_NAMES}. "
+                    f"Check CLEANED_FILE_LIST paths match this layout."
+                )
+            paths.append(pth)
+            labels.append(index[cls])
+        if not paths:
+            raise FileNotFoundError(f"{CLEANED_FILE_LIST} listed no usable images.")
+        print(f"Using cleaned file list {CLEANED_FILE_LIST}: {len(paths)} images "
+              f"(instead of walking {data_dir})")
+        return paths, np.array(labels)
+
     paths, labels = [], []
     for split_dir in ["Training", "Testing"]:
         for class_idx, class_name in enumerate(CLASS_NAMES):
@@ -246,6 +282,17 @@ def append_result(row):
         f.write(json.dumps(row) + "\n")
 
 
+def append_predictions(rows):
+    """Append per-image prediction rows, writing the header on first use."""
+    new = not os.path.exists(PREDICTIONS_PATH)
+    with open(PREDICTIONS_PATH, "a", newline="") as f:
+        w = csv.writer(f)
+        if new:
+            w.writerow(["backbone", "fold", "path", "y_true",
+                        "y_pred_cnn", "y_pred_tta", "y_pred_ens"])
+        w.writerows(rows)
+
+
 # ---------------------------------------------------------------------------
 # 3. Cross-validation driver
 # ---------------------------------------------------------------------------
@@ -327,6 +374,12 @@ def main():
         print(classification_report(y_test, y_pred_ens, target_names=CLASS_NAMES))
         print(confusion_matrix(y_test, y_pred_ens))
 
+        append_predictions([
+            (BACKBONE, fold_idx + 1, paths[gi], int(y_test[k]),
+             int(y_pred_cnn[k]), int(y_pred_tta[k]), int(y_pred_ens[k]))
+            for k, gi in enumerate(test_idx)
+        ])
+
         append_result({
             "backbone": BACKBONE,
             "fold": fold_idx + 1,
@@ -351,6 +404,9 @@ def main():
               f"(folds: {[f'{a*100:.2f}' for a in accs]})")
     print(f"\nPer-fold rows appended to {RESULTS_PATH} -- download this file "
           f"and paste/attach its contents for the paper write-up.")
+    print(f"Per-image predictions appended to {PREDICTIONS_PATH} -- download "
+          f"this too and feed it to step16_leakage_stratified.py together with "
+          f"the audit directory to get the leakage-stratified accuracy table.")
 
 
 if __name__ == "__main__":
