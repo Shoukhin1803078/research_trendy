@@ -6,6 +6,7 @@
 \usepackage{subcaption}
 \usepackage{multirow}
 \usepackage{booktabs}
+\usepackage{tabularx}
 \usepackage{textcomp}
 \usepackage{cite}
 \usepackage{url}
@@ -81,7 +82,7 @@ Table~\ref{tab:related_work} summarizes the studies discussed above alongside th
 \caption{Summary of related work on this and closely related four-class/three-class brain tumor MRI benchmarks, and the evaluation protocol each study used.}
 \label{tab:related_work}
 \small
-\begin{tabular}{@{}p{2.6cm}p{3.2cm}p{1.6cm}p{3.4cm}@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.9cm}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{1.5cm}>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Study} & \textbf{Model} & \textbf{Accuracy} & \textbf{Protocol} \\
 \midrule
@@ -92,14 +93,21 @@ Karagoz et al. \cite{karagoz2024resvit} & ResViT + SSL & 98.47\% & Single split,
 G\'omez-Guzm\'an et al. \cite{gomezguzman2025swin} & Multiple CNNs + Swin-Tiny & 99.24\% (best) & Single 75/25 split, multiple backbones \\
 \textbf{This study} & EfficientNetB0/ResNet50/ DenseNet121/MobileNetV2 + TTA / embedding ensemble & \textbf{98.38\%} (best backbone, 5-fold mean) & 5-fold CV, 4 backbones \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 
 \section{Methodology}
 \label{sec:methodology}
 
-This study establishes a systematic machine learning framework for multi-class brain tumor classification, structured around two linked experiments: (i) a multi-backbone, cross-validated comparison of the hybrid pipeline, and (ii) statistical validation of the resulting gains.
+This study establishes a systematic machine learning framework for multi-class brain tumor classification, structured around two linked experiments: (i) a multi-backbone, cross-validated comparison of the hybrid pipeline, and (ii) statistical validation of the resulting gains. Figure~\ref{fig:framework} gives an overview of the complete framework, and the remainder of this section describes each stage in turn.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.92\textwidth]{images/methodology_without_emoji.png}
+\caption{Overview of the proposed hybrid CNN--ensemble framework. From top to bottom: the input four-class MRI dataset; preprocessing (resize and normalize, augmentation, stratified 5-fold splitting, and class balancing); feature engineering via transfer learning; the hybrid model architecture, combining two-stage fine-tuned backbones (EfficientNetB0, ResNet50, DenseNet121, MobileNetV2) with a soft-voting Random Forest/XGBoost/SVM ensemble on the extracted embeddings; training and optimization; statistically validated evaluation (accuracy, precision, recall, F1, and the Wilcoxon signed-rank test) with Grad-CAM visualization; and the final four-class prediction.}
+\label{fig:framework}
+\end{figure}
 
 \subsection{Dataset Description}
 \label{sec:datasets}
@@ -111,7 +119,7 @@ This study uses a four-class brain tumor MRI dataset containing 7,200 images: 1,
 \caption{Operational characteristics of the dataset used in this study.}
 \label{tab:datasets}
 \small
-\begin{tabular}{@{}p{3.2cm}p{6.6cm}@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.2cm}>{\raggedright\arraybackslash}X@{}}
 \toprule
 \textbf{Property} & \textbf{Value} \\
 \midrule
@@ -121,7 +129,7 @@ Patients recorded & No \\
 Split used & Image-level, stratified 5-fold \\
 Backbones evaluated & EfficientNetB0, ResNet50, DenseNet121, MobileNetV2 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 The dataset is provided as separate Training and Testing folders and does not record a patient or subject identifier for any image. We merge both folders and re-split the combined dataset using stratified 5-fold cross-validation, so that every image is used as test data exactly once. Because no patient identifier is available, this split is performed at the image level; Section~\ref{sec:limitations} discusses what this means for interpreting the resulting accuracy.
@@ -239,7 +247,7 @@ Table~\ref{tab:backbone_results} reports the mean $\pm$ standard deviation accur
 \caption{5-fold cross-validation accuracy across four backbone architectures and three inference strategies.}
 \label{tab:backbone_results}
 \small
-\begin{tabular}{@{}lccc@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lccc@{}}
 \toprule
 \textbf{Backbone} & \textbf{CNN (softmax)} & \textbf{CNN + TTA} & \textbf{Embedding ensemble} \\
 \midrule
@@ -248,7 +256,7 @@ ResNet50       & 97.18\% $\pm$ 0.56\% & \textbf{98.38\%} $\pm$ 0.23\% & 97.64\% 
 DenseNet121    & \textbf{97.69\%} $\pm$ 0.53\% & 98.32\% $\pm$ \textbf{0.22\%} & \textbf{98.00\%} $\pm$ 0.34\% \\
 MobileNetV2    & 95.04\% $\pm$ 0.72\% & 97.96\% $\pm$ 0.32\% & 96.25\% $\pm$ 0.23\% \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \begin{figure}[htbp]
@@ -274,7 +282,7 @@ Table~\ref{tab:perclass_resnet} shows the per-class results for the single best 
 \caption{Representative per-class results, ResNet50 + TTA, best observed fold.}
 \label{tab:perclass_resnet}
 \small
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{Support} \\
 \midrule
@@ -284,7 +292,7 @@ No Tumor    & 0.98 & 0.99 & 0.99 & 360 \\
 Pituitary   & 0.98 & 0.99 & 0.99 & 360 \\
 \textbf{Accuracy} & \multicolumn{3}{c}{0.99} & 1440 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \begin{table}[htbp]
@@ -292,7 +300,7 @@ Pituitary   & 0.98 & 0.99 & 0.99 & 360 \\
 \caption{Representative per-class results, EfficientNetB0 + TTA, best observed fold.}
 \label{tab:perclass}
 \small
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Class} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} & \textbf{Support} \\
 \midrule
@@ -302,7 +310,7 @@ No Tumor    & 0.99 & 0.99 & 0.99 & 360 \\
 Pituitary   & 0.99 & 0.98 & 0.99 & 360 \\
 \textbf{Accuracy} & \multicolumn{3}{c}{0.98} & 1440 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 Across all five folds and all four backbones, meningioma was consistently the most frequently misclassified class, mostly confused with glioma and pituitary tumor, while no-tumor was consistently the easiest class to classify correctly. This confusion pattern being stable across four otherwise-different backbones suggests it reflects a genuine property of the imaging data (meningioma's variable appearance and less distinct boundaries) rather than an idiosyncrasy of any one network, which we return to in Section~\ref{sec:discussion}.
@@ -317,7 +325,7 @@ Table~\ref{tab:wilcoxon} reports the exact one-sided Wilcoxon signed-rank test r
 \caption{Exact one-sided Wilcoxon signed-rank test results ($n=5$ paired folds per comparison). The smallest attainable $p$-value at this sample size is $1/32 \approx 0.031$.}
 \label{tab:wilcoxon}
 \small
-\begin{tabular}{@{}lc@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{3.2cm}@{}}
 \toprule
 \textbf{Comparison} & \textbf{One-sided $p$} \\
 \midrule
@@ -331,7 +339,7 @@ CNN vs.\ embedding ensemble (ResNet50)   & 0.031 \\
 CNN vs.\ embedding ensemble (DenseNet121) & 0.219 \\
 CNN vs.\ embedding ensemble (MobileNetV2) & 0.031 \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 TTA's improvement over the plain CNN softmax output is significant at the $\alpha=0.05$ level for every backbone ($p=0.031$ in each case), consistent with TTA improving accuracy in every single fold we ran. The embedding ensemble's improvement over its own CNN is significant for three of the four backbones (EfficientNetB0, ResNet50, MobileNetV2; $p=0.031$ each), but not for DenseNet121 ($p=0.219$) despite DenseNet121's embedding ensemble having the single highest mean accuracy of any ensemble configuration in Table~\ref{tab:backbone_results} (98.00\%): DenseNet121's own CNN is already strong enough that the ensemble's fold-wise advantage over it is inconsistent in direction. Taken together, these results say the ensemble reliably helps a weaker or moderate backbone, but its marginal value over an already-strong CNN is small and inconsistent enough that five folds cannot distinguish it from chance -- a limitation of statistical power at this sample size, not evidence that the ensemble fails.
@@ -348,7 +356,7 @@ Table~\ref{tab:efficiency} reports training time (per fold) and inference latenc
 \caption{Computational cost per fold, measured on a single Tesla T4 GPU. Training time is the sum of Stage 1 and Stage 2; inference latency is milliseconds per image.}
 \label{tab:efficiency}
 \small
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lcccc@{}}
 \toprule
 \textbf{Backbone} & \textbf{Training time} & \textbf{CNN latency} & \textbf{TTA latency} & \textbf{Ensemble latency} \\
 \midrule
@@ -357,7 +365,7 @@ ResNet50     & 2021.1 s (33.7 min) & 6.42 ms & 35.36 ms & 13.32 ms \\
 DenseNet121  & 1796.0 s (29.9 min) & 11.35 ms & 37.67 ms & 11.94 ms \\
 MobileNetV2  & 1402.7 s (23.4 min) & 4.50 ms & 23.49 ms & 14.67 ms \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \begin{figure}[htbp]
@@ -387,7 +395,7 @@ Table~\ref{tab:sota_comparison} compares our results with recent papers that use
 \caption{Comparison with prior work on comparable 4-class brain tumor MRI benchmarks.}
 \label{tab:sota_comparison}
 \small
-\begin{tabular}{@{}p{5.0cm}p{2.3cm}p{2.8cm}@{}}
+\begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X>{\raggedright\arraybackslash}p{2.6cm}>{\raggedright\arraybackslash}p{2.6cm}@{}}
 \toprule
 \textbf{Method} & \textbf{Accuracy} & \textbf{Protocol} \\
 \midrule
@@ -402,7 +410,7 @@ Swin-Tiny (transformer) \cite{gomezguzman2025swin} & 99.24\% & Single split \\
 \textbf{Proposed (DenseNet121+TTA, 5-fold mean)} & 98.32\% $\pm$ 0.22\% & 5-fold CV \\
 \textbf{Proposed (DenseNet121 ensemble, 5-fold mean)} & 98.00\% $\pm$ 0.34\% & 5-fold CV \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 
 \vspace{1mm}
 {\footnotesize \textsuperscript{*}Per-class AUC reported rather than a single overall accuracy figure; not directly comparable to the accuracy values above.}
