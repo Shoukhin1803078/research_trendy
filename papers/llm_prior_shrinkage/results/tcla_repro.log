@@ -1,0 +1,47 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+TCLA reproduction | bus/case category | C=3 | N=780 | class counts [np.int64(133), np.int64(437), np.int64(210)]
+classes: ['normal', 'benign', 'malignant']
+lf_mode=aggressive  seeds=50  protocol: k/class support, test = remainder
+
+--- 1-shot   (test n=777, 2s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.27    0.07      35.50
+tip_adapter       41.69    0.39      35.88
+proto_only        47.86    6.99      44.03
+tcla              52.46    6.40      46.72
+  TCLA - zero_shot BACC = +11.19 (positive in 47/50 seeds)
+
+--- 2-shot   (test n=774, 312s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.25    0.13      35.47
+tip_adapter       42.18    0.64      36.27
+proto_only        55.58    6.61      49.62
+tcla              54.96    6.71      47.25
+  TCLA - zero_shot BACC = +13.70 (positive in 50/50 seeds)
+
+--- 4-shot   (test n=768, 357s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.23    0.18      35.40
+tip_adapter       43.15    0.66      36.99
+proto_only        63.43    5.32      58.85
+tcla              59.71    5.64      52.93
+  TCLA - zero_shot BACC = +18.47 (positive in 50/50 seeds)
+
+--- 8-shot   (test n=756, 297s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.29    0.25      35.35
+tip_adapter       44.51    1.03      37.86
+proto_only        69.68    3.85      65.42
+tcla              65.17    4.47      58.03
+  TCLA - zero_shot BACC = +23.88 (positive in 50/50 seeds)
+
+--- 16-shot   (test n=732, 267s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.27    0.41      35.13
+tip_adapter       47.36    1.30      39.84
+proto_only        73.60    2.50      69.96
+tcla              70.94    3.36      65.23
+  TCLA - zero_shot BACC = +29.67 (positive in 50/50 seeds)
+
+wrote results/tcla_repro_bus_case_category_aggressive.json

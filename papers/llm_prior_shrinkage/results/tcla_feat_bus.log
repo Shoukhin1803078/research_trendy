@@ -1,0 +1,11 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+vision trunk has 12 blocks; hooking (5, 7, 9, 11)
+intermediate CLS dim = 768
+  16/780 3.93 img/s eta 3.2 min
+  176/780 2.68 img/s eta 3.8 min
+  336/780 2.80 img/s eta 2.6 min
+  496/780 3.04 img/s eta 1.6 min
+  656/780 3.25 img/s eta 0.6 min
+done 780 in 3.9 min (3.36 img/s)
+wrote /mnt/extra-storage/features/bus_tcla_layers.npz

@@ -1,0 +1,14 @@
+{
+  "dataset": "bus",
+  "task": "malignancy",
+  "model": "qwen2.5vl:3b",
+  "n_test": 10,
+  "n_valid": 10,
+  "n_parse_errors": 0,
+  "accuracy": 0.7,
+  "majority_baseline": 0.7,
+  "delta_vs_majority": 0.0,
+  "fraction_predicted_malignant": 0.0,
+  "true_fraction_malignant": 0.3,
+  "secs_per_image": 188.07
+}

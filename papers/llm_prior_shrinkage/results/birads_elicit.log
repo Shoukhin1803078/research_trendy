@@ -1,0 +1,59 @@
+
+=== mammo_mass / mass margins ===
+descriptor                    LLM P(mal)  empirical  n_train  votes
+--------------------------------------------------------------------
+CIRCUMSCRIBED                      0.050      0.133      301      3
+ILL_DEFINED                        0.200      0.677      310      3
+MICROLOBULATED                     0.200      0.644      104      3
+OBSCURED                           0.200      0.208      197      3
+SPICULATED                         0.800      0.928      279      3
+  LLM vs empirical over 5 descriptors: Spearman=+0.894  Pearson=+0.771 (p=0.127)
+
+=== mammo_mass / mass shape ===
+descriptor                    LLM P(mal)  empirical  n_train  votes
+--------------------------------------------------------------------
+ARCHITECTURAL_DISTORTION           0.200      0.786      112      3
+ASYMMETRIC_BREAST_TISSUE           0.200      0.500       16      3
+FOCAL_ASYMMETRIC_DENSITY           0.050      0.176       17      3
+IRREGULAR                          0.200      0.845      341      3
+LOBULATED                          0.200      0.363      270      3
+LYMPH_NODE                         0.000      0.000       32      3
+OVAL                               0.050      0.290      276      3
+ROUND                              0.050      0.297      118      3
+  LLM vs empirical over 8 descriptors: Spearman=+0.913  Pearson=+0.836 (p=0.010)
+
+=== mammo_calc / calc type ===
+descriptor                    LLM P(mal)  empirical  n_train  votes
+--------------------------------------------------------------------
+AMORPHOUS                          0.200      0.417      139      3
+COARSE                             0.200      0.000       46      3
+DYSTROPHIC                         0.200      0.000       20      3
+EGGSHELL                           0.200      0.000       30      3
+FINE_LINEAR_BRANCHING              0.200      0.768       95      3
+LARGE_RODLIKE                      0.200      0.000       11      3
+LUCENT_CENTER                      0.200      0.000      196      3
+LUCENT_CENTERED                    0.200      0.000       32      3
+MILK_OF_CALCIUM                    0.050        n/a        0      3
+PLEOMORPHIC                        0.200      0.539      629      3
+PUNCTATE                           0.200      0.213      169      3
+ROUND_AND_REGULAR                  0.050      0.045      156      3
+SKIN                               0.500      0.000       11      3
+VASCULAR                           0.200      0.000       74      3
+  LLM vs empirical over 13 descriptors: Spearman=-0.269  Pearson=-0.099 (p=0.747)
+
+=== mammo_calc / calc distribution ===
+descriptor                    LLM P(mal)  empirical  n_train  votes
+--------------------------------------------------------------------
+CLUSTERED                          0.200      0.450      662      3
+DIFFUSELY_SCATTERED                0.200      0.081       37      3
+LINEAR                             0.050      0.710      107      3
+REGIONAL                           0.200      0.418       91      3
+SEGMENTAL                          0.200      0.585      135      3
+  LLM vs empirical over 5 descriptors: Spearman=-0.707  Pearson=-0.619 (p=0.266)
+
+wrote results/birads_rule_elicitation.json
+
+If Spearman is high, the LLM's textbook lexicon knowledge tracks the empirical
+malignancy rates it never saw. That independently supports the concept rule.
+If it is near zero, the LLM adds nothing here and the concept bottleneck should
+use empirical train-split rates instead - which we would report plainly.

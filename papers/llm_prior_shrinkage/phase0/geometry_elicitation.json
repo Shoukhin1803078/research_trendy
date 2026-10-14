@@ -1,0 +1,46 @@
+{
+  "llama3.2:3b": {
+    "gleason": {
+      "pass": true,
+      "got": [
+        "benign",
+        "Gleason grade 3",
+        "Gleason grade 4",
+        "Gleason grade 5"
+      ],
+      "secs": 53.2
+    },
+    "dr_icdr": {
+      "pass": true,
+      "got": [
+        "no DR",
+        "mild NPDR",
+        "moderate NPDR",
+        "severe NPDR",
+        "proliferative DR"
+      ],
+      "secs": 28.3
+    },
+    "birads": {
+      "pass": true,
+      "got": [
+        "BI-RADS 1",
+        "BI-RADS 2",
+        "BI-RADS 3",
+        "BI-RADS 4",
+        "BI-RADS 5"
+      ],
+      "secs": 31.9
+    },
+    "ctrl_organs": {
+      "pass": false,
+      "got": [
+        "liver",
+        "spleen",
+        "left kidney",
+        "pancreas"
+      ],
+      "secs": 23.8
+    }
+  }
+}

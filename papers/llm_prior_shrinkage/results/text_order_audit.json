@@ -1,0 +1,250 @@
+{
+  "DR level": {
+    "a {dom} photograph showing {lbl}": {
+      "spearman_pc1": 0.7,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9796,
+      "mean_cos_distant": 0.9587,
+      "adjacency_margin": 0.021,
+      "pc1_var_explained": 0.7359
+    },
+    "{lbl}": {
+      "spearman_pc1": 0.0,
+      "kendall_pc1": -0.2,
+      "spearman_endpoint_axis": 0.7,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.8554,
+      "mean_cos_distant": 0.763,
+      "adjacency_margin": 0.0924,
+      "pc1_var_explained": 0.4968
+    },
+    "a photo of {lbl}": {
+      "spearman_pc1": 0.3,
+      "kendall_pc1": 0.2,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.8524,
+      "mean_cos_distant": 0.7387,
+      "adjacency_margin": 0.1136,
+      "pc1_var_explained": 0.4905
+    },
+    "retinal fundus image, {lbl}": {
+      "spearman_pc1": 0.7,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9806,
+      "mean_cos_distant": 0.9595,
+      "adjacency_margin": 0.0212,
+      "pc1_var_explained": 0.6637
+    },
+    "this fundus image shows {lbl}, a diabetic retinopathy severity grade": {
+      "spearman_pc1": 0.7,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9908,
+      "mean_cos_distant": 0.9781,
+      "adjacency_margin": 0.0127,
+      "pc1_var_explained": 0.7488
+    },
+    "diabetic retinopathy severity: {lbl}": {
+      "spearman_pc1": 1.0,
+      "kendall_pc1": 1.0,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9885,
+      "mean_cos_distant": 0.9781,
+      "adjacency_margin": 0.0104,
+      "pc1_var_explained": 0.6015
+    }
+  },
+  "Artifact": {
+    "a {dom} photograph showing {lbl}": {
+      "spearman_pc1": 0.1429,
+      "kendall_pc1": 0.0667,
+      "spearman_endpoint_axis": 0.8286,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9446,
+      "mean_cos_distant": 0.9373,
+      "adjacency_margin": 0.0074,
+      "pc1_var_explained": 0.4371
+    },
+    "{lbl}": {
+      "spearman_pc1": 0.9429,
+      "kendall_pc1": 0.8667,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.7151,
+      "mean_cos_distant": 0.606,
+      "adjacency_margin": 0.1091,
+      "pc1_var_explained": 0.4123
+    },
+    "a photo of {lbl}": {
+      "spearman_pc1": 0.8857,
+      "kendall_pc1": 0.7333,
+      "spearman_endpoint_axis": 0.9429,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.7545,
+      "mean_cos_distant": 0.6542,
+      "adjacency_margin": 0.1003,
+      "pc1_var_explained": 0.4467
+    },
+    "retinal fundus image, {lbl}": {
+      "spearman_pc1": 0.8857,
+      "kendall_pc1": 0.7333,
+      "spearman_endpoint_axis": 0.9429,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9596,
+      "mean_cos_distant": 0.9514,
+      "adjacency_margin": 0.0082,
+      "pc1_var_explained": 0.3565
+    },
+    "this fundus image shows {lbl}, a diabetic retinopathy severity grade": {
+      "spearman_pc1": -0.0286,
+      "kendall_pc1": -0.0667,
+      "spearman_endpoint_axis": 0.9429,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9512,
+      "mean_cos_distant": 0.9527,
+      "adjacency_margin": -0.0014,
+      "pc1_var_explained": 0.547
+    },
+    "diabetic retinopathy severity: {lbl}": {
+      "spearman_pc1": 0.8857,
+      "kendall_pc1": 0.7333,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9222,
+      "mean_cos_distant": 0.91,
+      "adjacency_margin": 0.0122,
+      "pc1_var_explained": 0.3929
+    }
+  },
+  "Clarity": {
+    "a {dom} photograph showing {lbl}": {
+      "spearman_pc1": 0.6,
+      "kendall_pc1": 0.4,
+      "spearman_endpoint_axis": 0.7,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9895,
+      "mean_cos_distant": 0.9821,
+      "adjacency_margin": 0.0074,
+      "pc1_var_explained": 0.7892
+    },
+    "{lbl}": {
+      "spearman_pc1": 0.2,
+      "kendall_pc1": 0.2,
+      "spearman_endpoint_axis": 0.7,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9603,
+      "mean_cos_distant": 0.943,
+      "adjacency_margin": 0.0173,
+      "pc1_var_explained": 0.6846
+    },
+    "a photo of {lbl}": {
+      "spearman_pc1": 0.1,
+      "kendall_pc1": 0.0,
+      "spearman_endpoint_axis": 0.5,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9449,
+      "mean_cos_distant": 0.9226,
+      "adjacency_margin": 0.0223,
+      "pc1_var_explained": 0.716
+    },
+    "retinal fundus image, {lbl}": {
+      "spearman_pc1": 0.9,
+      "kendall_pc1": 0.8,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9881,
+      "mean_cos_distant": 0.9786,
+      "adjacency_margin": 0.0096,
+      "pc1_var_explained": 0.7687
+    },
+    "this fundus image shows {lbl}, a diabetic retinopathy severity grade": {
+      "spearman_pc1": 0.7,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9951,
+      "mean_cos_distant": 0.9901,
+      "adjacency_margin": 0.005,
+      "pc1_var_explained": 0.7159
+    },
+    "diabetic retinopathy severity: {lbl}": {
+      "spearman_pc1": 0.9,
+      "kendall_pc1": 0.8,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9893,
+      "mean_cos_distant": 0.9847,
+      "adjacency_margin": 0.0047,
+      "pc1_var_explained": 0.5948
+    }
+  },
+  "Field definition": {
+    "a {dom} photograph showing {lbl}": {
+      "spearman_pc1": 0.7,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9826,
+      "mean_cos_distant": 0.9714,
+      "adjacency_margin": 0.0112,
+      "pc1_var_explained": 0.4532
+    },
+    "{lbl}": {
+      "spearman_pc1": 0.8,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9213,
+      "mean_cos_distant": 0.8877,
+      "adjacency_margin": 0.0336,
+      "pc1_var_explained": 0.4845
+    },
+    "a photo of {lbl}": {
+      "spearman_pc1": 0.4,
+      "kendall_pc1": 0.4,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9373,
+      "mean_cos_distant": 0.9221,
+      "adjacency_margin": 0.0152,
+      "pc1_var_explained": 0.5262
+    },
+    "retinal fundus image, {lbl}": {
+      "spearman_pc1": 0.9,
+      "kendall_pc1": 0.8,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.9686,
+      "mean_cos_distant": 0.9536,
+      "adjacency_margin": 0.015,
+      "pc1_var_explained": 0.426
+    },
+    "this fundus image shows {lbl}, a diabetic retinopathy severity grade": {
+      "spearman_pc1": 0.7,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 1.0,
+      "monotonic_on_axis": true,
+      "mean_cos_adjacent": 0.982,
+      "mean_cos_distant": 0.9702,
+      "adjacency_margin": 0.0118,
+      "pc1_var_explained": 0.4178
+    },
+    "diabetic retinopathy severity: {lbl}": {
+      "spearman_pc1": 0.8,
+      "kendall_pc1": 0.6,
+      "spearman_endpoint_axis": 0.9,
+      "monotonic_on_axis": false,
+      "mean_cos_adjacent": 0.9677,
+      "mean_cos_distant": 0.9166,
+      "adjacency_margin": 0.051,
+      "pc1_var_explained": 0.7429
+    }
+  }
+}

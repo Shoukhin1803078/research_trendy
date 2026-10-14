@@ -1,0 +1,25 @@
+{
+  "case category": {
+    "template": "a {dom} photograph showing {lbl}",
+    "spearman": NaN,
+    "monotonic": false,
+    "axis_name": "breast ultrasound case category",
+    "ordinal": false,
+    "keys": [
+      0,
+      1,
+      2
+    ]
+  },
+  "malignancy": {
+    "template": "a {dom} photograph showing {lbl}",
+    "spearman": NaN,
+    "monotonic": false,
+    "axis_name": "breast ultrasound malignancy",
+    "ordinal": false,
+    "keys": [
+      0,
+      1
+    ]
+  }
+}

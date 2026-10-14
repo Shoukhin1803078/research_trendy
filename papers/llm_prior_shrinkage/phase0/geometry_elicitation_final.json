@@ -1,0 +1,68 @@
+{
+  "llama3.2:3b": {
+    "sicapv2_gleason": {
+      "exact_correct": 3,
+      "n_shuffles": 5,
+      "modal_stability": 3,
+      "kendall_tau_modal": 1.0,
+      "modal_answer": [
+        "benign",
+        "Gleason grade 3",
+        "Gleason grade 4",
+        "Gleason grade 5"
+      ],
+      "truth": [
+        "benign",
+        "Gleason grade 3",
+        "Gleason grade 4",
+        "Gleason grade 5"
+      ],
+      "provenance": "clinical definition (ISUP/Gleason)",
+      "secs": 40.9
+    },
+    "medimeta_dr_icdr": {
+      "exact_correct": 4,
+      "n_shuffles": 5,
+      "modal_stability": 4,
+      "kendall_tau_modal": 1.0,
+      "modal_answer": [
+        "no DR",
+        "mild NPDR",
+        "moderate NPDR",
+        "severe NPDR",
+        "proliferative DR"
+      ],
+      "truth": [
+        "no DR",
+        "mild NPDR",
+        "moderate NPDR",
+        "severe NPDR",
+        "proliferative DR"
+      ],
+      "provenance": "MedIMeta task_target=ORDINAL_REGRESSION",
+      "secs": 38.2
+    },
+    "birads": {
+      "exact_correct": 5,
+      "n_shuffles": 5,
+      "modal_stability": 5,
+      "kendall_tau_modal": 1.0,
+      "modal_answer": [
+        "BI-RADS 1",
+        "BI-RADS 2",
+        "BI-RADS 3",
+        "BI-RADS 4",
+        "BI-RADS 5"
+      ],
+      "truth": [
+        "BI-RADS 1",
+        "BI-RADS 2",
+        "BI-RADS 3",
+        "BI-RADS 4",
+        "BI-RADS 5"
+      ],
+      "provenance": "clinical definition (ACR BI-RADS)",
+      "secs": 47.3
+    }
+  }
+}

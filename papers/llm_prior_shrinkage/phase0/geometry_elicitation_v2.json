@@ -1,0 +1,86 @@
+{
+  "llama3.2:3b": {
+    "gleason": {
+      "pass": true,
+      "axis_name": "Gleason grade",
+      "model_says_severity": true,
+      "after_guard": true,
+      "ordered_classes": [
+        "benign",
+        "Gleason grade 3",
+        "Gleason grade 4",
+        "Gleason grade 5"
+      ],
+      "secs": 27.5
+    },
+    "dr_icdr": {
+      "pass": false,
+      "axis_name": "clinical progression",
+      "model_says_severity": true,
+      "after_guard": true,
+      "ordered_classes": [
+        "no DR",
+        "mild NPDR",
+        "moderate NPDR",
+        "proliferative DR",
+        "severe NPDR"
+      ],
+      "secs": 22.8
+    },
+    "birads": {
+      "pass": false,
+      "axis_name": "anatomical location",
+      "model_says_severity": false,
+      "after_guard": false,
+      "ordered_classes": [
+        "BI-RADS 1",
+        "BI-RADS 2",
+        "BI-RADS 3",
+        "BI-RADS 4",
+        "BI-RADS 5"
+      ],
+      "secs": 22.4
+    },
+    "ctrl_organs": {
+      "pass": true,
+      "axis_name": "anatomical location",
+      "model_says_severity": false,
+      "after_guard": false,
+      "ordered_classes": [
+        "spleen",
+        "liver",
+        "left kidney",
+        "pancreas"
+      ],
+      "secs": 21.0
+    },
+    "ctrl_skin_dx": {
+      "pass": true,
+      "axis_name": "anatomical location",
+      "model_says_severity": false,
+      "after_guard": false,
+      "ordered_classes": [
+        "seborrheic keratosis",
+        "nevus",
+        "basal cell carcinoma",
+        "melanoma"
+      ],
+      "secs": 22.0
+    },
+    "ctrl_tissue": {
+      "pass": true,
+      "axis_name": "anatomical location",
+      "model_says_severity": false,
+      "after_guard": false,
+      "ordered_classes": [
+        "mucus",
+        "debris",
+        "smooth muscle",
+        "lymphocytes",
+        "adipose"
+      ],
+      "secs": 21.5
+    },
+    "_score": "4/6"
+  }
+}

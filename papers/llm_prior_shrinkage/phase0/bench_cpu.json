@@ -1,0 +1,15 @@
+{
+  "load_s": 6.5,
+  "params_M": 195.9,
+  "threads": 8,
+  "image": {
+    "bs1": 4.44,
+    "bs8": 4.84,
+    "bs32": 4.61
+  },
+  "text": {
+    "per_s": 3.18
+  },
+  "feat_dim": 512,
+  "est_hours_50k": 2.87
+}

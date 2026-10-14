@@ -1,0 +1,54 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+normalization mean=[0.48145466, 0.4578275, 0.40821073] std=[0.26862954, 0.26130258, 0.27577711]
+input (780, 224, 224) grayscale=True
+  16/780  0.80 img/s  eta 16.0 min
+  176/780  0.85 img/s  eta 11.8 min
+  336/780  0.87 img/s  eta 8.5 min
+  496/780  0.87 img/s  eta 5.4 min
+  656/780  0.87 img/s  eta 2.4 min
+done 780 images in 14.9 min (0.87 img/s)
+wrote /mnt/extra-storage/features/bus_biomedclip.npz
+  task 'case category': MULTICLASS_CLASSIFICATION, classes=3
+  task 'malignancy': BINARY_CLASSIFICATION, classes=2
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+normalization mean=[0.48145466, 0.4578275, 0.40821073] std=[0.26862954, 0.26130258, 0.27577711]
+input (1696, 224, 224) grayscale=True
+  16/1696  1.01 img/s  eta 27.6 min
+  176/1696  0.93 img/s  eta 27.2 min
+  336/1696  1.23 img/s  eta 18.4 min
+  496/1696  1.32 img/s  eta 15.1 min
+  656/1696  1.36 img/s  eta 12.7 min
+  816/1696  1.37 img/s  eta 10.7 min
+  976/1696  1.39 img/s  eta 8.6 min
+  1136/1696  1.40 img/s  eta 6.7 min
+  1296/1696  1.41 img/s  eta 4.7 min
+  1456/1696  1.41 img/s  eta 2.8 min
+  1616/1696  1.42 img/s  eta 0.9 min
+done 1696 images in 19.9 min (1.42 img/s)
+wrote /mnt/extra-storage/features/mammo_mass_biomedclip.npz
+  task 'pathology': BINARY_CLASSIFICATION, classes=2
+  task 'mass shape': MULTILABEL_CLASSIFICATION, classes=8
+  task 'mass margins': MULTILABEL_CLASSIFICATION, classes=5
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+WARNING:huggingface_hub.utils._http:Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+normalization mean=[0.48145466, 0.4578275, 0.40821073] std=[0.26862954, 0.26130258, 0.27577711]
+input (1872, 224, 224) grayscale=True
+  16/1872  1.42 img/s  eta 21.7 min
+  176/1872  1.49 img/s  eta 18.9 min
+  336/1872  1.49 img/s  eta 17.2 min
+  496/1872  1.48 img/s  eta 15.5 min
+  656/1872  1.44 img/s  eta 14.1 min
+  816/1872  1.47 img/s  eta 12.0 min
+  976/1872  1.47 img/s  eta 10.1 min
+  1136/1872  1.36 img/s  eta 9.0 min
+  1296/1872  1.31 img/s  eta 7.3 min
+  1456/1872  1.27 img/s  eta 5.4 min
+  1616/1872  1.25 img/s  eta 3.4 min
+  1776/1872  1.29 img/s  eta 1.2 min
+done 1872 images in 23.8 min (1.31 img/s)
+wrote /mnt/extra-storage/features/mammo_calc_biomedclip.npz
+  task 'pathology': BINARY_CLASSIFICATION, classes=2
+  task 'calc type': MULTILABEL_CLASSIFICATION, classes=14
+  task 'calc distribution': MULTILABEL_CLASSIFICATION, classes=5

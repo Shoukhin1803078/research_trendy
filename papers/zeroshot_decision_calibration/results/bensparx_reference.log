@@ -1,0 +1,2 @@
+900 segments, 120 subjects, 71 features, segment prevalence 0.500
+  logreg         segment AUROC 0.879+-0.024   subject AUROC 0.998+-0.005   subject BACC 0.985+-0.020

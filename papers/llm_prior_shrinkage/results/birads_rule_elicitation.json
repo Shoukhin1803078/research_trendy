@@ -1,0 +1,226 @@
+{
+  "mammo_mass/mass margins": {
+    "rows": [
+      {
+        "descriptor": "CIRCUMSCRIBED",
+        "llm": 0.05,
+        "empirical": 0.132890365448505,
+        "n_train": 301
+      },
+      {
+        "descriptor": "ILL_DEFINED",
+        "llm": 0.2,
+        "empirical": 0.6774193548387096,
+        "n_train": 310
+      },
+      {
+        "descriptor": "MICROLOBULATED",
+        "llm": 0.2,
+        "empirical": 0.6442307692307693,
+        "n_train": 104
+      },
+      {
+        "descriptor": "OBSCURED",
+        "llm": 0.2,
+        "empirical": 0.20812182741116753,
+        "n_train": 197
+      },
+      {
+        "descriptor": "SPICULATED",
+        "llm": 0.8,
+        "empirical": 0.9283154121863799,
+        "n_train": 279
+      }
+    ],
+    "spearman": 0.8944271909999159,
+    "pearson": 0.7711233454200099,
+    "pearson_p": 0.12683338835163188,
+    "n": 5
+  },
+  "mammo_mass/mass shape": {
+    "rows": [
+      {
+        "descriptor": "ARCHITECTURAL_DISTORTION",
+        "llm": 0.2,
+        "empirical": 0.7857142857142857,
+        "n_train": 112
+      },
+      {
+        "descriptor": "ASYMMETRIC_BREAST_TISSUE",
+        "llm": 0.2,
+        "empirical": 0.5,
+        "n_train": 16
+      },
+      {
+        "descriptor": "FOCAL_ASYMMETRIC_DENSITY",
+        "llm": 0.05,
+        "empirical": 0.17647058823529413,
+        "n_train": 17
+      },
+      {
+        "descriptor": "IRREGULAR",
+        "llm": 0.2,
+        "empirical": 0.844574780058651,
+        "n_train": 341
+      },
+      {
+        "descriptor": "LOBULATED",
+        "llm": 0.2,
+        "empirical": 0.362962962962963,
+        "n_train": 270
+      },
+      {
+        "descriptor": "LYMPH_NODE",
+        "llm": 0.0,
+        "empirical": 0.0,
+        "n_train": 32
+      },
+      {
+        "descriptor": "OVAL",
+        "llm": 0.05,
+        "empirical": 0.2898550724637681,
+        "n_train": 276
+      },
+      {
+        "descriptor": "ROUND",
+        "llm": 0.05,
+        "empirical": 0.2966101694915254,
+        "n_train": 118
+      }
+    ],
+    "spearman": 0.9128709291752769,
+    "pearson": 0.8356302842575476,
+    "pearson_p": 0.009778462163607823,
+    "n": 8
+  },
+  "mammo_calc/calc type": {
+    "rows": [
+      {
+        "descriptor": "AMORPHOUS",
+        "llm": 0.2,
+        "empirical": 0.4172661870503597,
+        "n_train": 139
+      },
+      {
+        "descriptor": "COARSE",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 46
+      },
+      {
+        "descriptor": "DYSTROPHIC",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 20
+      },
+      {
+        "descriptor": "EGGSHELL",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 30
+      },
+      {
+        "descriptor": "FINE_LINEAR_BRANCHING",
+        "llm": 0.2,
+        "empirical": 0.7684210526315789,
+        "n_train": 95
+      },
+      {
+        "descriptor": "LARGE_RODLIKE",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 11
+      },
+      {
+        "descriptor": "LUCENT_CENTER",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 196
+      },
+      {
+        "descriptor": "LUCENT_CENTERED",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 32
+      },
+      {
+        "descriptor": "MILK_OF_CALCIUM",
+        "llm": 0.05,
+        "empirical": NaN,
+        "n_train": 0
+      },
+      {
+        "descriptor": "PLEOMORPHIC",
+        "llm": 0.2,
+        "empirical": 0.5389507154213037,
+        "n_train": 629
+      },
+      {
+        "descriptor": "PUNCTATE",
+        "llm": 0.2,
+        "empirical": 0.21301775147928995,
+        "n_train": 169
+      },
+      {
+        "descriptor": "ROUND_AND_REGULAR",
+        "llm": 0.05,
+        "empirical": 0.04487179487179487,
+        "n_train": 156
+      },
+      {
+        "descriptor": "SKIN",
+        "llm": 0.5,
+        "empirical": 0.0,
+        "n_train": 11
+      },
+      {
+        "descriptor": "VASCULAR",
+        "llm": 0.2,
+        "empirical": 0.0,
+        "n_train": 74
+      }
+    ],
+    "spearman": -0.2689264371002386,
+    "pearson": -0.09944872705999282,
+    "pearson_p": 0.7465132763630948,
+    "n": 13
+  },
+  "mammo_calc/calc distribution": {
+    "rows": [
+      {
+        "descriptor": "CLUSTERED",
+        "llm": 0.2,
+        "empirical": 0.4501510574018127,
+        "n_train": 662
+      },
+      {
+        "descriptor": "DIFFUSELY_SCATTERED",
+        "llm": 0.2,
+        "empirical": 0.08108108108108109,
+        "n_train": 37
+      },
+      {
+        "descriptor": "LINEAR",
+        "llm": 0.05,
+        "empirical": 0.7102803738317757,
+        "n_train": 107
+      },
+      {
+        "descriptor": "REGIONAL",
+        "llm": 0.2,
+        "empirical": 0.4175824175824176,
+        "n_train": 91
+      },
+      {
+        "descriptor": "SEGMENTAL",
+        "llm": 0.2,
+        "empirical": 0.5851851851851851,
+        "n_train": 135
+      }
+    ],
+    "spearman": -0.7071067811865475,
+    "pearson": -0.6187092191041231,
+    "pearson_p": 0.26586980598393195,
+    "n": 5
+  }
+}

@@ -1,0 +1,920 @@
+[
+ {
+  "endpoint": "BUS: malignant finding",
+  "dataset": "bus",
+  "task": "malignancy",
+  "pos_classes": [
+   1
+  ],
+  "n_test": 156,
+  "prevalence": 0.28205128205128205,
+  "majority_acc": 0.717948717948718,
+  "diagnostic": {
+   "auroc": 0.6889204545454546,
+   "inverted": false,
+   "bacc_native": 0.6578733766233766,
+   "bacc_binormal": 0.6362515135446147,
+   "bacc_binormal_if_sign_known": 0.6362515135446147,
+   "bacc_oracle": 0.6728896103896105,
+   "H": -0.021621863078761905,
+   "H_oracle": 0.015016233766233844
+  },
+  "auroc_ci95": [
+   0.5972216386554622,
+   0.7787808644572737
+  ],
+  "pi_mixture": 0.6698440607306837,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.6578733766233766,
+    "sens": 0.6818181818181818,
+    "spec": 0.6339285714285714,
+    "acc": 0.6474358974358975,
+    "pred_pos_rate": 0.4551282051282051
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.28205128205128205,
+    "bacc": 0.6359577922077921,
+    "sens": 0.4772727272727273,
+    "spec": 0.7946428571428571,
+    "acc": 0.7051282051282052,
+    "pred_pos_rate": 0.28205128205128205
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.6698440607306837,
+    "bacc": 0.6213474025974026,
+    "sens": 0.8409090909090909,
+    "spec": 0.4017857142857143,
+    "acc": 0.5256410256410257,
+    "pred_pos_rate": 0.6666666666666666
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.6319697859909706,
+    "bacc_std": 0.024192797054260154,
+    "w_mean": 0.45300000000000007,
+    "pi_mean": 0.5239393595109997
+   },
+   "8": {
+    "bacc_mean": 0.6337553814421123,
+    "bacc_std": 0.028971258567813844,
+    "w_mean": 0.23200000000000004,
+    "pi_mean": 0.3841538220895186
+   },
+   "16": {
+    "bacc_mean": 0.634775905966928,
+    "bacc_std": 0.024636611379608864,
+    "w_mean": 0.129,
+    "pi_mean": 0.3112848838342582
+   },
+   "32": {
+    "bacc_mean": 0.6481380431803574,
+    "bacc_std": 0.027591502207675807,
+    "w_mean": 0.05600000000000001,
+    "pi_mean": 0.30404251740091826
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.43323863636363635,
+   "inverted": true,
+   "bacc_native": 0.4679383116883117,
+   "bacc_binormal": 0.4526815607296405,
+   "bacc_binormal_if_sign_known": 0.5473184392703595,
+   "bacc_oracle": 0.5186688311688311,
+   "H": -0.015256750958671184,
+   "H_oracle": 0.05073051948051943
+  },
+  "control_random_scores": {
+   "auroc": 0.5018262987012987,
+   "inverted": false,
+   "bacc_native": 0.4679383116883117,
+   "bacc_binormal": 0.5012913904514461,
+   "bacc_binormal_if_sign_known": 0.5012913904514461,
+   "bacc_oracle": 0.5564123376623378,
+   "H": 0.033353078763134425,
+   "H_oracle": 0.0884740259740261
+  }
+ },
+ {
+  "endpoint": "BUS: malignant vs rest",
+  "dataset": "bus",
+  "task": "case category",
+  "pos_classes": [
+   2
+  ],
+  "n_test": 156,
+  "prevalence": 0.28205128205128205,
+  "majority_acc": 0.717948717948718,
+  "diagnostic": {
+   "auroc": 0.7408685064935064,
+   "inverted": false,
+   "bacc_native": 0.6546266233766234,
+   "bacc_binormal": 0.6760957789013452,
+   "bacc_binormal_if_sign_known": 0.6760957789013452,
+   "bacc_oracle": 0.7256493506493507,
+   "H": 0.02146915552472184,
+   "H_oracle": 0.07102272727272729
+  },
+  "auroc_ci95": [
+   0.6505854771030514,
+   0.8275399851161428
+  ],
+  "pi_mixture": 0.8381053815213547,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.6546266233766234,
+    "sens": 0.8181818181818182,
+    "spec": 0.49107142857142855,
+    "acc": 0.5833333333333334,
+    "pred_pos_rate": 0.5961538461538461
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.28205128205128205,
+    "bacc": 0.6834415584415584,
+    "sens": 0.5454545454545454,
+    "spec": 0.8214285714285714,
+    "acc": 0.7435897435897436,
+    "pred_pos_rate": 0.28205128205128205
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.8381053815213547,
+    "bacc": 0.5482954545454546,
+    "sens": 0.9090909090909091,
+    "spec": 0.1875,
+    "acc": 0.391025641025641,
+    "pred_pos_rate": 0.8397435897435898
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.6272518650677413,
+    "bacc_std": 0.06506731696514399,
+    "w_mean": 0.40299999999999997,
+    "pi_mean": 0.577756468753106
+   },
+   "8": {
+    "bacc_mean": 0.6677502176263502,
+    "bacc_std": 0.04421768450537989,
+    "w_mean": 0.134,
+    "pi_mean": 0.3790561211238615
+   },
+   "16": {
+    "bacc_mean": 0.6733000259909283,
+    "bacc_std": 0.031836763934561106,
+    "w_mean": 0.078,
+    "pi_mean": 0.31112221975866566
+   },
+   "32": {
+    "bacc_mean": 0.682563178147723,
+    "bacc_std": 0.019430218302461236,
+    "w_mean": 0.061,
+    "pi_mean": 0.3157494282728026
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.43770292207792205,
+   "inverted": true,
+   "bacc_native": 0.44886363636363635,
+   "bacc_binormal": 0.4558591948977186,
+   "bacc_binormal_if_sign_known": 0.5441408051022814,
+   "bacc_oracle": 0.5324675324675324,
+   "H": 0.006995558534082236,
+   "H_oracle": 0.08360389610389607
+  },
+  "control_random_scores": {
+   "auroc": 0.5018262987012987,
+   "inverted": false,
+   "bacc_native": 0.4679383116883117,
+   "bacc_binormal": 0.5012913904514461,
+   "bacc_binormal_if_sign_known": 0.5012913904514461,
+   "bacc_oracle": 0.5564123376623378,
+   "H": 0.033353078763134425,
+   "H_oracle": 0.0884740259740261
+  }
+ },
+ {
+  "endpoint": "BUS: any lesion vs normal",
+  "dataset": "bus",
+  "task": "case category",
+  "pos_classes": [
+   1,
+   2
+  ],
+  "n_test": 156,
+  "prevalence": 0.8269230769230769,
+  "majority_acc": 0.8269230769230769,
+  "diagnostic": {
+   "auroc": 0.8056273327591157,
+   "inverted": false,
+   "bacc_native": 0.6408268733850129,
+   "bacc_binormal": 0.7288874793184019,
+   "bacc_binormal_if_sign_known": 0.7288874793184019,
+   "bacc_oracle": 0.7553832902670111,
+   "H": 0.08806060593338905,
+   "H_oracle": 0.11455641688199825
+  },
+  "auroc_ci95": [
+   0.7285108977641236,
+   0.8785646051161307
+  ],
+  "pi_mixture": 0.5611814113065743,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.6408268733850129,
+    "sens": 0.8372093023255814,
+    "spec": 0.4444444444444444,
+    "acc": 0.7692307692307693,
+    "pred_pos_rate": 0.7884615384615384
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.8269230769230769,
+    "bacc": 0.6416881998277347,
+    "sens": 0.875968992248062,
+    "spec": 0.4074074074074074,
+    "acc": 0.7948717948717948,
+    "pred_pos_rate": 0.8269230769230769
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.5611814113065743,
+    "bacc": 0.7515073212747632,
+    "sens": 0.6511627906976745,
+    "spec": 0.8518518518518519,
+    "acc": 0.6858974358974359,
+    "pred_pos_rate": 0.5641025641025641
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.7273682461487186,
+    "bacc_std": 0.022200788175491846,
+    "w_mean": 0.5509999999999999,
+    "pi_mean": 0.6124609576299225
+   },
+   "8": {
+    "bacc_mean": 0.6981333502859064,
+    "bacc_std": 0.04368143464574169,
+    "w_mean": 0.326,
+    "pi_mean": 0.7098201400859432
+   },
+   "16": {
+    "bacc_mean": 0.6802051977856456,
+    "bacc_std": 0.04673806151568682,
+    "w_mean": 0.272,
+    "pi_mean": 0.7411413438753881
+   },
+   "32": {
+    "bacc_mean": 0.6567986440180333,
+    "bacc_std": 0.04085760745221321,
+    "w_mean": 0.106,
+    "pi_mean": 0.7974852295984968
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.46281940855584264,
+   "inverted": true,
+   "bacc_native": 0.4616709732988803,
+   "bacc_binormal": 0.4736902763348847,
+   "bacc_binormal_if_sign_known": 0.5263097236651154,
+   "bacc_oracle": 0.5404823428079242,
+   "H": 0.012019303036004403,
+   "H_oracle": 0.07881136950904388
+  },
+  "control_random_scores": {
+   "auroc": 0.5515360321561872,
+   "inverted": false,
+   "bacc_native": 0.5512489233419466,
+   "bacc_binormal": 0.5364923894934936,
+   "bacc_binormal_if_sign_known": 0.5364923894934936,
+   "bacc_oracle": 0.6141257536606374,
+   "H": -0.01475653384845299,
+   "H_oracle": 0.06287683031869074
+  }
+ },
+ {
+  "endpoint": "DR: inadequate image quality",
+  "dataset": "dr_regular",
+  "task": "Overall quality",
+  "pos_classes": [
+   0
+  ],
+  "n_test": 400,
+  "prevalence": 0.55,
+  "majority_acc": 0.55,
+  "diagnostic": {
+   "auroc": 0.32335858585858585,
+   "inverted": true,
+   "bacc_native": 0.39015151515151514,
+   "bacc_binormal": 0.37293628065839124,
+   "bacc_binormal_if_sign_known": 0.6270637193416088,
+   "bacc_oracle": 0.5027777777777778,
+   "H": -0.0172152344931239,
+   "H_oracle": 0.11262626262626263
+  },
+  "auroc_ci95": [
+   0.271664461577143,
+   0.37718271936408604
+  ],
+  "pi_mixture": 0.8432884157941208,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.39015151515151514,
+    "sens": 0.5136363636363637,
+    "spec": 0.26666666666666666,
+    "acc": 0.4025,
+    "pred_pos_rate": 0.6125
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.55,
+    "bacc": 0.38383838383838387,
+    "sens": 0.44545454545454544,
+    "spec": 0.32222222222222224,
+    "acc": 0.39,
+    "pred_pos_rate": 0.55
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.8432884157941208,
+    "bacc": 0.4578282828282828,
+    "sens": 0.8045454545454546,
+    "spec": 0.1111111111111111,
+    "acc": 0.4925,
+    "pred_pos_rate": 0.8425
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.4039957444813605,
+    "bacc_std": 0.03222535958489973,
+    "w_mean": 0.397,
+    "pi_mean": 0.613285501070266
+   },
+   "8": {
+    "bacc_mean": 0.40699176564521333,
+    "bacc_std": 0.03445958260469132,
+    "w_mean": 0.381,
+    "pi_mean": 0.6272928864175601
+   },
+   "16": {
+    "bacc_mean": 0.4079730892942526,
+    "bacc_std": 0.03193790768635369,
+    "w_mean": 0.56,
+    "pi_mean": 0.6801165128447078
+   },
+   "32": {
+    "bacc_mean": 0.42111391857550784,
+    "bacc_std": 0.03012318574717867,
+    "w_mean": 0.662,
+    "pi_mean": 0.7377256812557078
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.45805555555555555,
+   "inverted": true,
+   "bacc_native": 0.4861111111111111,
+   "bacc_binormal": 0.4703133938497454,
+   "bacc_binormal_if_sign_known": 0.5296866061502546,
+   "bacc_oracle": 0.5126262626262627,
+   "H": -0.015797717261365696,
+   "H_oracle": 0.026515151515151547
+  },
+  "control_random_scores": {
+   "auroc": 0.5241414141414141,
+   "inverted": false,
+   "bacc_native": 0.5121212121212121,
+   "bacc_binormal": 0.5170757721082804,
+   "bacc_binormal_if_sign_known": 0.5170757721082804,
+   "bacc_oracle": 0.5457070707070707,
+   "H": 0.0049545599870682855,
+   "H_oracle": 0.03358585858585861
+  }
+ },
+ {
+  "endpoint": "DR: any retinopathy (>=1)",
+  "dataset": "dr_regular",
+  "task": "DR level",
+  "pos_classes": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "n_test": 400,
+  "prevalence": 0.5,
+  "majority_acc": 0.5,
+  "diagnostic": {
+   "auroc": 0.6342,
+   "inverted": false,
+   "bacc_native": 0.5975,
+   "bacc_binormal": 0.5958176364868588,
+   "bacc_binormal_if_sign_known": 0.5958176364868588,
+   "bacc_oracle": 0.6174999999999999,
+   "H": -0.0016823635131412162,
+   "H_oracle": 0.019999999999999907
+  },
+  "auroc_ci95": [
+   0.5850065940777452,
+   0.6879150134902525
+  ],
+  "pi_mixture": 0.19150618406080433,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.5975,
+    "sens": 0.52,
+    "spec": 0.675,
+    "acc": 0.5975,
+    "pred_pos_rate": 0.4225
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.5,
+    "bacc": 0.59,
+    "sens": 0.59,
+    "spec": 0.59,
+    "acc": 0.59,
+    "pred_pos_rate": 0.5
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.19150618406080433,
+    "bacc": 0.5975,
+    "sens": 0.29,
+    "spec": 0.905,
+    "acc": 0.5975,
+    "pred_pos_rate": 0.1925
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.5884212329466412,
+    "bacc_std": 0.019077157984094237,
+    "w_mean": 0.37200000000000005,
+    "pi_mean": 0.4192403004706191
+   },
+   "8": {
+    "bacc_mean": 0.5952300656642627,
+    "bacc_std": 0.013942120330807464,
+    "w_mean": 0.43200000000000005,
+    "pi_mean": 0.3779806715142675
+   },
+   "16": {
+    "bacc_mean": 0.5929108950392579,
+    "bacc_std": 0.016554406237763157,
+    "w_mean": 0.39000000000000007,
+    "pi_mean": 0.4017499117837137
+   },
+   "32": {
+    "bacc_mean": 0.5946006577305688,
+    "bacc_std": 0.013095238690843168,
+    "w_mean": 0.474,
+    "pi_mean": 0.35471143124482124
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.46,
+   "inverted": true,
+   "bacc_native": 0.4625,
+   "bacc_binormal": 0.4716919676230747,
+   "bacc_binormal_if_sign_known": 0.5283080323769254,
+   "bacc_oracle": 0.5199999999999999,
+   "H": 0.00919196762307467,
+   "H_oracle": 0.057499999999999885
+  },
+  "control_random_scores": {
+   "auroc": 0.498525,
+   "inverted": true,
+   "bacc_native": 0.51,
+   "bacc_binormal": 0.4989570163096271,
+   "bacc_binormal_if_sign_known": 0.5010429836903729,
+   "bacc_oracle": 0.525,
+   "H": -0.011042983690372932,
+   "H_oracle": 0.015000000000000013
+  }
+ },
+ {
+  "endpoint": "DR: referable DR (>=2)",
+  "dataset": "dr_regular",
+  "task": "DR level",
+  "pos_classes": [
+   2,
+   3,
+   4
+  ],
+  "n_test": 400,
+  "prevalence": 0.41,
+  "majority_acc": 0.5900000000000001,
+  "diagnostic": {
+   "auroc": 0.659647581645308,
+   "inverted": false,
+   "bacc_native": 0.6383319553534519,
+   "bacc_binormal": 0.614464973555952,
+   "bacc_binormal_if_sign_known": 0.614464973555952,
+   "bacc_oracle": 0.6413807358412567,
+   "H": -0.02386698179749991,
+   "H_oracle": 0.0030487804878047697
+  },
+  "auroc_ci95": [
+   0.604191454551885,
+   0.7132511868828352
+  ],
+  "pi_mixture": 0.3047994036199137,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.6383319553534519,
+    "sens": 0.42073170731707316,
+    "spec": 0.8559322033898306,
+    "acc": 0.6775,
+    "pred_pos_rate": 0.2575
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.41,
+    "bacc": 0.6124431583298884,
+    "sens": 0.5426829268292683,
+    "spec": 0.6822033898305084,
+    "acc": 0.625,
+    "pred_pos_rate": 0.41
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.3047994036199137,
+    "bacc": 0.6239148408433237,
+    "sens": 0.45121951219512196,
+    "spec": 0.7966101694915254,
+    "acc": 0.655,
+    "pred_pos_rate": 0.305
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.6143968732372674,
+    "bacc_std": 0.020067139966980646,
+    "w_mean": 0.45399999999999996,
+    "pi_mean": 0.3771289292434408
+   },
+   "8": {
+    "bacc_mean": 0.6140825336988052,
+    "bacc_std": 0.01927213607232282,
+    "w_mean": 0.338,
+    "pi_mean": 0.3701471984235309
+   },
+   "16": {
+    "bacc_mean": 0.6158222504597837,
+    "bacc_std": 0.015884822193552854,
+    "w_mean": 0.314,
+    "pi_mean": 0.37670701273665297
+   },
+   "32": {
+    "bacc_mean": 0.6202935109708414,
+    "bacc_std": 0.011664102403354453,
+    "w_mean": 0.406,
+    "pi_mean": 0.35156105786968495
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.46338879702356345,
+   "inverted": true,
+   "bacc_native": 0.4729743695742042,
+   "bacc_binormal": 0.474093759122889,
+   "bacc_binormal_if_sign_known": 0.525906240877111,
+   "bacc_oracle": 0.5132286068623397,
+   "H": 0.0011193895486847905,
+   "H_oracle": 0.04025423728813554
+  },
+  "control_random_scores": {
+   "auroc": 0.48620297643654403,
+   "inverted": true,
+   "bacc_native": 0.5014468788755684,
+   "bacc_binormal": 0.49024305836955084,
+   "bacc_binormal_if_sign_known": 0.5097569416304492,
+   "bacc_oracle": 0.5238735014468789,
+   "H": -0.011203820506017537,
+   "H_oracle": 0.02242662257131056
+  }
+ },
+ {
+  "endpoint": "DR: sight-threatening (>=3)",
+  "dataset": "dr_regular",
+  "task": "DR level",
+  "pos_classes": [
+   3,
+   4
+  ],
+  "n_test": 400,
+  "prevalence": 0.23,
+  "majority_acc": 0.77,
+  "diagnostic": {
+   "auroc": 0.7523997741389046,
+   "inverted": false,
+   "bacc_native": 0.5930971202710333,
+   "bacc_binormal": 0.6851999816192347,
+   "bacc_binormal_if_sign_known": 0.6851999816192347,
+   "bacc_oracle": 0.7065217391304348,
+   "H": 0.09210286134820134,
+   "H_oracle": 0.11342461885940147
+  },
+  "auroc_ci95": [
+   0.6942591772492049,
+   0.8069513442734381
+  ],
+  "pi_mixture": 0.34257469463160406,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.5930971202710333,
+    "sens": 0.2608695652173913,
+    "spec": 0.9253246753246753,
+    "acc": 0.7725,
+    "pred_pos_rate": 0.1175
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.23,
+    "bacc": 0.6753246753246753,
+    "sens": 0.5,
+    "spec": 0.8506493506493507,
+    "acc": 0.77,
+    "pred_pos_rate": 0.23
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.34257469463160406,
+    "bacc": 0.7010869565217391,
+    "sens": 0.6521739130434783,
+    "spec": 0.75,
+    "acc": 0.7275,
+    "pred_pos_rate": 0.3425
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.6946420390036464,
+    "bacc_std": 0.008613241596448969,
+    "w_mean": 0.642,
+    "pi_mean": 0.3244329539534898
+   },
+   "8": {
+    "bacc_mean": 0.6666596373216715,
+    "bacc_std": 0.043013478210281564,
+    "w_mean": 0.337,
+    "pi_mean": 0.25657267209085055
+   },
+   "16": {
+    "bacc_mean": 0.6743468128375791,
+    "bacc_std": 0.03633797744986187,
+    "w_mean": 0.27699999999999997,
+    "pi_mean": 0.2515181904129543
+   },
+   "32": {
+    "bacc_mean": 0.6645175536846663,
+    "bacc_std": 0.03893218821847954,
+    "w_mean": 0.15100000000000002,
+    "pi_mean": 0.23063502888937223
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.44604037267080743,
+   "inverted": true,
+   "bacc_native": 0.48016657255787687,
+   "bacc_binormal": 0.4617863181111617,
+   "bacc_binormal_if_sign_known": 0.5382136818888383,
+   "bacc_oracle": 0.5026821005081874,
+   "H": -0.01838025444671515,
+   "H_oracle": 0.022515527950310532
+  },
+  "control_random_scores": {
+   "auroc": 0.4826016374929418,
+   "inverted": true,
+   "bacc_native": 0.4988706945228684,
+   "bacc_binormal": 0.48769554898525425,
+   "bacc_binormal_if_sign_known": 0.5123044510147458,
+   "bacc_oracle": 0.5096696781479391,
+   "H": -0.011175145537614173,
+   "H_oracle": 0.010798983625070646
+  }
+ },
+ {
+  "endpoint": "DR: poor clarity",
+  "dataset": "dr_regular",
+  "task": "Clarity",
+  "pos_classes": [
+   0,
+   1
+  ],
+  "n_test": 400,
+  "prevalence": 0.0375,
+  "majority_acc": 0.9625,
+  "diagnostic": {
+   "auroc": 0.32692640692640695,
+   "inverted": true,
+   "bacc_native": 0.3761904761904762,
+   "bacc_binormal": 0.37559214300758254,
+   "bacc_binormal_if_sign_known": 0.6244078569924174,
+   "bacc_oracle": 0.5155844155844156,
+   "H": -0.0005983331828936511,
+   "H_oracle": 0.1393939393939394
+  },
+  "auroc_ci95": [
+   0.17152034105790584,
+   0.4700904392764858
+  ],
+  "pi_mixture": 0.8142124520087759,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.3761904761904762,
+    "sens": 0.4666666666666667,
+    "spec": 0.2857142857142857,
+    "acc": 0.2925,
+    "pred_pos_rate": 0.705
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.0375,
+    "bacc": 0.4805194805194805,
+    "sens": 0.0,
+    "spec": 0.961038961038961,
+    "acc": 0.925,
+    "pred_pos_rate": 0.0375
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.8142124520087759,
+    "bacc": 0.3883116883116883,
+    "sens": 0.6,
+    "spec": 0.17662337662337663,
+    "acc": 0.1925,
+    "pred_pos_rate": 0.815
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.39130536104452907,
+    "bacc_std": 0.007119868623344425,
+    "w_mean": 0.8290000000000001,
+    "pi_mean": 0.7177321227152751
+   },
+   "8": {
+    "bacc_mean": 0.3977001670105118,
+    "bacc_std": 0.018779606816880484,
+    "w_mean": 0.8,
+    "pi_mean": 0.6763699616070207
+   },
+   "16": {
+    "bacc_mean": 0.42179734655436446,
+    "bacc_std": 0.036488714987929806,
+    "w_mean": 0.52,
+    "pi_mean": 0.46214047504456346
+   },
+   "32": {
+    "bacc_mean": 0.4426357164184019,
+    "bacc_std": 0.04254412010253021,
+    "w_mean": 0.38,
+    "pi_mean": 0.33940073176333485
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.39411255411255414,
+   "inverted": true,
+   "bacc_native": 0.4108225108225108,
+   "bacc_binormal": 0.42467796481344366,
+   "bacc_binormal_if_sign_known": 0.5753220351865564,
+   "bacc_oracle": 0.5337662337662338,
+   "H": 0.013855453990932853,
+   "H_oracle": 0.12294372294372297
+  },
+  "control_random_scores": {
+   "auroc": 0.6102164502164502,
+   "inverted": false,
+   "bacc_native": 0.5623376623376624,
+   "bacc_binormal": 0.5784412133092051,
+   "bacc_binormal_if_sign_known": 0.5784412133092051,
+   "bacc_oracle": 0.6203463203463204,
+   "H": 0.0161035509715427,
+   "H_oracle": 0.058008658008658065
+  }
+ },
+ {
+  "endpoint": "DR: poor field definition",
+  "dataset": "dr_regular",
+  "task": "Field definition",
+  "pos_classes": [
+   0,
+   1
+  ],
+  "n_test": 400,
+  "prevalence": 0.01,
+  "majority_acc": 0.99,
+  "diagnostic": {
+   "auroc": 0.4898989898989899,
+   "inverted": true,
+   "bacc_native": 0.5896464646464646,
+   "bacc_binormal": 0.49285712562010103,
+   "bacc_binormal_if_sign_known": 0.507142874379899,
+   "bacc_oracle": 0.6704545454545454,
+   "H": -0.09678933902636361,
+   "H_oracle": 0.08080808080808077
+  },
+  "auroc_ci95": [
+   0.10006423806690885,
+   0.8907991279291657
+  ],
+  "pi_mixture": 0.27619400685901463,
+  "rules": [
+   {
+    "rule": "native (s>0)",
+    "pi_used": null,
+    "bacc": 0.5896464646464646,
+    "sens": 0.5,
+    "spec": 0.6792929292929293,
+    "acc": 0.6775,
+    "pred_pos_rate": 0.3225
+   },
+   {
+    "rule": "ROPE-Q (pi known)",
+    "pi_used": 0.01,
+    "bacc": 0.494949494949495,
+    "sens": 0.0,
+    "spec": 0.98989898989899,
+    "acc": 0.98,
+    "pred_pos_rate": 0.01
+   },
+   {
+    "rule": "ROPE-M (pi from scores)",
+    "pi_used": 0.27619400685901463,
+    "bacc": 0.6136363636363636,
+    "sens": 0.5,
+    "spec": 0.7272727272727273,
+    "acc": 0.725,
+    "pred_pos_rate": 0.275
+   }
+  ],
+  "rope_s": {
+   "4": {
+    "bacc_mean": 0.6174531988367866,
+    "bacc_std": 0.01865109802422016,
+    "w_mean": 0.96,
+    "pi_mean": 0.27514624658465403
+   },
+   "8": {
+    "bacc_mean": 0.6126519668901669,
+    "bacc_std": 0.00665126277763062,
+    "w_mean": 0.929,
+    "pi_mean": 0.26545923237202457
+   },
+   "16": {
+    "bacc_mean": 0.5904604917806328,
+    "bacc_std": 0.05313878583719583,
+    "w_mean": 0.84,
+    "pi_mean": 0.2420029657615723
+   },
+   "32": {
+    "bacc_mean": 0.5688358323688438,
+    "bacc_std": 0.06130700244447825,
+    "w_mean": 0.66,
+    "pi_mean": 0.19353804452694967
+   }
+  },
+  "control_shuffled_labels": {
+   "auroc": 0.3560606060606061,
+   "inverted": true,
+   "bacc_native": 0.4633838383838384,
+   "bacc_binormal": 0.39707379199263243,
+   "bacc_binormal_if_sign_known": 0.6029262080073675,
+   "bacc_oracle": 0.5126262626262627,
+   "H": -0.06631004639120597,
+   "H_oracle": 0.049242424242424254
+  },
+  "control_random_scores": {
+   "auroc": 0.6445707070707071,
+   "inverted": false,
+   "bacc_native": 0.5101010101010102,
+   "bacc_binormal": 0.6033881442159265,
+   "bacc_binormal_if_sign_known": 0.6033881442159265,
+   "bacc_oracle": 0.6843434343434344,
+   "H": 0.09328713411491629,
+   "H_oracle": 0.1742424242424242
+  }
+ }
+]

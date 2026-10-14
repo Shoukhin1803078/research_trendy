@@ -1,0 +1,75 @@
+TCLA reproduction | bus/case category | C=3 | N=780 | class counts [np.int64(133), np.int64(437), np.int64(210)]
+classes: ['normal', 'benign', 'malignant']
+lf_mode=aggressive  seeds=50  protocol: k/class support, test = remainder
+
+--- 1-shot   (test n=777, 3s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.27    0.07      35.50
+tip_adapter       41.69    0.39      35.88
+proto_only        47.86    6.99      44.03
+tcla              52.46    6.40      46.72
+ours_anchor_ridge    44.83    9.59      38.81
+ours_no_zs        45.98    5.90      40.61
+ours_shuffled_labels    31.34    9.83      32.22
+  tcla - proto_only:  +4.60 BACC  wins 46/50  p=7.94e-12
+  ours_anchor_ridge - tcla:  -7.63 BACC  wins 10/50  p=3.14e-06
+  ours_anchor_ridge - proto_only:  -3.03 BACC  wins 18/50  p=5.35e-02
+  ours_anchor_ridge - ours_shuffled_labels: +13.49 BACC  wins 34/50  p=1.31e-08
+
+--- 2-shot   (test n=774, 223s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.25    0.13      35.47
+tip_adapter       42.18    0.64      36.27
+proto_only        55.58    6.61      49.62
+tcla              54.96    6.71      47.25
+ours_anchor_ridge    51.38    7.02      46.93
+ours_no_zs        51.33    6.71      46.84
+ours_shuffled_labels    33.25   10.04      32.37
+  tcla - proto_only:  -0.63 BACC  wins 25/50  p=4.19e-01
+  ours_anchor_ridge - tcla:  -3.58 BACC  wins 20/50  p=1.23e-02
+  ours_anchor_ridge - proto_only:  -4.21 BACC  wins 16/50  p=1.55e-03
+  ours_anchor_ridge - ours_shuffled_labels: +18.13 BACC  wins 47/50  p=2.39e-14
+
+--- 4-shot   (test n=768, 233s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.23    0.18      35.40
+tip_adapter       43.15    0.66      36.99
+proto_only        63.43    5.32      58.85
+tcla              59.71    5.64      52.93
+ours_anchor_ridge    58.30    6.37      53.81
+ours_no_zs        61.45    5.28      58.58
+ours_shuffled_labels    35.46   10.66      34.10
+  tcla - proto_only:  -3.73 BACC  wins 14/50  p=6.21e-06
+  ours_anchor_ridge - tcla:  -1.40 BACC  wins 24/50  p=1.48e-01
+  ours_anchor_ridge - proto_only:  -5.13 BACC  wins 12/50  p=2.19e-08
+  ours_anchor_ridge - ours_shuffled_labels: +22.84 BACC  wins 49/50  p=4.10e-18
+
+--- 8-shot   (test n=756, 221s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.29    0.25      35.35
+tip_adapter       44.51    1.03      37.86
+proto_only        69.68    3.85      65.42
+tcla              65.17    4.47      58.03
+ours_anchor_ridge    65.41    4.23      61.92
+ours_no_zs        67.97    3.67      65.52
+ours_shuffled_labels    32.71   10.59      31.80
+  tcla - proto_only:  -4.51 BACC  wins 8/50  p=1.05e-09
+  ours_anchor_ridge - tcla:  +0.24 BACC  wins 28/50  p=7.41e-01
+  ours_anchor_ridge - proto_only:  -4.27 BACC  wins 4/50  p=1.28e-13
+  ours_anchor_ridge - ours_shuffled_labels: +32.70 BACC  wins 50/50  p=9.84e-26
+
+--- 16-shot   (test n=732, 241s for 50 seeds) ---
+method             BACC     +/-   accuracy
+zero_shot         41.27    0.41      35.13
+tip_adapter       47.36    1.30      39.84
+proto_only        73.60    2.50      69.96
+tcla              70.94    3.36      65.23
+ours_anchor_ridge    70.86    2.72      68.86
+ours_no_zs        72.76    2.56      70.93
+ours_shuffled_labels    32.80   10.69      33.50
+  tcla - proto_only:  -2.66 BACC  wins 7/50  p=4.64e-08
+  ours_anchor_ridge - tcla:  -0.09 BACC  wins 26/50  p=8.31e-01
+  ours_anchor_ridge - proto_only:  -2.74 BACC  wins 6/50  p=1.57e-09
+  ours_anchor_ridge - ours_shuffled_labels: +38.05 BACC  wins 50/50  p=5.71e-29
+
+wrote results/tcla_repro_bus_case_category_aggressive.json

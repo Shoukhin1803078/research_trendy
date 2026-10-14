@@ -1,0 +1,74 @@
+
+BUS: malignant finding   n=156  pi=0.282  majority_acc=0.718
+  AUROC 0.689 [0.597,0.779]   native BACC 0.658   reachable 0.636   H -0.022
+    native (s>0)               BACC 0.658  sens 0.682  spec 0.634  pred+ 0.455
+    ROPE-Q (pi known)          BACC 0.636  sens 0.477  spec 0.795  pred+ 0.282
+    ROPE-M (pi from scores)    BACC 0.621  sens 0.841  spec 0.402  pred+ 0.667
+    pi: true 0.282  mixture 0.670
+    ROPE-S k=4:0.632(w=0.45)  k=8:0.634(w=0.23)  k=16:0.635(w=0.13)  k=32:0.648(w=0.06)
+
+BUS: malignant vs rest   n=156  pi=0.282  majority_acc=0.718
+  AUROC 0.741 [0.651,0.828]   native BACC 0.655   reachable 0.676   H +0.021
+    native (s>0)               BACC 0.655  sens 0.818  spec 0.491  pred+ 0.596
+    ROPE-Q (pi known)          BACC 0.683  sens 0.545  spec 0.821  pred+ 0.282
+    ROPE-M (pi from scores)    BACC 0.548  sens 0.909  spec 0.188  pred+ 0.840
+    pi: true 0.282  mixture 0.838
+    ROPE-S k=4:0.627(w=0.40)  k=8:0.668(w=0.13)  k=16:0.673(w=0.08)  k=32:0.683(w=0.06)
+
+BUS: any lesion vs normal   n=156  pi=0.827  majority_acc=0.827
+  AUROC 0.806 [0.729,0.879]   native BACC 0.641   reachable 0.729   H +0.088
+    native (s>0)               BACC 0.641  sens 0.837  spec 0.444  pred+ 0.788
+    ROPE-Q (pi known)          BACC 0.642  sens 0.876  spec 0.407  pred+ 0.827
+    ROPE-M (pi from scores)    BACC 0.752  sens 0.651  spec 0.852  pred+ 0.564
+    pi: true 0.827  mixture 0.561
+    ROPE-S k=4:0.727(w=0.55)  k=8:0.698(w=0.33)  k=16:0.680(w=0.27)  k=32:0.657(w=0.11)
+
+DR: inadequate image quality   n=400  pi=0.550  majority_acc=0.550
+  AUROC 0.323 [0.272,0.377]   native BACC 0.390   reachable 0.373   H -0.017
+    native (s>0)               BACC 0.390  sens 0.514  spec 0.267  pred+ 0.613
+    ROPE-Q (pi known)          BACC 0.384  sens 0.445  spec 0.322  pred+ 0.550
+    ROPE-M (pi from scores)    BACC 0.458  sens 0.805  spec 0.111  pred+ 0.843
+    pi: true 0.550  mixture 0.843
+    ROPE-S k=4:0.404(w=0.40)  k=8:0.407(w=0.38)  k=16:0.408(w=0.56)  k=32:0.421(w=0.66)
+
+DR: any retinopathy (>=1)   n=400  pi=0.500  majority_acc=0.500
+  AUROC 0.634 [0.585,0.688]   native BACC 0.598   reachable 0.596   H -0.002
+    native (s>0)               BACC 0.598  sens 0.520  spec 0.675  pred+ 0.422
+    ROPE-Q (pi known)          BACC 0.590  sens 0.590  spec 0.590  pred+ 0.500
+    ROPE-M (pi from scores)    BACC 0.598  sens 0.290  spec 0.905  pred+ 0.193
+    pi: true 0.500  mixture 0.192
+    ROPE-S k=4:0.588(w=0.37)  k=8:0.595(w=0.43)  k=16:0.593(w=0.39)  k=32:0.595(w=0.47)
+
+DR: referable DR (>=2)   n=400  pi=0.410  majority_acc=0.590
+  AUROC 0.660 [0.604,0.713]   native BACC 0.638   reachable 0.614   H -0.024
+    native (s>0)               BACC 0.638  sens 0.421  spec 0.856  pred+ 0.258
+    ROPE-Q (pi known)          BACC 0.612  sens 0.543  spec 0.682  pred+ 0.410
+    ROPE-M (pi from scores)    BACC 0.624  sens 0.451  spec 0.797  pred+ 0.305
+    pi: true 0.410  mixture 0.305
+    ROPE-S k=4:0.614(w=0.45)  k=8:0.614(w=0.34)  k=16:0.616(w=0.31)  k=32:0.620(w=0.41)
+
+DR: sight-threatening (>=3)   n=400  pi=0.230  majority_acc=0.770
+  AUROC 0.752 [0.694,0.807]   native BACC 0.593   reachable 0.685   H +0.092
+    native (s>0)               BACC 0.593  sens 0.261  spec 0.925  pred+ 0.117
+    ROPE-Q (pi known)          BACC 0.675  sens 0.500  spec 0.851  pred+ 0.230
+    ROPE-M (pi from scores)    BACC 0.701  sens 0.652  spec 0.750  pred+ 0.343
+    pi: true 0.230  mixture 0.343
+    ROPE-S k=4:0.695(w=0.64)  k=8:0.667(w=0.34)  k=16:0.674(w=0.28)  k=32:0.665(w=0.15)
+
+DR: poor clarity   n=400  pi=0.037  majority_acc=0.963
+  AUROC 0.327 [0.172,0.470]   native BACC 0.376   reachable 0.376   H -0.001
+    native (s>0)               BACC 0.376  sens 0.467  spec 0.286  pred+ 0.705
+    ROPE-Q (pi known)          BACC 0.481  sens 0.000  spec 0.961  pred+ 0.037
+    ROPE-M (pi from scores)    BACC 0.388  sens 0.600  spec 0.177  pred+ 0.815
+    pi: true 0.037  mixture 0.814
+    ROPE-S k=4:0.391(w=0.83)  k=8:0.398(w=0.80)  k=16:0.422(w=0.52)  k=32:0.443(w=0.38)
+
+DR: poor field definition   n=400  pi=0.010  majority_acc=0.990
+  AUROC 0.490 [0.100,0.891]   native BACC 0.590   reachable 0.493   H -0.097
+    native (s>0)               BACC 0.590  sens 0.500  spec 0.679  pred+ 0.323
+    ROPE-Q (pi known)          BACC 0.495  sens 0.000  spec 0.990  pred+ 0.010
+    ROPE-M (pi from scores)    BACC 0.614  sens 0.500  spec 0.727  pred+ 0.275
+    pi: true 0.010  mixture 0.276
+    ROPE-S k=4:0.617(w=0.96)  k=8:0.613(w=0.93)  k=16:0.590(w=0.84)  k=32:0.569(w=0.66)
+
+wrote /mnt/extra-storage/research_trendy/papers/zeroshot_decision_calibration/results/arm_a_medimeta.json  (9 endpoints)

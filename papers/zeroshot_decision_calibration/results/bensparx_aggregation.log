@@ -1,0 +1,28 @@
+900 segments, 120 subjects, 71 features, segment prevalence 0.500
+
+1. Subject-level aggregation rules, same segment scores throughout
+   segment-level AUROC 0.879+-0.024
+   majority_vote  subject BACC 0.955+-0.046   AUROC 0.989  <- paper 3's rule
+   mean_prob      subject BACC 0.985+-0.020   AUROC 0.998   vs vote +0.030
+   mean_logit     subject BACC 0.985+-0.020   AUROC 0.999   vs vote +0.030
+   max_prob       subject BACC 0.617+-0.063   AUROC 0.995   vs vote -0.338
+   paired: mean_prob - majority_vote = +0.0300 [+0.0150,+0.0450] over 25 folds  SIGNIFICANT
+
+2. Feature subsets (selection inside the training fold)
+   all_71                 subject AUROC 0.999+-0.003
+   jitter_shimmer_11      subject AUROC 0.970+-0.030
+   voice_quality_4        subject AUROC 0.873+-0.078
+   pitch_intensity_9      subject AUROC 0.979+-0.033
+   mfcc_39                subject AUROC 0.994+-0.009
+   energy_4               subject AUROC 0.974+-0.026
+   pulses_4               subject AUROC 0.903+-0.048
+   top5_in_fold           subject AUROC 0.999+-0.003
+   top10_in_fold          subject AUROC 1.000+-0.001
+   top20_in_fold          subject AUROC 0.999+-0.003
+   top40_in_fold          subject AUROC 0.999+-0.002
+
+3. What a row-wise split would have reported (the leak, quantified)
+   subject-grouped segment AUROC 0.879+-0.024
+   row-wise     segment AUROC 0.879+-0.023   inflated by -0.000
+
+wrote /mnt/extra-storage/research_trendy/papers/zeroshot_decision_calibration/results/bensparx_aggregation.json
