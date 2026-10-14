@@ -292,8 +292,98 @@ def fig6():
     save(fig, "fig6_feature_saturation")
 
 
+
+
+# ------------------------- Fig 7: predicted vs realised gain, expanded set
+def fig7():
+    """RQ1. Plots the LEVEL form (estimated reachable vs achieved), which shares
+    no term with the baseline, alongside the difference form."""
+    d = json.load(open(os.path.join(R, "endpoints_v2.json")))
+    eps = [e for e in d["endpoints"] if e["auroc"] > 0.5]
+    clusters = sorted(set(e["cluster"] for e in eps))
+    cmap = {c: col for c, col in zip(clusters, [S1, S2, S3, S4])}
+
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(8.2, 4.1))
+    k = "64"
+    # left: difference form
+    H = [e["H"] for e in eps]
+    g = [e["shots"][k]["mean"] - e["bacc_native"] for e in eps]
+    lim = [min(min(H), min(g)) - 0.03, max(max(H), max(g)) + 0.04]
+    axL.plot(lim, lim, color=MUTED, lw=1.2, ls="--", zorder=1)
+    axL.axhline(0, color=AXIS, lw=0.9); axL.axvline(0, color=AXIS, lw=0.9)
+    for e in eps:
+        axL.scatter(e["H"], e["shots"][k]["mean"] - e["bacc_native"], s=60,
+                    color=cmap[e["cluster"]], edgecolor=SURFACE, lw=1.2, zorder=4)
+    axL.set_xlim(lim); axL.set_ylim(lim)
+    axL.set_xlabel("estimated headroom H")
+    axL.set_ylabel("realised gain from fitting\nthe decision point (k = 64)")
+    axL.set_title("Difference form\n(shares the term -BACC_native)", loc="left")
+
+    # right: level form, no shared term
+    rc = [e["bacc_binormal"] for e in eps]
+    ac = [e["shots"][k]["mean"] for e in eps]
+    lim2 = [min(min(rc), min(ac)) - 0.03, max(max(rc), max(ac)) + 0.04]
+    axR.plot(lim2, lim2, color=MUTED, lw=1.2, ls="--", zorder=1)
+    for e in eps:
+        axR.scatter(e["bacc_binormal"], e["shots"][k]["mean"], s=60,
+                    color=cmap[e["cluster"]], edgecolor=SURFACE, lw=1.2, zorder=4)
+    axR.set_xlim(lim2); axR.set_ylim(lim2)
+    axR.set_xlabel("estimated reachable BACC")
+    axR.set_ylabel("achieved BACC (k = 64)")
+    axR.set_title("Level form\n(no shared term; Spearman 0.905, p = 0.005)", loc="left")
+
+    handles = [Line2D([0], [0], marker="o", ls="", ms=7, color=cmap[c],
+                      label=c.replace("::", " / ")) for c in clusters]
+    fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=8,
+               bbox_to_anchor=(0.5, -0.04))
+    fig.suptitle("Estimated headroom predicts the realised gain across 8 endpoints",
+                 x=0.005, ha="left", fontsize=10.5)
+    fig.tight_layout(rect=[0, 0.05, 1, 0.94])
+    save(fig, "fig7_validation_expanded")
+
+
+# ------------------------------- Fig 8: how robust is the headline statistic?
+def fig8():
+    hs = json.load(open(os.path.join(R, "harvest_sensitivity.json")))
+    fig, (axL, axR) = plt.subplots(1, 2, figsize=(8.0, 3.6),
+                                   gridspec_kw={"width_ratios": [1.1, 1]})
+    cuts = sorted(float(k) for k in hs["sensitivity_H_cut"])
+    shares = [100 * hs["sensitivity_H_cut"][str(c)][0] / hs["n_cells"] for c in cuts]
+    cols = [S2 if abs(c - 0.02) < 1e-9 else S1 for c in cuts]
+    axL.bar(range(len(cuts)), shares, color=cols, edgecolor=SURFACE, lw=1.5, width=0.62)
+    for i, (c, s) in enumerate(zip(cuts, shares)):
+        axL.text(i, s + 1.4, f"{s:.0f}%", ha="center", fontsize=8.5, color=INK2)
+    axL.set_xticks(range(len(cuts)))
+    axL.set_xticklabels([f"{c:.2f}" for c in cuts])
+    axL.set_xlabel("cut-off on H used to call a cell decision-limited")
+    axL.set_ylabel("share of the 36 audited cells")
+    axL.set_ylim(0, 60)
+    axL.set_title("The headline moves with an arbitrary cut-off\n"
+                  "(orange = the value used in the paper)", loc="left")
+
+    pp = hs["per_paper"]
+    y = np.arange(len(pp) + 1)
+    vals = [100 * p["A"] / p["n"] for p in pp] + [100 * hs["pooled_rate"]]
+    labs = [f"{p['paper']}  (n={p['n']})" for p in pp] + ["pooled  (n=36)"]
+    cols2 = [S1] * len(pp) + [S2]
+    axR.barh(y, vals, color=cols2, edgecolor=SURFACE, lw=1.5, height=0.6)
+    lo, hi = hs["cluster_boot_ci95"]
+    axR.errorbar([100 * hs["pooled_rate"]], [len(pp)],
+                 xerr=[[100 * hs["pooled_rate"] - 100 * lo],
+                       [100 * hi - 100 * hs["pooled_rate"]]],
+                 fmt="none", ecolor=INK, elinewidth=1.6, capsize=4, zorder=5)
+    axR.set_yticks(y); axR.set_yticklabels(labs, fontsize=8.5); axR.invert_yaxis()
+    for yi, v in zip(y, vals):
+        axR.text(v + 1.5, yi, f"{v:.1f}%", va="center", fontsize=8.5, color=INK2)
+    axR.set_xlim(0, 72); axR.set_xlabel("decision-limited cells (%)")
+    axR.set_title("Rates differ by paper; the bar is the\n"
+                  "paper-level bootstrap interval", loc="left")
+    fig.tight_layout()
+    save(fig, "fig8_sensitivity")
+
+
 if __name__ == "__main__":
     cells = json.load(open(os.path.join(R, "harvest.json")))
     print("rendering figures:")
-    fig1(cells); fig2(cells); fig3(); fig4(); fig5(); fig6()
+    fig1(cells); fig2(cells); fig3(); fig4(); fig5(); fig6(); fig7(); fig8()
     print("done")

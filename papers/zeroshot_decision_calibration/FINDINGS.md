@@ -464,10 +464,16 @@ validation rather than the whole claim.
   (arXiv:2407.18525 / Nature Dig. Med. s41746-026-02539-z), AgentRx
   (arXiv:2605.10286). Many report AUROC without any threshold metric, which is
   itself a reportable finding about the field.
-- **Binormal estimate is an approximation, not a bound.** Six cells have
-  reported BACC *above* `reachable` (most extreme -0.117), i.e. non-Gaussian
-  scores. This must be stated, and ideally bounded by also reporting the
-  empirical ROC ceiling where a paper publishes a curve.
+- **Binormal estimate is an approximation, not a bound.**
+  **CORRECTED 2026-10-14: the count is 21 of 43 cells (49%), not six.** The
+  earlier "six" was a miscount and appeared in `draft_paper.md` and
+  `EXPERIMENTS.md` as well; all three are fixed. Verified by
+  `audit/a4_leakage_stats.py`.
+  `audit/a2_formula.py` establishes why: the formula is exact under
+  equal-variance Gaussian scores (error < 0.0015) but **under-estimates** under
+  unequal variance (-0.014 at a SD ratio of 1.5, -0.039 at 2.0, -0.086 at 3.0)
+  and for bimodal positives (-0.050). So H < 0 is expected behaviour, not an
+  error, and the 33% figure is a **lower bound** on decision-limited cells.
 - Conformal prediction and selective classification not yet surveyed.
 
 ---

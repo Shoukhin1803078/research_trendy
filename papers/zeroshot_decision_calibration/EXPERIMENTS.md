@@ -413,9 +413,13 @@ Row-wise splitting did not leak (Experiment 8).
 - **The conformal prediction and selective classification literature has not been
   surveyed.** Both deal with operating points in medical AI. Any novelty claim
   should be checked against them first.
-- **The binormal step is an estimate, not a bound.** In **6 of 43 cells** the
-  reported balanced accuracy is already above `reachable`, the worst by 0.117.
-  We report these as negative H rather than hiding them.
+- **The binormal step is an estimate, not a bound.** In **21 of 43 cells (49%)**
+  the reported balanced accuracy is already above `reachable`, the worst by
+  0.117. (Corrected 2026-10-14; an earlier version of this report said six.)
+  Simulation shows the formula is exact under its own assumption but
+  **under-estimates** when the two score distributions have different spreads,
+  so this is expected rather than an error. It also means the 33% figure is a
+  **lower bound**.
 
 ---
 

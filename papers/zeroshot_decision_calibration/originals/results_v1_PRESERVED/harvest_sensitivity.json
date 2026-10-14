@@ -1,0 +1,52 @@
+{
+ "n_cells": 36,
+ "n_papers": 3,
+ "per_paper": [
+  {
+   "paper": "2605.24806",
+   "A": 3,
+   "n": 16
+  },
+  {
+   "paper": "2607.12260",
+   "A": 7,
+   "n": 16
+  },
+  {
+   "paper": "2609.04013",
+   "A": 2,
+   "n": 4
+  }
+ ],
+ "pooled_rate": 0.3333333333333333,
+ "cluster_boot_mean": 0.34275590277777784,
+ "cluster_boot_ci95": [
+  0.1875,
+  0.5
+ ],
+ "sensitivity_H_cut": {
+  "0.0": [
+   18,
+   36
+  ],
+  "0.01": [
+   14,
+   36
+  ],
+  "0.02": [
+   12,
+   36
+  ],
+  "0.05": [
+   9,
+   36
+  ],
+  "0.1": [
+   7,
+   36
+  ]
+ },
+ "n_cells_H_negative": 21,
+ "n_cells_total": 43,
+ "interpretation": "lower bound on decision-limited prevalence in the audited sample; not a population estimate"
+}
