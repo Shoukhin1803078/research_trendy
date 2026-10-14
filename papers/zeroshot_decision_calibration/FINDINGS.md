@@ -76,9 +76,18 @@ unlabelled cohort positive (`ROPE-Q`), with `pi` obtained without labels.
 Conclusion: the transductive rank-plus-prevalence machinery adds nothing over
 one threshold fitted directly on the labels. Dropped as a contribution.
 
-## 4. Few-shot adaptation of BiomedCLIP is nearly worthless below ~64 labels
+## 4. RETRACTED — see the retraction block at the end of this file
+
+> **This whole section is withdrawn (2026-10-14).** Its linear-probe column was
+> produced by an unweighted `LogisticRegression(C=1.0)`, which on a skewed
+> support set predicts the majority class by construction. Both headline claims
+> below are false. A correctly weighted probe reaches **0.814** at k=64
+> (+0.184 over the zero-label rule, not +0.014) and never degenerates.
+> **Use the corrected table in the RETRACTION block instead.** The section is
+> kept, not deleted, so the error stays visible.
 
 Mean BACC over the six non-inverted endpoints. `native` uses **zero** labels.
+**The `linear probe` column below is the broken one.**
 
 | k | ROPE-Q(pi_k) | thresh_k | Platt | linear probe | native |
 |---|---|---|---|---|---|
@@ -89,16 +98,18 @@ Mean BACC over the six non-inverted endpoints. `native` uses **zero** labels.
 | 32 | 0.637 | 0.638 | 0.565 | 0.520 | 0.630 |
 | 64 | 0.638 | **0.644** | 0.559 | 0.532 | 0.630 |
 
-**No method beats the zero-label native rule until k=32, and 64 labels buy
-+0.014 BACC.** Two further points:
+~~**No method beats the zero-label native rule until k=32, and 64 labels buy
++0.014 BACC.**~~ **FALSE — see the RETRACTION block.** The correct statement is
+that the zero-label rule is not beaten until **k=8**, after which a properly
+configured probe scales to 0.814. Two further points:
 
 - **Platt scaling gets worse as k grows** (0.602 -> 0.559). Two parameters
   fitted on a handful of skewed labels is a worse decision rule than the
   model's own.
-- **The 512-parameter linear probe degenerates to a constant predictor**
-  (BACC exactly 0.500) on **1/9 endpoints at k=2 but 5/9 at k=64** — more
-  labels, more collapse. Consistent with the covariance-degeneracy measurements
-  in `../llm_prior_shrinkage/FINDINGS.md`.
+- ~~**The 512-parameter linear probe degenerates to a constant predictor**
+  on 1/9 endpoints at k=2 but 5/9 at k=64.~~ **FALSE — my artifact.** With
+  balanced class weights it degenerates on **0/9 at every k >= 4**. The link I
+  drew to `../llm_prior_shrinkage/FINDINGS.md` was unfounded.
 
 ## 5. Data acquired and checked
 
@@ -535,3 +546,59 @@ should have been read as a misconfiguration, not reported as a finding. It was
 caught only because a reviewer-style check was applied late. Any future
 baseline pinned at a degenerate value gets configuration-checked before it is
 written down.
+
+
+---
+
+# Figures and remaining record-keeping (2026-10-14)
+
+## Figures
+
+`src/make_figures.py` renders six figures to `figures/` as PDF and PNG, built
+directly from the result JSONs rather than from numbers retyped by hand.
+
+| figure | content | source file |
+|---|---|---|
+| fig1_audit_scatter | all 43 cells, reported AUROC vs reported BACC, with the reachable curve; H drawn as the vertical gap | `results/harvest.json` |
+| fig2_headroom_bars | the 36 published LLM cells sorted by H | `results/harvest.json` |
+| fig3_forward_test | BenSParX, BACC against number of labelled subjects, with the predicted reachable line | `results/bensparx_llm.json` |
+| fig4_label_budget | the **corrected** budget curves, crossover at k~8 | `results/budget.json` |
+| fig5_aggregation | voting vs averaging, LLM logprobs and supervised scores | `results/bensparx_llm.json`, `results/bensparx_aggregation.json` |
+| fig6_feature_saturation | subject AUROC by feature subset | `results/bensparx_aggregation.json` |
+
+Colours come from a validated colour-blind-safe palette. The validator was run
+rather than eyeballed; the scatter uses only the three slots that pass all-pairs
+separation, which happens to match the three failure modes. Two slots fall below
+3:1 contrast, so they carry direct labels, and the paper's tables serve as the
+required table view.
+
+## Script-to-section map (previously missing)
+
+| script | what it produced | recorded in |
+|---|---|---|
+| `src/run_arm_a.py` | 9 endpoints, diagnostic, ROPE rules, controls | block 1 §1-3 |
+| `src/analyze.py` | H vs realised gain, mixture-prevalence failure | block 1 §1, §3 |
+| `src/run_budget.py` | label-budget sweep, 4 methods x 6 budgets x 50 seeds | block 1 §4 (**retracted**), RETRACTION block |
+| `src/analyze_budget.py` | win counts, degeneracy counts, oracle check, taxonomy | block 1 §2-4 |
+| `src/bensparx_reference.py` | supervised reference on the 71 features | BenSParX block §5 |
+| `src/bensparx_aggregation.py` | aggregation rules, feature subsets, leakage check | BenSParX block §1-4 |
+| `src/score_llm.py` | 304 BenSParX segments scored with llama3.2:3b | BenSParX LLM block |
+| `src/analyze_bensparx.py` | subject-level rules, fitted-threshold aggregation | BenSParX LLM block §1-3 |
+| `src/harvest.py` | 43 published cells, modes, feature-selection confound | Meta-analysis block |
+| `src/make_figures.py` | the six figures | this block |
+
+## Incomplete runs, for honesty
+
+- `bensparx_reference.py` also defines a **random-forest** arm and a row-wise
+  leakage comparison. The random forest was **killed mid-run** because it was
+  competing with the LLM scoring for CPU, so only the logistic-regression numbers
+  in the BenSParX block §5 are measured. The leakage comparison was later redone
+  inside `bensparx_aggregation.py` and is reported in BenSParX block §4.
+- `results/llm_bensparx_llama32_3b_list.jsonl` is a **zero-byte** file from the
+  first, failed 71-feature attempt. It is kept only as the resume target.
+- The CKD LLM arm (`RUN_WHEN_FREE.sh`) has **not been run**.
+
+## Outputs that are not experiments
+
+`draft_paper.md` is the paper draft. It is written from this file and contains
+no number that does not appear here.
