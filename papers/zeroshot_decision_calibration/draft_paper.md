@@ -241,6 +241,23 @@ at 0.502 balanced accuracy, with macro F1 of 27.68, which means it put almost
 everything in one class. The paper prints both numbers next to each other and
 does not comment.
 
+![Figure 1](figures/fig1_audit_scatter.png)
+
+**Figure 1.** Every one of the 43 audited cells. The x axis is the AUROC the
+paper reported, which measures ranking. The y axis is the balanced accuracy it
+reported, which measures the yes/no call. The dashed curve is the balanced
+accuracy a well-placed decision point would reach on the same scores. Blue
+vertical lines are the unused accuracy, H. Cells on or above the curve have
+nothing to recover. Cells left of 0.5 rank backwards.
+
+![Figure 2](figures/fig2_headroom_bars.png)
+
+**Figure 2.** The 36 published LLM cells sorted by H. Blue bars are recoverable
+without a better model. Red bars have nothing to recover; there the reported
+balanced accuracy already sits at or above the binormal estimate, which is
+discussed in Section 8.1.
+
+
 The same pattern appears in [3] with the opposite sign. On IPVS, LLaMA-3 has
 sensitivity 3.57% and specificity 100%: it calls almost everyone healthy. That
 paper concludes "zero-shot capability alone is insufficient". For this cell the
@@ -274,6 +291,14 @@ Three readings:
 3. In the other **5 of 8** pairs the ranking really did improve. So the claim is
    **not wrong everywhere**. It is confounded. And the paper's own AUROC column
    is enough to tell the two effects apart.
+
+![Figure 6](figures/fig6_feature_saturation.png)
+
+**Figure 6.** Our own measurement of the same question on speech data. The
+information saturates by 5 to 10 features, so a 71-feature pipeline is about
+seven times larger than the task needs. Selection is done inside each training
+fold.
+
 
 ---
 
@@ -320,11 +345,20 @@ We fit the line on `k` labelled subjects and score the rest, 50 random draws:
 | labelled subjects | balanced accuracy |
 |---|---|
 | 0 (native) | 0.500 |
-| 4 | 0.611 |
-| 8 | 0.655 |
+| 4 | 0.659 |
+| 8 | 0.694 |
 | 16 | **0.732** |
 
 **Predicted H = +0.228. Measured gain at k = 16 = +0.232.**
+
+![Figure 3](figures/fig3_forward_test.png)
+
+**Figure 3.** The forward test. With no labels the model answers "1" for every
+subject, so balanced accuracy is exactly chance. Fitting the decision point on a
+few labelled subjects moves it to the level the diagnostic predicted from AUROC
+alone. The dashed line is that prediction, made before any of these points were
+measured. Bars are one standard deviation over 50 random draws.
+
 
 Within the same dataset the diagnostic also separates two models correctly. The
 LLaMA-3 8B cell in [3] has **H = -0.015**, so there is nothing to gain there, and
@@ -405,6 +439,15 @@ If a subject's segments are near-independent, averaging 7.5 of them gives
 So this is not a quirk of one corpus. It is the expected cost of discarding
 magnitude before pooling.
 
+![Figure 5](figures/fig5_aggregation.png)
+
+**Figure 5.** Left: on real LLM log-probabilities, with the decision point fitted
+first so that the bias and the pooling rule are separated. All three gaps are
+significant. Right: the same comparison on supervised scores, where the maximum
+rule is included as a control to show the gain comes from averaging and not
+merely from avoiding a vote.
+
+
 ### 6.2 Five features do the work of seventy-one
 
 Paper [3] lists its fixed feature pipeline as a limitation. We measured what it
@@ -466,6 +509,15 @@ replacement for supervised training once labels exist.
 Platt scaling gets **worse** as labels increase, from 0.602 to 0.559. Two
 parameters fitted on a handful of skewed labels is a worse rule than the model's
 own.
+
+![Figure 4](figures/fig4_label_budget.png)
+
+**Figure 4.** Where a small label budget should go. The shaded band is the region
+where no method beats the model's own zero-label decision. The linear probe is
+configured with balanced class weights; an earlier version of this experiment
+used an unweighted probe and produced a false result, which we withdraw in
+Section 8.6.
+
 
 On the diagnostic itself, H predicts the gain from fitting the line across these
 endpoints: Pearson +0.925 and Spearman +1.000 at k = 8, and Pearson +0.914 to
@@ -559,6 +611,9 @@ For practice we suggest three things, all cheap:
 
 ## 10. Reproducibility and artifacts
 
+- All figures: `figures/` (PDF and PNG), produced by `src/make_figures.py`
+  directly from the result files. Colours come from a validated colour-blind-safe
+  palette; the scatter uses only the three slots that pass all-pairs separation.
 - All code: `src/`. `rope.py` (diagnostic and metrics), `harvest.py` (audit),
   `score_llm.py` (LLM scoring, resumable), `bensparx_*.py`, `run_budget.py`.
 - All raw results: `results/`, including `harvest.json` with the paper and table

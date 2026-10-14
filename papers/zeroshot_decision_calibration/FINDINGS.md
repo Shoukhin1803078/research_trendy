@@ -286,9 +286,13 @@ Threshold fitted on k labelled subjects, evaluated on the held-out rest,
 | labels | subject BACC |
 |---|---|
 | 0 (native) | 0.500 |
-| 4 | 0.611 |
-| 8 | 0.655 |
+| 4 | 0.659 |
+| 8 | 0.694 |
 | 16 | **0.732** |
+
+(Corrected 2026-10-14: an earlier version of this table printed 0.611 and
+0.694 -> 0.655 at k=4 and k=8. Those were the `vote_fitted` values, i.e. the
+majority-vote rule, not `mean_fitted`. The k=16 value and H were unaffected.)
 
 **Predicted recoverable H = +0.228; realised at k=16 = +0.232.**
 
