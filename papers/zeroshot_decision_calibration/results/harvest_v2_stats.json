@@ -1,0 +1,62 @@
+{
+ "n_cells": 37,
+ "n_papers": 4,
+ "per_paper": [
+  {
+   "paper": "2605.24806",
+   "A": 3,
+   "n": 16
+  },
+  {
+   "paper": "2607.12260",
+   "A": 7,
+   "n": 16
+  },
+  {
+   "paper": "2607.29082",
+   "A": 0,
+   "n": 1
+  },
+  {
+   "paper": "2609.04013",
+   "A": 2,
+   "n": 4
+  }
+ ],
+ "pooled_rate": 0.32432432432432434,
+ "cluster_boot_mean": 0.3268695304783121,
+ "cluster_boot_ci95": [
+  0.17647058823529413,
+  0.46153846153846156
+ ],
+ "per_paper_rate_range": [
+  0.0,
+  50.0
+ ],
+ "sensitivity_H_cut": {
+  "0.0": [
+   19,
+   37
+  ],
+  "0.01": [
+   15,
+   37
+  ],
+  "0.02": [
+   12,
+   37
+  ],
+  "0.05": [
+   9,
+   37
+  ],
+  "0.1": [
+   7,
+   37
+  ]
+ },
+ "n_subgroup_rows": 14,
+ "n_subgroup_mode_A": 6,
+ "papers_examined_phase2": 5,
+ "papers_no_threshold_metric": 3
+}

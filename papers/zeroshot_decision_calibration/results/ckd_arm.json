@@ -1,0 +1,48 @@
+{
+ "n_records": 400,
+ "n_patients": 40,
+ "n_pos_patients": 20,
+ "record_prevalence": 0.125,
+ "patient_auroc": 0.59,
+ "patient_auroc_ci95": [
+  0.4040920716112532,
+  0.767269341432225
+ ],
+ "record_auroc": 0.6614285714285715,
+ "bacc_native": 0.5,
+ "sens": 1.0,
+ "spec": 0.0,
+ "reachable": 0.5639133659392643,
+ "H": 0.06391336593926433,
+ "verdict": "Patient-level ranking is usable (AUROC > 0.55), so the threshold-fitting test below is meaningful.",
+ "shots": {
+  "4": {
+   "bacc_mean": 0.5218877397916987,
+   "bacc_sd": 0.04425091705883156,
+   "ci95": [
+    0.46813432517228715,
+    0.6813673689047989
+   ],
+   "n_draws": 47
+  },
+  "8": {
+   "bacc_mean": 0.5346647742092788,
+   "bacc_sd": 0.055657469465504414,
+   "ci95": [
+    0.4580723287487509,
+    0.6834952612531947
+   ],
+   "n_draws": 50
+  },
+  "16": {
+   "bacc_mean": 0.5584503992739286,
+   "bacc_sd": 0.06442851352733107,
+   "ci95": [
+    0.47126665001665,
+    0.7297896270396269
+   ],
+   "n_draws": 50
+  }
+ },
+ "realised_gain": 0.05845039927392859
+}

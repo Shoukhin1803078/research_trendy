@@ -469,3 +469,117 @@ than by eye.
 | `RUN_WHEN_FREE.sh` | the queued CKD arm |
 
 Every number in this report traces to a file in `results/`.
+
+---
+
+# Phase 2 additions (2026-10-14)
+
+## 14. Expanded published-result audit
+
+**Question.** Does a larger audit support a stable conclusion?
+
+**Protocol.** Inclusion and exclusion criteria were written **before** looking at
+the new papers (`audit/EXTRACTION_PROTOCOL.md`), so eligibility could not be
+decided by whether a cell helped the thesis.
+
+**Result — the audit grew only slightly, and the conclusion got weaker.**
+
+| | phase 1 | phase 2 |
+|---|---|---|
+| cells | 36 | **37** |
+| papers | 3 | **4** |
+| decision-limited | 33.3% | **32.4%** |
+| paper-level 95% CI | [18.8, 50.0] | [17.6, 46.2] |
+| per-paper range | 18.8-50.0% | **0-50%** |
+
+The expansion **lowered** the headline and **widened** the heterogeneity. The
+new paper's main cell is signal-limited, not decision-limited. We report this
+rather than re-tuning anything; the H cut-off was fixed in advance and not
+changed.
+
+## 15. Why the audit could not grow more
+
+Of five papers examined, **three report no threshold-dependent metric at all**
+and cannot be audited:
+
+| paper | metrics reported | verdict |
+|---|---|---|
+| delirium (2607.20453) | AUROC only | excluded |
+| AgentRx (2605.10286) | AUROC, AUPRC, ECE | excluded |
+| ClinicRealm (2407.18525) | AUROC, AUPRC | excluded |
+| child malnutrition (2607.29082) | BACC, AUROC, sens, spec | **included** |
+| wrist fracture (s41598-...) | unknown | paywalled |
+
+This is a finding in itself: the decision-point question cannot be asked of much
+of this literature. It also means **our audited sample is a minority of the
+field**, selected on a reporting property — a selection effect now stated
+explicitly in the manuscript.
+
+## 16. New finding: the artifact concentrates in disadvantaged subgroups
+
+The malnutrition paper reports 14 subgroup breakdowns of one evaluation. Its
+**overall** cell is signal-limited, but **6 of 14 subgroups** are
+decision-limited, and the two most extreme are the poorest wealth quintiles:
+
+| subgroup | AUROC | BACC | sensitivity | specificity |
+|---|---|---|---|---|
+| Wealth: poorest | 0.581 | 0.500 | **1.000** | **0.000** |
+| Wealth: poorer | 0.560 | 0.509 | 0.987 | 0.030 |
+
+In the poorest quintile the model calls **every child positive**. The aggregate
+hides it. These are subsets of one evaluation, so they are **not** counted as
+independent cells; they are reported as within-paper heterogeneity.
+
+## 17. Extended estimator simulation
+
+The error is **U-shaped** in the variance ratio, so the estimate is conservative
+when spreads differ in either direction (-0.061 at ratio 0.25; -0.154 at 6.0).
+Also conservative for bimodal positives (-0.051), heavy tails (-0.026), discrete
+scores (-0.011) and **saturated/clipped scores (-0.051)** — the last matters
+because LLM label-token log-probabilities are often saturated.
+
+**One correction to our phase-1 claim:** bimodal *negatives* gave
+**+0.0029 ± 0.0009**, a small but real **over**-estimate. The estimator is
+conservative in 11 of 12 non-Gaussian conditions tested, **not all**. It is not
+guaranteed conservative.
+
+## 18. Direct recoverability: attempted, not achieved
+
+**Question.** Can we demonstrate, rather than estimate, that threshold tuning
+recovers the lost accuracy on a published system?
+
+**Result: no.** None of the four eligible papers releases score-level outputs,
+per-case predictions, or a code repository containing them. Reported sensitivity
+and specificity give one point on an ROC curve, which is not enough to refit a
+threshold — that needs the score distribution.
+
+| | count | basis |
+|---|---|---|
+| **Estimated** recoverability | 12 published cells | binormal estimate |
+| **Demonstrated** recoverability | **9 cases** | our own data, measured on held-out cases |
+
+This is the paper's largest evidential gap and is stated as such.
+
+## 19. Literature review
+
+Conformal prediction and selective classification were surveyed. They set
+operating points too, but **abstain** rather than relocate the decision point,
+and they need a labelled calibration set. Our diagnostic needs only two numbers
+already printed in a paper — which is what makes auditing published results
+possible.
+
+TRIPOD+AI (BMJ 2024;385:e078378) verified as the reporting-standard anchor.
+The closest prior work (JMIR 2026, AUROC 0.928 with recall 0.372) could **not**
+be retrieved in full and is cited as related work with no number taken from it.
+
+## 20. A bug caught by the CKD pre-check
+
+Running the pre-check immediately exposed a real defect: the label-balanced
+patient sampler used each patient's **first** visit label. In this longitudinal
+cohort CKD onset is almost always at the last visit, so **0 of 400 patients are
+positive on visit 1** and the balancing silently became a no-op, selecting 3
+patients instead of 6. Fixed to use "positive if any record is positive";
+BenSParX is unaffected (all segments of a subject share one label), verified.
+
+Had the full run been launched without the pre-check, the CKD arm would have
+been invalid.

@@ -127,8 +127,14 @@ def subsample(items, limit=0, groups=0, seed=0):
     for it in items:
         by[it["group"]].append(it)
     if groups:
-        pos = sorted(g for g, v in by.items() if v[0]["y"] == 1)
-        neg = sorted(g for g, v in by.items() if v[0]["y"] == 0)
+        # A group's label is "positive if ANY record in it is positive".
+        # Using the FIRST record instead is wrong for longitudinal data: in the
+        # CKD cohort onset is almost always at the last visit, so 0 of 400
+        # patients are positive on visit 1 and the balancing silently became a
+        # no-op. For BenSParX every segment of a subject shares one label, so
+        # `any` and `first` agree there and this change is inert.
+        pos = sorted(g for g, v in by.items() if any(r["y"] == 1 for r in v))
+        neg = sorted(g for g, v in by.items() if not any(r["y"] == 1 for r in v))
         rng.shuffle(pos); rng.shuffle(neg)
         half = groups // 2
         keep = sorted(pos[:half] + neg[:groups - half])

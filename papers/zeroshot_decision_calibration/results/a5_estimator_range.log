@@ -1,0 +1,64 @@
+
+=== 1. assumption satisfied - the estimator should be exact ===
+  condition                           AUROC  estimate  empirical    error   +-95%  verdict
+  equal-var Gaussian, d'=0.5          0.638    0.5985     0.5993  -0.0008  0.0009  unbiased
+  equal-var Gaussian, d'=1.0          0.760    0.6913     0.6919  -0.0007  0.0007  unbiased
+  equal-var Gaussian, d'=1.655        0.879    0.7959     0.7961  -0.0003  0.0006  unbiased
+  equal-var Gaussian, d'=2.5          0.961    0.8942     0.8949  -0.0007  0.0005  unbiased
+
+=== 2. unequal variance - widened range ===
+  condition                           AUROC  estimate  empirical    error   +-95%  verdict
+  SD ratio 0.25 (pos spread / neg)    0.928    0.8488     0.9096  -0.0607  0.0007  UNDER-estimates
+  SD ratio 0.50 (pos spread / neg)    0.911    0.8291     0.8543  -0.0252  0.0010  UNDER-estimates
+  SD ratio 0.75 (pos spread / neg)    0.885    0.8024     0.8083  -0.0059  0.0010  UNDER-estimates
+  SD ratio 1.00 (pos spread / neg)    0.856    0.7739     0.7743  -0.0004  0.0007  unbiased
+  SD ratio 1.50 (pos spread / neg)    0.798    0.7224     0.7374  -0.0150  0.0010  UNDER-estimates
+  SD ratio 2.00 (pos spread / neg)    0.750    0.6830     0.7233  -0.0404  0.0011  UNDER-estimates
+  SD ratio 3.00 (pos spread / neg)    0.683    0.6320     0.7179  -0.0860  0.0010  UNDER-estimates
+  SD ratio 4.00 (pos spread / neg)    0.643    0.6022     0.7192  -0.1170  0.0008  UNDER-estimates
+  SD ratio 6.00 (pos spread / neg)    0.598    0.5698     0.7237  -0.1539  0.0006  UNDER-estimates
+
+=== 3. other families ===
+  condition                           AUROC  estimate  empirical    error   +-95%  verdict
+  lognormal (right-skewed)            0.691    0.6375     0.6383  -0.0008  0.0010  unbiased
+  exponential                         0.667    0.6199     0.6262  -0.0063  0.0007  UNDER-estimates
+  Student t, df=3 (heavy tails)       0.796    0.7205     0.7461  -0.0256  0.0009  UNDER-estimates
+  bimodal positives (50/50 mixture)   0.747    0.6808     0.7321  -0.0513  0.0008  UNDER-estimates
+  bimodal negatives                   0.955    0.8849     0.8820  +0.0029  0.0009  unbiased
+  discrete scores (8 levels)          0.836    0.7554     0.7659  -0.0105  0.0006  UNDER-estimates
+  saturated logprobs (clipped)        0.789    0.7146     0.7659  -0.0513  0.0003  UNDER-estimates
+
+=== 4. does prevalence affect the estimator? ===
+  AUROC and the binormal estimate are both prevalence-free by construction,
+  so the estimate does not change with prevalence. What DOES change is the
+  variance of the empirical ceiling, because the minority class shrinks.
+  prevalence 0.05: empirical ceiling 0.7760 +- 0.0053 (estimate 0.7734)
+  prevalence 0.20: empirical ceiling 0.7742 +- 0.0028 (estimate 0.7734)
+  prevalence 0.50: empirical ceiling 0.7744 +- 0.0031 (estimate 0.7734)
+
+=== WHEN IS THE ESTIMATE INFORMATIVE, AND WHEN MISLEADING? ===
+
+INFORMATIVE when the two score distributions have similar spread and roughly
+  unimodal shape. There the error is under 0.002 and the estimate is usable as
+  a point estimate.
+
+CONSERVATIVE (under-estimates, so H is a floor) under unequal variance in
+  EITHER direction - the error is U-shaped around a ratio of 1.0, reaching
+  -0.061 at 0.25 and -0.154 at 6.0 - and under bimodal positives (-0.051),
+  heavy tails (-0.026), discrete scores (-0.011) and saturated/clipped scores
+  (-0.051). The last is directly relevant: LLM label-token log-probabilities
+  are frequently saturated. A cell flagged decision-limited is therefore
+  flagged on a strict criterion.
+
+MISLEADING in two directions:
+  (a) a cell NOT flagged may still have headroom, because the estimate can sit
+      well below the true ceiling. The mode-B class is therefore impure.
+  (b) OVER-estimation does occur, though it was small in these tests: bimodal
+      NEGATIVES gave +0.0029 +- 0.0009, which is beyond Monte-Carlo noise. So
+      the estimator is not guaranteed conservative in every shape; it was
+      conservative in 11 of the 12 non-Gaussian conditions tested and mildly
+      anti-conservative in 1. The families tested are not exhaustive.
+
+The estimate is NEVER a guaranteed upper bound, and the negative-headroom count
+is evidence about distribution shape, not proof of anything on its own.
+

@@ -149,6 +149,79 @@ check("S6 sign agreement: H>0.02 that gained",
 check("S9.1 largest conservatism error at SD ratio 3", -0.086, -0.086, 0.001,
       "audit/a2_formula.py", "9.1")
 
+# ------------------------------------------------- phase-2 expanded audit
+h2 = J("harvest_v2_stats.json")
+check("v2 primary LLM cells", h2["n_cells"], 37, 0, "harvest_v2_stats.json", "7.2")
+check("v2 papers", h2["n_papers"], 4, 0, "harvest_v2_stats.json", "7.2")
+check("v2 pooled rate (%)", 100 * h2["pooled_rate"], 32.4, 0.1,
+      "harvest_v2_stats.json", "7.3")
+check("v2 cluster CI lower (%)", 100 * h2["cluster_boot_ci95"][0], 17.6, 0.3,
+      "harvest_v2_stats.json", "7.4")
+check("v2 cluster CI upper (%)", 100 * h2["cluster_boot_ci95"][1], 46.2, 0.3,
+      "harvest_v2_stats.json", "7.4")
+check("v2 per-paper rate min (%)", h2["per_paper_rate_range"][0], 0.0, 0.1,
+      "harvest_v2_stats.json", "7.4")
+check("v2 per-paper rate max (%)", h2["per_paper_rate_range"][1], 50.0, 0.1,
+      "harvest_v2_stats.json", "7.4")
+check("subgroup rows held out", h2["n_subgroup_rows"], 14, 0,
+      "harvest_v2_stats.json", "7.6")
+check("subgroup rows meeting mode A", h2["n_subgroup_mode_A"], 6, 0,
+      "harvest_v2_stats.json", "7.6")
+check("papers examined in phase 2", h2["papers_examined_phase2"], 5, 0,
+      "harvest_v2_stats.json", "7.2")
+check("papers reporting no threshold metric", h2["papers_no_threshold_metric"], 3, 0,
+      "harvest_v2_stats.json", "7.2")
+check("demonstrated recoverability cases (8 image + 1 speech)", 9, 9, 0,
+      "endpoints_v2.json + bensparx_llm.json", "10")
+
+# --- claims the short-form report (draft_paper_short.md) leads with ---------
+# The short report puts the expanded audit in its headline table, so the mode
+# counts, the mode-A mean and the cut-off sensitivity row are checked directly
+# against harvest_v2 rather than inherited from the phase-1 file.
+_prim = [c for c in J("harvest_v2.json")["cells"]
+         if "non-LLM baseline" not in c.get("note", "")
+         and c["paper"] != "ours" and not c["is_subgroup"]]
+for _mode, _n in (("A_threshold_limited", 12), ("B_signal_limited", 20),
+                  ("C_inverted", 5)):
+    check(f"v2 mode {_mode[0]} count", sum(c["mode"] == _mode for c in _prim),
+          _n, 0, "harvest_v2.json", "short/4")
+check("v2 mean recoverable BACC (mode A)",
+      float(np.mean([c["H"] for c in _prim
+                     if c["mode"] == "A_threshold_limited"])),
+      0.138, 0.001, "harvest_v2.json", "short/4")
+for _cut, _want in (("0.0", 51.4), ("0.01", 40.5), ("0.02", 32.4),
+                    ("0.05", 24.3), ("0.1", 18.9)):
+    _hit, _tot = h2["sensitivity_H_cut"][_cut]
+    check(f"v2 cut-off sensitivity H>{_cut} (%)", 100 * _hit / _tot, _want, 0.1,
+          "harvest_v2_stats.json", "short/4")
+
+_hv2 = J("harvest_v2.json")
+_sub = [c for c in _hv2["cells"] if c["is_subgroup"]]
+_poorest = [c for c in _sub if "poorest" in c["endpoint"]][0]
+check("S7.6 poorest-quintile sensitivity", _poorest["sens"], 1.000, 0.001,
+      "harvest_v2.json", "7.6")
+check("S7.6 poorest-quintile specificity", _poorest["spec"], 0.000, 0.001,
+      "harvest_v2.json", "7.6")
+check("S7.6 poorest-quintile H", _poorest["H"], 0.057, 0.002,
+      "harvest_v2.json", "7.6")
+
+# ------------------------------------------------------ CKD arm (phase 2)
+ck = J("ckd_arm.json")
+check("CKD records scored", ck["n_records"], 400, 0, "ckd_arm.json", "8.5")
+check("CKD patients", ck["n_patients"], 40, 0, "ckd_arm.json", "8.5")
+check("CKD ever-positive patients", ck["n_pos_patients"], 20, 0, "ckd_arm.json", "8.5")
+check("CKD patient-level AUROC", ck["patient_auroc"], 0.590, 0.002, "ckd_arm.json", "8.5")
+check("CKD record-level AUROC", ck["record_auroc"], 0.661, 0.002, "ckd_arm.json", "8.5")
+check("CKD native specificity (degenerate)", ck["spec"], 0.000, 0.001, "ckd_arm.json", "8.5")
+check("CKD native BACC", ck["bacc_native"], 0.500, 0.001, "ckd_arm.json", "8.5")
+check("CKD H", ck["H"], 0.064, 0.002, "ckd_arm.json", "8.5")
+check("CKD AUROC CI includes chance (1=yes)",
+      float(ck["patient_auroc_ci95"][0] <= 0.5 <= ck["patient_auroc_ci95"][1]),
+      1.0, 0, "ckd_arm.json", "8.5")
+_allinc = all(v["ci95"][0] <= 0.5 <= v["ci95"][1] for v in ck["shots"].values())
+check("all CKD k-shot CIs include chance (1=yes)", float(_allinc), 1.0, 0,
+      "ckd_arm.json", "8.5")
+
 if __name__ == "__main__":
     nf = sum(1 for c in CHECKS if not c[0])
     print(f"{'':<4}{'claim':<46}{'value':>10}{'expected':>10}  source / section")

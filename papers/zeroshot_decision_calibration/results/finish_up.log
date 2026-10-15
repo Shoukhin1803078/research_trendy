@@ -1,0 +1,117 @@
+[22:32:46] allowing CKD scoring up to 2400s more
+[23:01:53] scoring reached 400
+[23:01:54] stopping scorer
+[23:01:56] scored 400 of 400 records
+[23:01:56] analysing (patient-level, complete patients only)
+records 400  patients 40  ever-positive patients 20  record prevalence 0.125
+both label tokens in top-k: 100%
+
+=== PATIENT LEVEL (primary, pre-registered) ===
+  AUROC 0.590  95% CI [0.404, 0.767]
+  native: sens 1.000  spec 0.000  BACC 0.500  predicted-positive rate 1.000
+  estimated reachable 0.564   H +0.064
+
+=== record level (diagnostic only, NOT the headline) ===
+  AUROC 0.661 vs patient-level 0.590  difference +0.071
+  A large positive difference indicates within-patient correlation
+  inflating the record-level figure.
+
+=== PRE-REGISTERED VERDICT ===
+  patient AUROC 0.590 -> Patient-level ranking is usable (AUROC > 0.55), so the threshold-fitting test below is meaningful.
+
+=== threshold fitted on k labelled PATIENTS, scored on the rest ===
+    k    BACC      sd      patient-level 95% CI
+    4   0.522   0.044  [+0.468, +0.681]
+    8   0.535   0.056  [+0.458, +0.683]
+   16   0.558   0.064  [+0.471, +0.730]
+
+  predicted H +0.064   realised at k=16 +0.058
+
+wrote /mnt/extra-storage/research_trendy/papers/zeroshot_decision_calibration/results/ckd_arm.json
+[23:02:10] integrating into the manuscript
+integrated CKD arm: 40 patients, patient AUROC 0.590, positive result
+[23:02:10] verifying every claim against the artifacts
+    claim                                              value  expected  source / section
+--------------------------------------------------------------------------------------------------------
+OK  audited LLM cells                                     36    36.000  harvest.json / S4.1
+OK  papers in the audit                                    3     3.000  harvest.json / S4.1
+OK  decision-limited share                            33.333    33.300  harvest.json / S4.2
+OK  mean recoverable BACC (mode A)                     0.138     0.138  harvest.json / S4.2
+OK  largest single H                                   0.341     0.341  harvest.json / S4.2
+OK  cells with H < 0 (the corrected count)                21    21.000  harvest.json / S8.1
+OK  total cells                                           43    43.000  harvest.json / S4.1
+OK  cluster CI lower                                  18.750    18.800  harvest_sensitivity.json / S4.2
+OK  cluster CI upper                                  50.000    50.000  harvest_sensitivity.json / S4.2
+OK  sensitivity: share at H>0.00                      50.000    50.000  harvest_sensitivity.json / S4.4
+OK  sensitivity: share at H>0.10                      19.444    19.400  harvest_sensitivity.json / S4.4
+OK  BenSParX subject AUROC                             0.805     0.805  bensparx_llm.json / S5.2
+OK  BenSParX native BACC                               0.500     0.500  bensparx_llm.json / S5.2
+OK  BenSParX native sensitivity                        1.000     1.000  bensparx_llm.json / S5.2
+OK  BenSParX H                                         0.228     0.228  bensparx_llm.json / S5.2
+OK  BenSParX k=16 BACC                                 0.732     0.732  bensparx_llm.json / S5.3
+OK  BenSParX k=4 BACC                                  0.659     0.659  bensparx_llm.json / S5.3
+OK  BenSParX k=8 BACC                                  0.694     0.694  bensparx_llm.json / S5.3
+OK  BenSParX segments scored                             304   304.000  bensparx_llm.json / S5.1
+OK  BenSParX subjects                                     40    40.000  bensparx_llm.json / S5.1
+OK  k=16 subject-level CI lower                        0.612         -  stats_v2.json / S5.3
+OK  majority vote BACC                                 0.955     0.955  bensparx_aggregation.json / S6.1
+OK  mean prob BACC                                     0.985     0.985  bensparx_aggregation.json / S6.1
+OK  max prob control BACC                              0.617     0.617  bensparx_aggregation.json / S6.1
+OK  aggregation delta                                  0.030     0.030  bensparx_aggregation.json / S6.1
+OK  repeat-level CI lower                              0.015     0.015  stats_v2.json / S6.1
+OK  all repeats same sign                              1.000     1.000  stats_v2.json / S6.1
+OK  LLM aggregation gap k=4                            0.040     0.040  bensparx_llm.json / S6.1
+OK  LLM aggregation gap k=8                            0.064     0.064  bensparx_llm.json / S6.1
+OK  LLM aggregation gap k=16                           0.069     0.069  bensparx_llm.json / S6.1
+OK  all 71 features AUROC                              0.999     0.999  bensparx_aggregation.json / S6.2
+OK  top 10 in-fold AUROC                               1.000     1.000  bensparx_aggregation.json / S6.2
+OK  leakage inflation (row-wise vs grouped)           -0.000     0.000  bensparx_aggregation.json / S5.4/8.6
+OK  budget: endpoints with AUROC>0.5                       6     6.000  budget.json / S7
+OK  budget thresh_k k=2                                0.619     0.619  budget.json / S7
+OK  budget thresh_k k=8                                0.626     0.626  budget.json / S7
+OK  budget thresh_k k=64                               0.644     0.644  budget.json / S7
+OK  budget probe(balanced) k=8                         0.651     0.651  budget.json / S7
+OK  budget probe(balanced) k=64                        0.814     0.814  budget.json / S7
+OK  budget native (0 labels)                           0.630     0.630  budget.json / S7
+OK  probe degeneracy at k=64 after the fix                 0     0.000  budget.json / S8.6
+OK  expanded endpoints kept                               13    13.000  endpoints_v2.json / S7
+OK  expanded endpoints usable                              8     8.000  endpoints_v2.json / S7
+OK  independent label columns                              4     4.000  endpoints_v2.json / S7
+OK  v2 usable endpoints                                    8     8.000  validate_v2_summary.json / S6
+OK  v2 label columns                                       4     4.000  validate_v2_summary.json / S6
+OK  v2 primary endpoints                                   3     3.000  validate_v2_summary.json / S6
+OK  S6 level-form Spearman at k=64                     0.905     0.905  endpoints_v2.json / S6
+OK  S6 sign agreement: H>0.02 that gained                  4     4.000  endpoints_v2.json / S6
+OK  S9.1 largest conservatism error at SD ratio 3     -0.086    -0.086  audit/a2_formula.py / S9.1
+OK  v2 primary LLM cells                                  37    37.000  harvest_v2_stats.json / S7.2
+OK  v2 papers                                              4     4.000  harvest_v2_stats.json / S7.2
+OK  v2 pooled rate (%)                                32.432    32.400  harvest_v2_stats.json / S7.3
+OK  v2 cluster CI lower (%)                           17.647    17.600  harvest_v2_stats.json / S7.4
+OK  v2 cluster CI upper (%)                           46.154    46.200  harvest_v2_stats.json / S7.4
+OK  v2 per-paper rate min (%)                          0.000     0.000  harvest_v2_stats.json / S7.4
+OK  v2 per-paper rate max (%)                         50.000    50.000  harvest_v2_stats.json / S7.4
+OK  subgroup rows held out                                14    14.000  harvest_v2_stats.json / S7.6
+OK  subgroup rows meeting mode A                           6     6.000  harvest_v2_stats.json / S7.6
+OK  papers examined in phase 2                             5     5.000  harvest_v2_stats.json / S7.2
+OK  papers reporting no threshold metric                   3     3.000  harvest_v2_stats.json / S7.2
+OK  demonstrated recoverability cases (8 image + 1 speech)         9     9.000  endpoints_v2.json + bensparx_llm.json / S10
+OK  S7.6 poorest-quintile sensitivity                  1.000     1.000  harvest_v2.json / S7.6
+OK  S7.6 poorest-quintile specificity                  0.000     0.000  harvest_v2.json / S7.6
+OK  S7.6 poorest-quintile H                            0.057     0.057  harvest_v2.json / S7.6
+--------------------------------------------------------------------------------------------------------
+65 claims checked, 0 FAILED
+[23:02:11] claim check exit=0
+[23:02:11] regenerating figures
+rendering figures:
+  wrote figures/fig1_audit_scatter.pdf / .png
+  wrote figures/fig2_headroom_bars.pdf / .png
+  wrote figures/fig3_forward_test.pdf / .png
+  wrote figures/fig4_label_budget.pdf / .png
+  wrote figures/fig5_aggregation.pdf / .png
+  wrote figures/fig6_feature_saturation.pdf / .png
+  wrote figures/fig7_validation_expanded.pdf / .png
+  wrote figures/fig8_sensitivity.pdf / .png
+done
+[23:02:26] DONE - see results/finish_up.log and FINAL_REPORT.md
+python3: can't open file '/tmp/src/make_final_report.py': [Errno 2] No such file or directory
+[23:02:40] FINAL_REPORT.md generated

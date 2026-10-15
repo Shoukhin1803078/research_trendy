@@ -1,8 +1,9 @@
 # Decision-Point Artifacts in Zero-Shot Clinical LLM Evaluation: An Audit and a Diagnostic
 
 **Authors:** (to be completed)
-**Version:** v2, 2026-10-14. The v1 manuscript is preserved at
-`originals/draft_paper_v1_PRESERVED.md`; changes are listed in `CHANGELOG.md`.
+**Version:** v3, 2026-10-14. Earlier versions preserved at
+`originals/draft_paper_v1_PRESERVED.md` and `..._v2_PRESERVED.md`; changes are
+listed in `CHANGELOG.md`.
 **Target venue:** see Section 16.
 
 ---
@@ -26,13 +27,20 @@ theory. We call the gap *headroom* (H). We verify the estimator by simulation: i
 is exact under its own assumption and **under-estimates** when the two score
 distributions have different spreads, so H is conservative.
 
-We audit **36 result cells from 3 published papers**. In **12 of 36 cells (33%)**
-the reported failure is consistent with a decision-point problem rather than a
-ranking problem, with a mean of 0.138 BACC unused. The largest case is a model
-ranking kidney-disease patients at AUROC 0.923 and reported at 0.502 BACC. These
-figures describe the audited sample only. A bootstrap over papers gives
-[18.8%, 50.0%], and the figure moves from 50% to 19% as the H cut-off moves from
-0 to 0.10, so both are reported alongside it.
+We audit **37 result cells from 4 published papers**. In **12 of 37 cells
+(32.4%)** the reported failure is consistent with a decision-point problem rather
+than a ranking problem, with a mean of 0.138 BACC unused. The largest case is a
+model ranking kidney-disease patients at AUROC 0.923 and reported at 0.502 BACC.
+These figures describe the audited sample only. A bootstrap over papers gives
+[17.6%, 46.2%], per-paper rates range from **0% to 50%**, and the figure moves
+from 51% to 19% as the H cut-off moves from 0 to 0.10. All three are reported
+alongside the headline.
+
+A separate finding limits what any such audit can claim: of five recent papers
+examined, **three report no threshold-dependent metric at all** and cannot be
+audited. The decision-point question is therefore unanswerable for much of this
+literature, and our sample is drawn from a minority that reports both metric
+families.
 
 We then test the diagnostic forward on 8 image endpoints and on Bengali
 Parkinson's speech. Across endpoints, predicted and realised gains correlate at
@@ -79,7 +87,9 @@ of labels. Confusing them wastes effort and may discard usable systems.
    papers already print, with its assumptions verified by simulation and its
    error direction established.
 2. A three-way failure taxonomy, with sensitivity analysis on its cut-offs.
-3. An audit of 36 published cells from 3 papers, with cluster-aware uncertainty.
+3. An audit of 37 primary LLM cells from 4 papers, with cluster-aware
+   uncertainty, plus 14 subgroup rows reported separately as within-paper
+   heterogeneity (Section 7.6).
 4. Evidence that one published conclusion about feature selection is partly a
    decision-point effect, shown from that paper's own table.
 5. A forward test on 8 image endpoints and one speech dataset.
@@ -106,11 +116,56 @@ are new, but that this literature does not apply them, at a measurable cost.
 **Calibration.** Work on neural-network and LLM calibration shows reported
 probabilities are often wrong. Calibration fixes the numbers; we ask a narrower
 question, which is how much is lost by one fixed line given the scores as they
-are.
+are. Discrimination, calibration and the decision rule are three separate
+properties, and a model can be well calibrated and still decide badly.
+
+**Reporting standards.** TRIPOD+AI [14] gives a 27-item checklist for reporting
+clinical prediction models built with regression or machine learning, and
+supersedes TRIPOD 2015. It is the normative anchor for our reporting finding in
+Section 7.2: the metrics our audit needs are metrics such papers are already
+expected to report. We did not retrieve the individual checklist items and so
+make no claim about which item is at issue.
+
+**AUROC is not enough: the closest prior work.** A 2026 study of class imbalance
+in real-world clinical data reports AUROC 0.928 alongside recall 0.372 for a
+minority class, and argues that AUROC alone cannot evaluate models under
+imbalance [15]. That is the same core observation as ours - strong ranking
+coexisting with a poor decision - made in conventional clinical machine
+learning. **We could not retrieve its full text** (publisher and mirror both
+returned errors), so we cite it as related work and use no number from it.
+Decision curve analysis makes a related point, that AUROC weights sensitivity
+and specificity equally and so ignores misclassification cost.
+
+**Conformal prediction and selective classification.** Both set operating points,
+so we examined them. Abstention is typically implemented by thresholding a
+nonconformity or confidence score, and sweeping that threshold traces a
+risk-coverage curve; recent work notes that marginal conformal prediction can
+under-cover rare minority classes [16], which is the regime of most audited
+tasks. The difference from our work is practical rather than conceptual:
+
+| | conformal / selective | this work |
+|---|---|---|
+| intervention | **abstain** on uncertain cases | **relocate** the decision point |
+| requires | a labelled calibration set | nothing, for the diagnostic |
+| applies to | a system you control | a **published result** you only read |
+
+The last row is decisive. Those methods need the model and calibration data;
+our diagnostic needs two numbers already printed in a paper, which is what makes
+a retrospective audit possible.
 
 **Gap.** We found no prior work auditing this literature for decision-point
-artifacts or reporting what fraction of published failures are recoverable. Our
-search was limited; see Section 12.4.
+artifacts, no review of threshold-selection strategies for clinical deployment,
+and no application of conformal or selective methods to published zero-shot LLM
+evaluations. Our search was targeted rather than systematic; see Sections 12.2
+and 12.4, and `audit/SEARCH_LOG.md`.
+
+**Competing explanations.** We cannot exclude that (i) our estimator is simply
+wrong for these papers' score shapes, since we never observe their scores;
+(ii) some authors chose their operating point deliberately, for instance to
+favour sensitivity - though three of four audited papers use a forced token,
+which is not a deliberate choice; or (iii) a selection effect, since papers
+reporting both metric families may differ systematically from those that do not,
+in an unknown direction.
 
 ---
 
@@ -206,7 +261,7 @@ on `k` labelled cases, then apply it to the rest. No training, no gradients.
 |---|---|---|---|
 | **BenSParX** | Bengali conversational speech, released feature table | 900 segments, 120 subjects (60/60), 71 features | MIT, [4] |
 | **MedIMeta** `bus`, `dr_regular` | breast ultrasound, retinal fundus; frozen BiomedCLIP features | 780 and 2000 images | public, [5] |
-| **Published tables** | result cells copied from 3 papers | 43 cells | [1, 2, 3] |
+| **Published tables** | result cells copied from 4 papers | 58 rows: 44 cells + 14 subgroup rows | [1, 2, 3, 9] |
 
 Two dataset problems we encountered are reported in Section 15.
 
@@ -304,17 +359,26 @@ among cells printing all three there were **0 inconsistencies**.
 
 ### 7.2 Composition
 
-43 cells in total: 16 from [3], 16 from [2], 10 from [1], and 1 of our own.
-The LLM analysis uses the **36 published LLM cells from 3 papers**; our own cell
-and 6 non-LLM baselines are excluded.
+58 cells in total: 16 from [3], 16 from [2], 10 from [1], 16 from [9], and 1 of
+our own. The primary LLM analysis uses the **37 published LLM cells from 4
+papers**. Excluded from the primary statistic: our own cell, 7 non-LLM
+baselines, and **14 subgroup rows from [9]** that partition one evaluation four
+ways (sex, residence, wealth quintile, survey year), and are therefore not
+independent observations (they are analysed separately in Section 7.6).
+
+**Papers that cannot be audited.** Of five papers examined in the second audit
+round, **three report no threshold-dependent metric**: a delirium study [10]
+(AUROC only), AgentRx [11] (AUROC, AUPRC, ECE) and ClinicRealm [12] (AUROC,
+AUPRC). One further candidate [13] was behind a paywall with no open version.
+`audit/SEARCH_LOG.md` records every search and fetch, including the failures.
 
 ### 7.3 Main result
 
 | mode | count | share |
 |---|---|---|
-| **A decision-limited** | **12 / 36** | **33.3%** |
-| B signal-limited | 19 / 36 | 52.8% |
-| C sign-inverted | 5 / 36 | 13.9% |
+| **A decision-limited** | **12 / 37** | **32.4%** |
+| B signal-limited | 20 / 37 | 54.1% |
+| C sign-inverted | 5 / 37 | 13.5% |
 
 Mean unused balanced accuracy among mode A cells: **+0.138**.
 
@@ -342,7 +406,7 @@ backwards. The curve is an estimate under a model, not a ceiling (Section 9.1).
 
 ![Figure 3](figures/fig2_headroom_bars.png)
 
-**Figure 3.** The 36 published LLM cells sorted by H. Red bars are cells where
+**Figure 3.** The 37 primary published LLM cells sorted by H. Red bars are cells where
 the reported BACC already exceeds the estimate, which Section 9.1 shows is
 expected when score variances differ.
 
@@ -356,27 +420,35 @@ with a pure ranking failure.
 
 **This is a statement about the audited sample, not about clinical LLM research.**
 
-The per-paper rates differ sharply:
+The per-paper rates differ sharply, and **the spread widened when the audit was
+expanded**:
 
 | paper | mode A rate |
 |---|---|
+| [9] | 0/1 = 0.0% |
 | [3] | 3/16 = 18.8% |
 | [2] | 7/16 = 43.8% |
 | [1] | 2/4 = 50.0% |
 
-A bootstrap resampling **papers** gives **34.3%, 95% CI [18.8%, 50.0%]**. With 3
-clusters this interval is coarse and should be read as a floor on the
-uncertainty.
+A bootstrap resampling **papers** gives **32.7%, 95% CI [17.6%, 46.2%]** (phase
+1, 3 papers: 34.3% [18.8%, 50.0%]). With 4 clusters the interval remains coarse.
+
+**The expansion did not confirm a stable rate.** Adding a fourth paper lowered
+the pooled figure slightly and widened the per-paper range from 18.8-50.0% to
+**0-50%**. We therefore report the pooled percentage as a weak summary of a
+heterogeneous set, not as an estimate of a common underlying rate.
 
 Sensitivity to the cut-off:
 
 | H cut-off | mode A | share |
 |---|---|---|
-| > 0.00 | 18/36 | 50.0% |
-| > 0.01 | 14/36 | 38.9% |
-| **> 0.02** | **12/36** | **33.3%** |
-| > 0.05 | 9/36 | 25.0% |
-| > 0.10 | 7/36 | 19.4% |
+| > 0.00 | 19/37 | 51.4% |
+| > 0.01 | 15/37 | 40.5% |
+| **> 0.02** | **12/37** | **32.4%** |
+| > 0.05 | 9/37 | 24.3% |
+| > 0.10 | 7/37 | 18.9% |
+
+The cut-off was fixed before the expansion and was **not** re-tuned afterwards.
 
 And to the sign-inversion cut: C is 3, 5 or 10 of 36 at AUROC < 0.45, 0.50, 0.55.
 
@@ -387,9 +459,10 @@ cells against the cut-off on H. Right: per-paper rates with the paper-level
 bootstrap interval on the pooled value. Both must be read with the headline.
 
 
-The headline therefore reads: **in this sample of 36 cells from 3 papers, 33%
+The headline therefore reads: **in this sample of 37 cells from 4 papers, 32.4%
 meet a conservative decision-limited criterion, with the figure ranging from 19%
-to 50% across reasonable cut-offs and a paper-level interval of [19%, 50%].**
+to 51% across reasonable cut-offs, a paper-level interval of [17.6%, 46.2%], and
+per-paper rates spanning 0% to 50%.**
 
 ### 7.5 A published conclusion is confounded (RQ3)
 
@@ -415,6 +488,37 @@ In the other **5 of 8** the ranking genuinely improved.
 
 The claim is therefore **not refuted**; it is **confounded**, and the paper's own
 AUROC column separates the two effects.
+
+### 7.6 Within-paper heterogeneity: the artifact concentrates in disadvantaged subgroups
+
+Paper [9] reports its zero-shot result broken down 14 ways, by child sex,
+residence, wealth quintile and survey year. These rows partition **the same
+17,106 evaluations** and are not independent, so they are excluded from the
+primary statistic. They are informative nonetheless.
+
+The paper's **overall** cell is signal-limited (AUROC 0.632, BACC 0.580,
+estimated reachable 0.594, H = +0.014). But **6 of the 14 subgroup rows** meet
+the decision-limited criterion, and the two most extreme are the poorest wealth
+quintiles:
+
+| subgroup | n | AUROC | BACC | sensitivity | specificity | H |
+|---|---|---|---|---|---|---|
+| Wealth: poorest | 3568 | 0.581 | 0.500 | **1.000** | **0.000** | +0.057 |
+| Wealth: poorer | 3347 | 0.560 | 0.509 | 0.987 | 0.030 | +0.034 |
+| Residence: rural | 11678 | 0.620 | 0.554 | 0.860 | 0.249 | +0.032 |
+| Wealth: richest | 3466 | 0.583 | 0.529 | 0.247 | 0.811 | +0.030 |
+
+In the poorest quintile the model predicts **positive for every child**:
+balanced accuracy is exactly chance while AUROC is 0.581. The aggregate result
+hides this, because the overall operating point is a compromise across
+subgroups with different score distributions.
+
+We state this carefully. It is **one paper**, the subgroups are **not
+independent**, and we did not have the underlying scores, so this is an
+observation about reported numbers rather than a demonstration. It does suggest
+that a single global operating point can fail unevenly across groups, which is a
+fairness concern distinct from the ranking disparities usually reported, and it
+is a hypothesis worth testing directly on data where scores are available.
 
 ---
 
@@ -548,6 +652,77 @@ Section 7.5 that part of their gain is a decision-point effect.
 
 ---
 
+### 8.5 Third modality: tabular CKD screening (pre-registered, INCONCLUSIVE result)
+
+We ran the diagnostic on a third modality, a Bangladeshi diabetic cohort [6],
+with `llama3.2:3b` and the same protocol. The analysis unit, the verdict rule
+and the stopping criteria were **fixed before the data were seen**
+(`audit/CKD_GO_NOGO.md`); the result below is what that rule returned.
+
+**Completed:** 400 records from **40 patients**
+(20 ever positive), record-level prevalence
+0.125.
+
+| quantity | value |
+|---|---|
+| **patient-level AUROC** (primary) | **0.590** 95% CI [0.404, 0.767] |
+| record-level AUROC (diagnostic only) | 0.661 |
+| native decision | sensitivity 1.000, specificity 0.000 |
+| native BACC | 0.500 |
+| estimated reachable | 0.564 |
+| H | +0.064 |
+
+**Two things this shows.**
+
+First, the **decision rule is degenerate again**: the model predicts positive for
+every patient, giving specificity 0.000 and balanced accuracy
+0.500. That is the same signature as the image and speech arms
+and as the published cells in Section 7.
+
+Second, **the ranking is weak**. Patient-level AUROC is 0.590, above the
+0.55 bar the rule used, so the threshold-fitting test below was run - but see
+the interval analysis that follows, which is the decisive reading.
+
+**Within-patient correlation, quantified.** Record-level AUROC is
+0.661 against 0.590 patient-level, a gap of
+**+0.071**. The 10 visits of one patient
+are near-duplicates and the positives cluster inside ever-positive patients, so
+the record-level figure largely measures separating patients, not records.
+**Any analysis of this cohort that pools records without grouping by patient
+will overstate performance by roughly this much.** Our own pre-check was
+initially misled by exactly this, which is why the primary unit was fixed to the
+patient in advance.
+
+**INCONCLUSIVE, not positive — every interval includes chance.** The
+pre-registered rule classifies on the point estimate, and
+0.590 > 0.55 triggered the "ranking usable" branch. The
+intervals do not support reading this as a positive result:
+
+| quantity | value | 95% CI | excludes chance? |
+|---|---|---|---|
+| patient AUROC | 0.590 | [0.404, 0.767] | **no** (includes 0.5) |
+| BACC at k=4 | 0.522 | [0.468, 0.681] | **no** |
+| BACC at k=8 | 0.535 | [0.458, 0.683] | **no** |
+| BACC at k=16 | 0.558 | [0.471, 0.730] | **no** |
+
+
+So the correct description of this cell is **inconclusive**: the ranking is not
+distinguishable from chance at 40 patients, and neither is any realised gain. We
+report it as such rather than as a third confirming modality.
+
+What is worth noting, with that caveat firmly attached: the diagnostic predicted
+a **small** headroom (+0.064) and a **small** gain materialised
+(+0.058 at k=16).
+The agreement is close, but both quantities are small and neither is
+significant, so this is consistent with the diagnostic being well behaved rather
+than evidence that it is.
+
+**Limitations of this arm.** 40 patients is small and the AUROC
+interval is correspondingly wide. The cohort contains no laboratory values (no
+creatinine, no eGFR), so the task may be close to unlearnable from demographics
+and lifestyle alone. This arm therefore says more about the task than about the
+diagnostic, and we do not count it among the demonstrated-recoverability cases.
+
 ## 9. Error analysis and ablations
 
 ### 9.1 When does the estimator fail, and in which direction?
@@ -565,6 +740,28 @@ variance it **under-estimates**:
 | 3.00 | 0.6308 | 0.7163 | **-0.086** |
 
 Bimodal positive scores: -0.050. Heavy-tailed (lognormal): +0.0005.
+
+**Extended range (`audit/a5_estimator_range.py`).** The error is **U-shaped**
+around a ratio of 1.0, so the estimate is conservative when the spreads differ
+in **either** direction:
+
+| SD ratio | 0.25 | 0.50 | 1.00 | 2.00 | 4.00 | 6.00 |
+|---|---|---|---|---|---|---|
+| error | -0.061 | -0.025 | -0.000 | -0.040 | -0.117 | -0.154 |
+
+Across other families: exponential -0.006, Student t (df 3) -0.026, bimodal
+positives -0.051, discrete 8-level scores -0.011, and **saturated (clipped)
+scores -0.051**. The last matters directly, because LLM label-token
+log-probabilities are frequently saturated.
+
+**One exception, reported because it qualifies the claim:** bimodal *negatives*
+gave **+0.0029 +/- 0.0009**, a small but statistically real **over**-estimate.
+The estimator was conservative in 11 of the 12 non-Gaussian conditions tested
+and mildly anti-conservative in 1. It is therefore **not guaranteed**
+conservative, and the families tested are not exhaustive.
+
+Prevalence does not affect the estimate, since AUROC and the binormal estimate
+are both prevalence-free; it affects only the variance of the empirical ceiling.
 
 **Consequences.** In **21 of 43 audited cells (49%)** the reported BACC already
 exceeds the estimate. This is expected rather than anomalous. It means (i) the
@@ -629,11 +826,31 @@ results are consistent with a decision-point artifact under a conservative test.
 Where we could test the diagnostic forward, predicted and realised gains agree
 across endpoints and modalities.
 
-**What they do not support.** We have not shown that fitting a line on any
-published system *would* reach the estimated value; we did not have those scores.
-We have not shown clinical benefit. H is a statistical diagnostic, not a
-decision-support system, and nothing here has been validated prospectively in
-care.
+**Estimated versus demonstrated recoverability.** This distinction is central
+and we keep the two separate throughout.
+
+| | count | basis |
+|---|---|---|
+| **Estimated** recoverability | 12 published cells | binormal estimate from the paper's own AUROC; no scores available |
+| **Demonstrated** recoverability | **9 cases** | our own data, where we hold the scores and measured the gain on held-out cases |
+
+The 9 demonstrated cases are the 8 image endpoints in Section 6 and the speech
+cell in Section 8.2. In each, the threshold was fitted on labelled cases drawn
+from training data and evaluated on cases not used for fitting.
+
+We attempted to extend direct demonstration to the published systems and
+**could not**. None of the four eligible papers releases score-level outputs,
+per-case predictions, or a code repository containing them; a targeted search
+for a repository (`audit/SEARCH_LOG.md`, S3) returned nothing. Reported
+sensitivity and specificity give one point on an ROC curve, which is not enough
+to refit a threshold, since that requires the score distribution. **This is the
+single largest evidential gap in the paper.** What would close it: any of these
+papers publishing per-case scores, or an author sharing them on request.
+
+**What our results do not support.** We have not shown that fitting a line on
+any published system *would* reach the estimated value. We have not shown
+clinical benefit. H is a statistical diagnostic, not a decision-support system,
+and nothing here has been validated prospectively in care.
 
 **Practical recommendations**, all cheap: report AUROC and a threshold metric
 together and say which one the conclusion rests on; check the sign, because an
@@ -683,16 +900,24 @@ used in Section 8.3.
 
 **12.1 The estimator is a model, not a bound.** Section 9.1.
 
-**12.2 The audit is small and clustered.** 36 cells from 3 papers. Four further
-papers are identified but not extracted. Many papers report AUROC with no
-threshold metric, which blocks the audit and is itself worth counting.
+**12.2 The audit is small, clustered and heterogeneous.** 37 cells from 4
+papers, with per-paper rates from 0% to 50%. The second audit round examined 5
+papers and added only 1, because 3 report no threshold-dependent metric and 1 was
+inaccessible. The search was targeted, not systematic (`audit/SEARCH_LOG.md`).
+
+**12.7 No direct recoverability on published systems.** We estimate recoverable
+accuracy for 12 published cells but demonstrate it only on our own 9 cases,
+because no eligible paper releases score-level outputs. See Section 10.
 
 **12.3 The forward test is narrow.** 8 image endpoints from 2 datasets and 4
 label columns, plus one speech dataset with 40 subjects and a 3B model. The
 `primary` subset has only 3 endpoints and cannot reach significance.
 
-**12.4 The literature search was limited.** We did not survey conformal
-prediction or selective classification, which also address operating points.
+**12.4 The literature search was targeted, not systematic.** Conformal
+prediction and selective classification have now been surveyed (Section 2), but
+the review is not a systematic one: no registered protocol, no multi-database
+search, no dual screening. Two relevant sources could not be retrieved in full
+([15], and the TRIPOD+AI checklist items), and are flagged where cited.
 
 **12.5 BenSParX is near-saturated** at subject level (supervised AUROC 0.998).
 
@@ -712,10 +937,18 @@ own refuted method, is labelled as such and used only to refute it.
 operating-point criterion (for example a fixed sensitivity floor) would give
 different headroom. We did not explore alternative definitions.
 
-**External.** The audited papers are not a random sample of the literature. They
-were selected because they report both metric types, which may itself correlate
-with reporting practice. **No claim here extends to clinical LLM research in
-general.**
+**External, and now quantified.** The audited papers are not a random sample.
+They are eligible **precisely because** they report both metric families, and in
+the second audit round **3 of 5 papers examined did not** ([10], [11], [12]).
+A fourth [13] was inaccessible. So the audit covers a minority of the literature,
+selected on a reporting property that is plausibly correlated with how carefully
+a paper treats its operating point. **No claim here extends to clinical LLM
+research in general**, and the direction of the selection bias is unknown: papers
+that report threshold metrics may be more careful, or merely more complete.
+
+**Heterogeneity.** Per-paper rates span 0% to 50% across four papers. The
+expansion did not stabilise the estimate, which is evidence that a single pooled
+rate is the wrong summary statistic for this quantity.
 
 **Statistical.** With 3 paper-clusters and 4 endpoint-clusters, bootstrap
 intervals are coarse. Nested cut-points within a label column are strongly
@@ -771,15 +1004,34 @@ Reproduction commands are listed in `REPRODUCE.md`.
 
 ## 16. Journal fit
 
-Candidate venues, to be checked against the current quartile listing for the
-relevant subject category and year before submission. We have **not** verified
-quartile status and do not assert it here:
+Candidate venues. **We attempted to verify quartile status and could not reach
+the authoritative source:** every request to scimagojr.com returned HTTP 403.
+The figures below are from search-result snippets of SCImago pages and from
+third-party aggregators, and are recorded as **unverified**. They must be
+confirmed directly before submission. `audit/JOURNALS.md` has the full
+assessment.
 
-- *Journal of Biomedical Informatics* - methodological critique of clinical AI
-  evaluation is in scope.
-- *Artificial Intelligence in Medicine* - fits the evaluation-methodology angle.
-- *Computers in Biology and Medicine* - broad, publishes audits and benchmarks.
-- *npj Digital Medicine* - higher bar; would need the audit expanded first.
+| journal | scope fit | quartile (UNVERIFIED) |
+|---|---|---|
+| *Journal of Biomedical Informatics* | strong - methodological critique of clinical informatics evaluation | snippet: SJR 2025 = 1.320, Q1 Health Informatics |
+| *Artificial Intelligence in Medicine* | strong - evaluation methodology for medical AI | aggregator: SJR 2025 = 1.659, best quartile Q1 (AI category) |
+| *Computers in Biology and Medicine* | moderate-strong - broad, publishes audits | snippet: 1.375, Q1 Health Informatics |
+| *IEEE J. Biomedical and Health Informatics* | moderate | **conflicting sources** (1.624 vs 1.395); do not cite without checking |
+| *npj Digital Medicine* | moderate - premature at this audit size | not checked |
+
+Realistic positioning is the first or second entry. The contribution is
+methodological and partly negative, the audit is small and heterogeneous, and a
+substantial part of the paper documents corrections to its own earlier results.
+
+**Chosen route (2026-10-15).** Because the audit is small (37 cells, 4 papers,
+per-paper rate 0% to 50%), we submit the **short-form version**,
+`draft_paper_short.md`, which leads with the reporting finding - that three of
+five screened papers report no threshold-dependent metric and so cannot be
+audited by anyone - and carries the 32.4% rate as supporting evidence rather
+than as the headline. That finding does not depend on our estimator being
+correct, so it survives the sample size. **This manuscript is retained in full
+as supplementary material or a preprint.** Expanding the audit to systematic
+review scale remains the route to a full-length paper.
 
 ---
 
@@ -802,6 +1054,29 @@ quartile status and do not assert it here:
 [7] Deep Learning for Wound Tissue Segmentation: A Comprehensive Evaluation.
     arXiv:2502.10652.
 [8] D. M. Green, J. A. Swets. Signal Detection Theory and Psychophysics, 1966.
+[9] Can Zero-Shot LLMs Predict Child Malnutrition? A Fairness and Temporal
+    Robustness Study. arXiv:2607.29082. (Audited; Table 4.)
+[10] A Knowledge-Injection Framework for Zero-Shot Adaptation of LLMs to
+    Delirium Prediction. arXiv:2607.20453. (Examined; reports AUROC only, so it
+    could not be audited.)
+[11] AgentRx: A Benchmark Study of LLM Agents for Multimodal Clinical Prediction
+    Tasks. arXiv:2605.10286. (Examined; AUROC, AUPRC, ECE only.)
+[12] ClinicRealm: Re-evaluating Large Language Models with Conventional Machine
+    Learning for Non-Generative Clinical Prediction Tasks. arXiv:2407.18525.
+    (Examined; AUROC and AUPRC only.)
+[13] Zero-shot multimodal large language models underperform a domain-trained
+    CNN baseline in pediatric wrist fracture detection. Nature Scientific
+    Reports s41598-026-58763-w. (Identified but not accessible; not audited.)
+[14] G. S. Collins et al. TRIPOD+AI statement: updated guidance for reporting
+    clinical prediction models that use regression or machine learning methods.
+    BMJ 2024;385:e078378 (erratum BMJ 2024;385:q902). (Metadata verified; the
+    checklist items themselves were not retrieved.)
+[15] Beyond Area Under the Receiver Operating Characteristic Curve: Evaluating
+    Predictive Performance Metrics Under Class Imbalance in Real-World Clinical
+    Data. JMIR Formative Research 2026;e86379. (**Full text not retrievable**;
+    cited as related work only, with no number taken from it.)
+[16] Cost-Sensitive Conformal Prediction and Human-in-the-Loop Abstention for
+    Imbalanced High-Stakes Decision Support. arXiv:2607.27143. (Preprint.)
 
 **Citation status.** [1]-[4], [6], [7] were read directly and their numbers
 transcribed from their own tables. [5] and [8] are cited for standard material.

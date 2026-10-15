@@ -102,8 +102,8 @@ def fig1(cells):
     ax.set_xlabel("AUROC as reported  (how well the model ranks patients)")
     ax.set_ylabel("Balanced accuracy as reported\n(the yes / no call)")
     ax.set_title("Reported decisions fall short of what the same scores allow\n"
-                 "43 cells copied from published tables; blue lines are the unused accuracy",
-                 loc="left")
+                 f"{len(cells)} cells copied from published tables; "
+                 "blue lines are the unused accuracy", loc="left")
     ax.set_xlim(0.08, 1.0); ax.set_ylim(0.22, 1.0)
     h, l = ax.get_legend_handles_labels()
     order = [l.index(MODE_LABEL[m]) for m in
@@ -115,11 +115,21 @@ def fig1(cells):
 
 # --------------------------------------------- Fig 2: headroom per published cell
 def fig2(cells):
-    llm = [c for c in cells if "non-LLM baseline" not in c["note"] and c["paper"] != "ours"]
+    llm = [c for c in cells if "non-LLM baseline" not in c.get("note", "")
+           and c["paper"] != "ours" and not c["is_subgroup"]]
     llm.sort(key=lambda c: c["H"])
     fig, ax = plt.subplots(figsize=(6.4, 7.6))
     y = np.arange(len(llm))
-    cols = [DIV_POS if c["H"] > 0.02 else (DIV_NEG if c["H"] < -0.02 else MUTED) for c in llm]
+    # Colour by failure mode, not by the sign of H alone. One cell (Pengi on
+    # MDVR-KCL, AUROC 0.268) has H > +0.02 while ranking patients backwards:
+    # moving its threshold does not recover it, flipping its sign would. Using
+    # H > 0.02 here painted it blue and made the figure show 13 recoverable
+    # cells against the 12 mode-A cells reported in the text.
+    def bar_colour(c):
+        if c["mode"] == "C_inverted":
+            return MODE_COLOR["C_inverted"]
+        return DIV_POS if c["H"] > 0.02 else (DIV_NEG if c["H"] < -0.02 else MUTED)
+    cols = [bar_colour(c) for c in llm]
     ax.barh(y, [c["H"] for c in llm], color=cols, height=0.68,
             edgecolor=SURFACE, linewidth=1.0)
     ax.axvline(0, color=AXIS, lw=1.0)
@@ -133,11 +143,16 @@ def fig2(cells):
                     fontsize=7, color=INK2)
     ax.set_xlim(-0.17, 0.40)
     ax.set_xlabel("Headroom H  (balanced accuracy left unused by the decision point)")
-    ax.set_title("36 published LLM cells, sorted by unused accuracy", loc="left")
+    ax.set_title(f"{len(llm)} published LLM cells, sorted by unused accuracy",
+                 loc="left")
+    nA = sum(c["mode"] == "A_threshold_limited" for c in llm)
     ax.legend(handles=[Line2D([0], [0], marker="s", ls="", ms=7, color=DIV_POS,
-                              label="recoverable (H > +0.02)"),
+                              label=f"A  decision-limited, recoverable ({nA})"),
                        Line2D([0], [0], marker="s", ls="", ms=7, color=DIV_NEG,
-                              label="nothing to recover")],
+                              label="B  nothing to recover"),
+                       Line2D([0], [0], marker="s", ls="", ms=7,
+                              color=MODE_COLOR["C_inverted"],
+                              label="C  ranks backwards (needs a sign flip)")],
               loc="lower right", fontsize=8)
     save(fig, "fig2_headroom_bars")
 
@@ -383,7 +398,12 @@ def fig8():
 
 
 if __name__ == "__main__":
-    cells = json.load(open(os.path.join(R, "harvest.json")))
+    # The expanded (phase-2) audit is the one the manuscript reports. Subgroup
+    # rows are dropped here for the same reason they are kept out of the primary
+    # statistic: the 14 rows partition a single cohort, so plotting them beside
+    # the independent cells would show one dataset 14 times.
+    hv2 = json.load(open(os.path.join(R, "harvest_v2.json")))
+    cells = [c for c in hv2["cells"] if not c["is_subgroup"]]
     print("rendering figures:")
     fig1(cells); fig2(cells); fig3(); fig4(); fig5(); fig6(); fig7(); fig8()
     print("done")
